@@ -5,17 +5,12 @@ from oscar_accounts import facade
 import soap
 import uuid
 import re
+import logging
 
-from ..exceptions import TransactionDenied, CreditApplicationDenied
-from ..models import (
-    CREDIT_APP_APPROVED,
-    TRANS_APPROVED,
-    TRANS_TYPE_INQUIRY,
-    TRANS_TYPE_APPLY,
-    TransferMetadata,
-    CreditApplicationResult,
-    AccountInquiryResult
-)
+from ..core.constants import CREDIT_APP_APPROVED, TRANS_APPROVED, TRANS_TYPE_INQUIRY, TRANS_TYPE_APPLY
+from ..core.exceptions import TransactionDenied, CreditApplicationDenied
+from ..core.structures import CreditApplicationResult, AccountInquiryResult
+from ..models import TransferMetadata
 from ..settings import (
     WFRS_TRANSACTION_WSDL,
     WFRS_INQUIRY_WSDL,
@@ -25,8 +20,7 @@ from ..settings import (
     WFRS_MERCHANT_NUM
 )
 
-DATE_FORMAT = '%m/%d/%Y'
-
+logger = logging.getLogger(__name__)
 
 
 def submit_transaction(trans_request):
@@ -51,6 +45,7 @@ def submit_transaction(trans_request):
     # Check for faults
     if resp.faults:
         for fault in resp.faults:
+            logger.error(fault.faultDetailString)
             raise ValidationError(fault.faultDetailString)
 
     # Check for approval
@@ -65,7 +60,7 @@ def submit_transaction(trans_request):
             amount=_as_decimal(resp.amount),
             user=trans_request.user,
             merchant_reference=resp.uuid)
-        meta = TransferMetadata.objects.create(
+        TransferMetadata.objects.create(
             transfer=transfer,
             type_code=resp.transactionCode,
             ticket_number=resp.ticketNumber,
@@ -75,7 +70,6 @@ def submit_transaction(trans_request):
             message=resp.transactionMessage,
             disclosure=resp.disclosure)
     return transfer
-
 
 
 def submit_inquiry(account):
@@ -96,6 +90,7 @@ def submit_inquiry(account):
     # Check for faults
     if resp.faults:
         for fault in resp.faults:
+            logger.error(fault.faultDetailString)
             raise ValidationError(fault.faultDetailString)
 
     # Check for errors
@@ -109,7 +104,6 @@ def submit_inquiry(account):
     result.balence = _as_decimal(resp.accountBalance)
     result.open_to_buy = _as_decimal(resp.openToBuy)
     return result
-
 
 
 def submit_credit_application(app):
@@ -188,11 +182,13 @@ def submit_credit_application(app):
     # Check for faults
     if resp.faults:
         for fault in resp.faults:
+            logger.error(fault.faultDetailString)
             raise ValidationError(fault.faultDetailString)
 
     # Check for errors
     error_msg = resp.sorErrorDescription.strip() if resp.sorErrorDescription else None
     if error_msg:
+        logger.error(error_msg)
         raise ValidationError(error_msg)
 
     # Check for approval
@@ -208,15 +204,17 @@ def submit_credit_application(app):
     return result
 
 
-
 def _format_date(date):
-    return date.strftime(DATE_FORMAT) if date else None
+    return date.strftime('%m/%d/%Y') if date else None
+
 
 def _format_phone(number):
     return re.sub(r'[^0-9]+', '', number) if number else None
 
+
 def _format_ssn(number):
     return re.sub(r'[^0-9]+', '', number) if number else None
+
 
 def _as_decimal(string):
     return Decimal(string).quantize(Decimal('.01'))

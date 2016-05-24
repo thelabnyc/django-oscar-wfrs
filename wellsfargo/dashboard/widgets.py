@@ -1,5 +1,4 @@
 from django.forms.widgets import Widget, Select
-from django.utils import six
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 

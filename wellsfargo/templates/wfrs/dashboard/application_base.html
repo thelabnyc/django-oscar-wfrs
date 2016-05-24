@@ -9,9 +9,9 @@
                 <h3>{% trans "Region information" %}</h3>
             </div>
             <div class="well">
-                {% include 'partials/form_field.html' with field=form.region %}
-                {% include 'partials/form_field.html' with field=form.language %}
-                {% include 'partials/form_field.html' with field=form.app_type %}
+                {% include 'dashboard/partials/form_field.html' with field=form.region %}
+                {% include 'dashboard/partials/form_field.html' with field=form.language %}
+                {% include 'dashboard/partials/form_field.html' with field=form.app_type %}
 
                 <div class="form-group">
                     <a class="btn btn-default" href="{% url 'wfrs-apply-step1' %}">{% trans "Back" %}</a>
@@ -26,10 +26,11 @@
                 <h3>{% trans "Applicant #1" %}</h3>
             </div>
             <div class="well">
-                {% include 'partials/form_field.html' with field=form.main_first_name %}
-                {% include 'partials/form_field.html' with field=form.main_last_name %}
-                {% include 'partials/form_field.html' with field=form.main_middle_initial %}
-                {% include 'partials/form_field.html' with field=form.main_date_of_birth %}
+                {% include 'dashboard/partials/form_field.html' with field=form.user %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_first_name %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_last_name %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_middle_initial %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_date_of_birth %}
                 {% block main_personal_fields %}{% endblock %}
             </div>
 
@@ -37,9 +38,9 @@
                 <h3>{% trans "Applicant #1: Address" %}</h3>
             </div>
             <div class="well">
-                {% include 'partials/form_field.html' with field=form.main_address_line1 %}
-                {% include 'partials/form_field.html' with field=form.main_address_line2 %}
-                {% include 'partials/form_field.html' with field=form.main_address_city %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_address_line1 %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_address_line2 %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_address_city %}
                 {% block main_addr_fields %}{% endblock %}
             </div>
 
@@ -47,8 +48,8 @@
                 <h3>{% trans "Applicant #1: Assets" %}</h3>
             </div>
             <div class="well">
-                {% include 'partials/form_field.html' with field=form.main_home_value %}
-                {% include 'partials/form_field.html' with field=form.main_mortgage_balance %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_home_value %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_mortgage_balance %}
                 {% block main_asset_fields %}{% endblock %}
             </div>
 
@@ -56,7 +57,7 @@
                 <h3>{% trans "Applicant #1: Employment" %}</h3>
             </div>
             <div class="well">
-                {% include 'partials/form_field.html' with field=form.main_annual_income %}
+                {% include 'dashboard/partials/form_field.html' with field=form.main_annual_income %}
                 {% block main_employment_fields %}{% endblock %}
             </div>
         </div>
@@ -68,10 +69,10 @@
                     <h3>{% trans "Applicant #2" %}</h3>
                 </div>
                 <div class="well">
-                    {% include 'partials/form_field.html' with field=form.joint_first_name %}
-                    {% include 'partials/form_field.html' with field=form.joint_last_name %}
-                    {% include 'partials/form_field.html' with field=form.joint_middle_initial %}
-                    {% include 'partials/form_field.html' with field=form.joint_date_of_birth %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_first_name %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_last_name %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_middle_initial %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_date_of_birth %}
                     {% block joint_personal_fields %}{% endblock %}
                 </div>
 
@@ -79,9 +80,9 @@
                     <h3>{% trans "Applicant #2: Address" %}</h3>
                 </div>
                 <div class="well">
-                    {% include 'partials/form_field.html' with field=form.joint_address_line1 %}
-                    {% include 'partials/form_field.html' with field=form.joint_address_line2 %}
-                    {% include 'partials/form_field.html' with field=form.joint_address_city %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_address_line1 %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_address_line2 %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_address_city %}
                     {% block joint_addr_fields %}{% endblock %}
                 </div>
 
@@ -89,7 +90,7 @@
                     <h3>{% trans "Applicant #2: Employment" %}</h3>
                 </div>
                 <div class="well">
-                    {% include 'partials/form_field.html' with field=form.joint_annual_income %}
+                    {% include 'dashboard/partials/form_field.html' with field=form.joint_annual_income %}
                     {% block joint_employment_fields %}{% endblock %}
                 </div>
             </div>
@@ -100,13 +101,11 @@
                 <h3>{% trans "Other Information" %}</h3>
             </div>
             <div class="well">
-                <p>{% trans "Fields marked with * are mandatory." %}</p>
-
-                {% include 'partials/form_field.html' with field=form.purchase_price %}
-                {% include 'partials/form_field.html' with field=form.insurance %}
-                {% include 'partials/form_field.html' with field=form.sales_person_id %}
-                {% include 'partials/form_field.html' with field=form.new_sales_person %}
-                {% include 'partials/form_field.html' with field=form.email %}
+                {% include 'dashboard/partials/form_field.html' with field=form.purchase_price %}
+                {% include 'dashboard/partials/form_field.html' with field=form.insurance %}
+                {% include 'dashboard/partials/form_field.html' with field=form.sales_person_id %}
+                {% include 'dashboard/partials/form_field.html' with field=form.new_sales_person %}
+                {% include 'dashboard/partials/form_field.html' with field=form.email %}
             </div>
 
             <div class="table-header">

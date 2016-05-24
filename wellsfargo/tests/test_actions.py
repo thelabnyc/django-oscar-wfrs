@@ -1,13 +1,15 @@
-from datetime import date
 from decimal import Decimal
 from django.core.exceptions import ValidationError
-from django.test import TestCase
 from oscar.core.loading import get_model
 from oscar_accounts.core import redemptions_account
-from ..connector import actions
-from .. import models, exceptions
-from .base import BaseTest
 import mock
+
+from .base import BaseTest
+
+from ..connector import actions
+from ..core.constants import CREDIT_APP_APPROVED
+from ..core.exceptions import CreditApplicationDenied, TransactionDenied
+from ..core.structures import TransactionRequest
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -21,7 +23,7 @@ class SubmitTransactionTest(BaseTest):
         source = self._build_account('9999999999999991')
 
         # Authorize a change against the credit line
-        request = models.TransactionRequest.build_auth_request(
+        request = TransactionRequest.build_auth_request(
             source_account=source,
             plan_number='1001',
             amount=Decimal('2159.99'),
@@ -49,14 +51,14 @@ class SubmitTransactionTest(BaseTest):
 
         source = self._build_account('9999999999999990')
         # Authorize a change against the credit line
-        request = models.TransactionRequest.build_auth_request(
+        request = TransactionRequest.build_auth_request(
             source_account=source,
             plan_number='1001',
             amount=Decimal('2159.99'),
             ticket_number='D1234567890')
         def submit():
             actions.submit_transaction(request)
-        self.assertRaises(exceptions.TransactionDenied, submit)
+        self.assertRaises(TransactionDenied, submit)
 
 
     def _get_success_response(self):
@@ -212,7 +214,7 @@ class CreditApplicationTest(BaseTest):
         self.assertFalse(app.is_joint)
 
         resp = actions.submit_credit_application(app)
-        self.assertEqual(resp.transaction_status, models.CREDIT_APP_APPROVED)
+        self.assertEqual(resp.transaction_status, CREDIT_APP_APPROVED)
         self.assertEqual(resp.account_number, '9999999999999999')
         self.assertEqual(resp.credit_limit, Decimal('7500.00'))
 
@@ -232,7 +234,7 @@ class CreditApplicationTest(BaseTest):
         self.assertTrue(app.is_joint)
 
         resp = actions.submit_credit_application(app)
-        self.assertEqual(resp.transaction_status, models.CREDIT_APP_APPROVED)
+        self.assertEqual(resp.transaction_status, CREDIT_APP_APPROVED)
         self.assertEqual(resp.account_number, '9999999999999999')
         self.assertEqual(resp.credit_limit, Decimal('7500.00'))
 
@@ -254,7 +256,7 @@ class CreditApplicationTest(BaseTest):
         app = self._build_us_single_credit_app('999999994')
         def submit():
             actions.submit_credit_application(app)
-        self.assertRaises(exceptions.CreditApplicationDenied, submit)
+        self.assertRaises(CreditApplicationDenied, submit)
 
 
     def _get_success_response(self):

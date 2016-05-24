@@ -9,9 +9,9 @@
                 <h3>{% trans "Region information" %}</h3>
             </div>
             <div class="well">
-                {% include 'partials/form_field.html' with field=form.region %}
-                {% include 'partials/form_field.html' with field=form.language %}
-                {% include 'partials/form_field.html' with field=form.app_type %}
+                {% include 'dashboard/partials/form_field.html' with field=form.region %}
+                {% include 'dashboard/partials/form_field.html' with field=form.language %}
+                {% include 'dashboard/partials/form_field.html' with field=form.app_type %}
 
                 <div class="form-group">
                     <a class="btn btn-default" href="{% url 'accounts-list' %}">{% trans "Cancel" %}</a>

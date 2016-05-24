@@ -9,7 +9,7 @@ from oscar.core.loading import get_model
 from oscar_accounts.core import redemptions_account
 from .forms import SubmitTransactionForm, ApplicationSelectionForm, get_application_form_class
 from ..connector import actions
-from ..exceptions import TransactionDenied
+from ..core.exceptions import CreditApplicationDenied, TransactionDenied
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -28,11 +28,10 @@ class SubmitTransactionView(FormView):
         form = self.get_form()
         if form.is_valid():
             try:
-                trans_request = form.save(commit=False)
-                transfer = actions.submit_transaction(trans_request)
+                actions.submit_transaction( form.save(commit=False) )
                 return self.form_valid(form)
             except TransactionDenied as e:
-                messages.add_message(request, messages.ERROR, 'Transaction Denied')
+                messages.add_message(request, messages.ERROR, _('Transaction was denied by Wells Fargo'))
             except ValidationError as e:
                 messages.add_message(request, messages.ERROR, e.message)
         return self.form_invalid(form)
@@ -83,13 +82,20 @@ class CreditApplicationView(FormView):
 
     def post(self, request, region, language, app_type):
         self._init_form(region, language, app_type)
-        return super().post(request, region, language, app_type)
+        form = self.get_form()
+        if form.is_valid():
+            try:
+                app = form.save(commit=False)
+                resp = actions.submit_credit_application(app)
+                account = resp.save()
+                return self.form_valid(account)
+            except CreditApplicationDenied as e:
+                messages.add_message(request, messages.ERROR, _('Credit Application was denied by Wells Fargo'))
+            except ValidationError as e:
+                messages.add_message(request, messages.ERROR, e.message)
+        return self.form_invalid(form)
 
-    def form_valid(self, form):
-        # Apply for credit and persist the response
-        app = form.save(commit=False)
-        resp = actions.submit_credit_application(app)
-        account = resp.save()
+    def form_valid(self, account):
         url = reverse('accounts-detail', args=(account.pk, ))
         return HttpResponseRedirect(url)
 

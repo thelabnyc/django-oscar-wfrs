@@ -1,22 +1,22 @@
 {% extends 'wfrs/dashboard/application_ca_single.html' %}
 
 {% block joint_personal_fields %}
-    {% include 'partials/form_field.html' with field=form.joint_ssn %}
-    {% include 'partials/form_field.html' with field=form.joint_cell_phone %}
-    {% include 'partials/form_field.html' with field=form.joint_photo_id_type %}
-    {% include 'partials/form_field.html' with field=form.joint_photo_id_number %}
-    {% include 'partials/form_field.html' with field=form.joint_photo_id_expiration %}
-    {% include 'partials/form_field.html' with field=form.joint_drivers_license_province %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_ssn %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_cell_phone %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_photo_id_type %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_photo_id_number %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_photo_id_expiration %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_drivers_license_province %}
 {% endblock %}
 
 {% block joint_addr_fields %}
-    {% include 'partials/form_field.html' with field=form.joint_address_state %}
-    {% include 'partials/form_field.html' with field=form.joint_address_postcode %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_address_state %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_address_postcode %}
 {% endblock %}
 
 {% block joint_employment_fields %}
-    {% include 'partials/form_field.html' with field=form.joint_occupation %}
-    {% include 'partials/form_field.html' with field=form.joint_employer_name %}
-    {% include 'partials/form_field.html' with field=form.joint_employer_phone %}
-    {% include 'partials/form_field.html' with field=form.joint_time_at_employer %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_occupation %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_employer_name %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_employer_phone %}
+    {% include 'dashboard/partials/form_field.html' with field=form.joint_time_at_employer %}
 {% endblock %}

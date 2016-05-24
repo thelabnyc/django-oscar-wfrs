@@ -3,7 +3,8 @@ from decimal import Decimal
 from django.test import TestCase
 from oscar_accounts.setup import create_default_accounts
 from soap.tests import SoapTest
-from .. import models
+from ..core.constants import CREDIT_APP_APPROVED
+from ..core.structures import USCreditApp, USJointCreditApp, CreditApplicationResult
 
 
 class BaseTest(SoapTest, TestCase):
@@ -13,7 +14,7 @@ class BaseTest(SoapTest, TestCase):
 
 
     def _build_us_single_credit_app(self, main_ssn):
-        app = models.USCreditApp()
+        app = USCreditApp()
         app.region = 'US'
         app.language = 'E'
         app.app_type = 'I'
@@ -34,7 +35,7 @@ class BaseTest(SoapTest, TestCase):
         return app
 
     def _build_us_join_credit_app(self, main_ssn, joint_ssn):
-        app = models.USJointCreditApp()
+        app = USJointCreditApp()
         app.region = 'US'
         app.language = 'E'
         app.app_type = 'I'
@@ -66,15 +67,15 @@ class BaseTest(SoapTest, TestCase):
 
     def _build_account(self, account_number):
         # Make a fake credit line
-        app = models.USCreditApp()
+        app = USCreditApp()
         app.region = 'US'
         app.language = 'E'
         app.app_type = 'I'
         app.main_first_name = 'Joe'
         app.main_last_name = 'Schmoe'
-        result = models.CreditApplicationResult()
+        result = CreditApplicationResult()
         result.application = app
-        result.transaction_status = models.CREDIT_APP_APPROVED
+        result.transaction_status = CREDIT_APP_APPROVED
         result.account_number = account_number
         result.credit_limit = Decimal('7500.00')
         account = result.save()

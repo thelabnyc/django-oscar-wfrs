@@ -1,14 +1,15 @@
-from decimal import Decimal
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from oscar.forms.widgets import DatePickerInput
 from .widgets import FuzzyDurationWidget, BooleanSelect
-from ..models import (
+from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT,
     LOCALES,
-    APP_TYPES, LANGUAGES, REGIONS,
+    APP_TYPES, LANGUAGES, REGIONS
+)
+from ..core.structures import (
     TransactionRequest,
     USCreditApp,
     USJointCreditApp,
@@ -52,7 +53,7 @@ class ApplicationSelectionForm(forms.Form):
         locale = LOCALES.get(region, {}).get(language)
         if not locale:
             msg = _('Selected language is not valid for the selected region.')
-            raise forms.ValidationError(msg)
+            raise ValidationError(msg)
         return language
 
 

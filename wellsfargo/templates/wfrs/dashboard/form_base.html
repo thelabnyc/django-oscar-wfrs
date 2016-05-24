@@ -48,9 +48,7 @@
                     <h3>{% trans "Form" %}</h3>
                 </div>
                 <div class="well">
-                    <p>{% trans "Fields marked with * are mandatory." %}</p>
-
-                    {% include 'partials/form_fields.html' with form=form %}
+                    {% include 'dashboard/partials/form_fields.html' with form=form %}
 
                     <div class="form-group">
                         <a class="btn btn-default" href="{% url 'accounts-list' %}">{% trans "Cancel" %}</a>

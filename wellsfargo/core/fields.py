@@ -1,8 +1,6 @@
 from django.db.models import CharField
 from django.utils.translation import ugettext_lazy as _
-from localflavor.us.forms import (
-    USSocialSecurityNumberField as StockUSSocialSecurityNumberFormField
-)
+from localflavor.us.forms import USSocialSecurityNumberField as StockUSSocialSecurityNumberFormField
 from localflavor.us.models import (
     USSocialSecurityNumberField as StockUSSocialSecurityNumberField,
     USStateField,
@@ -28,7 +26,6 @@ class PhoneNumberFormField(CAPhoneNumberFieldFormField):
         super().__init__(*args, **kwargs)
 
 
-
 class USSocialSecurityNumberFormField(StockUSSocialSecurityNumberFormField):
     def clean(self, value):
         # These values are normally blocked by SSN validation, however we need them to be
@@ -40,13 +37,11 @@ class USSocialSecurityNumberFormField(StockUSSocialSecurityNumberFormField):
         return super().clean(value)
 
 
-
 class USSocialSecurityNumberField(StockUSSocialSecurityNumberField):
     def formfield(self, **kwargs):
         defaults = {'form_class': USSocialSecurityNumberFormField}
         defaults.update(kwargs)
         return super().formfield(**defaults)
-
 
 
 class CASocialInsuranceNumberField(CharField):
@@ -65,7 +60,6 @@ class CASocialInsuranceNumberField(CharField):
         defaults = {'form_class': SocialInsuranceFormField}
         defaults.update(kwargs)
         return super().formfield(**defaults)
-
 
 
 class CAProvinceField(CharField):
@@ -88,7 +82,6 @@ class CAProvinceField(CharField):
         return super().formfield(**defaults)
 
 
-
 class CAPostalCodeField(CharField):
     description = _("Canadian postal code")
 
@@ -107,7 +100,6 @@ class CAPostalCodeField(CharField):
         return super().formfield(**defaults)
 
 
-
 class CAPhoneNumberField(CharField):
     description = _("Phone number")
 
@@ -124,3 +116,15 @@ class CAPhoneNumberField(CharField):
         defaults = {'form_class': PhoneNumberFormField}
         defaults.update(kwargs)
         return super().formfield(**defaults)
+
+
+__all__ = [
+    'USSocialSecurityNumberField',
+    'USStateField',
+    'USZipCodeField',
+    'USPhoneNumberField',
+    'CASocialInsuranceNumberField',
+    'CAProvinceField',
+    'CAPostalCodeField',
+    'CAPhoneNumberField'
+]
