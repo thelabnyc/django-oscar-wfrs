@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('oscar_accounts', '0004_auto_20160523_2048'),
+        ('oscar_accounts', '0003_alter_ip_address'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
