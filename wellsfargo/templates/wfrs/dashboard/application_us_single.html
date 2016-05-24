@@ -1,0 +1,21 @@
+{% extends 'wfrs/dashboard/application_base.html' %}
+
+{% block main_personal_fields %}
+    {% include 'partials/form_field.html' with field=form.main_ssn %}
+    {% include 'partials/form_field.html' with field=form.main_home_phone %}
+    {% include 'partials/form_field.html' with field=form.main_cell_phone %}
+{% endblock %}
+
+{% block main_addr_fields %}
+    {% include 'partials/form_field.html' with field=form.main_address_state %}
+    {% include 'partials/form_field.html' with field=form.main_address_postcode %}
+    {% include 'partials/form_field.html' with field=form.main_time_at_address %}
+    {% include 'partials/form_field.html' with field=form.main_housing_status %}
+{% endblock %}
+
+{% block main_employment_fields %}
+    {% include 'partials/form_field.html' with field=form.main_occupation %}
+    {% include 'partials/form_field.html' with field=form.main_employer_name %}
+    {% include 'partials/form_field.html' with field=form.main_employer_phone %}
+    {% include 'partials/form_field.html' with field=form.main_time_at_employer %}
+{% endblock %}

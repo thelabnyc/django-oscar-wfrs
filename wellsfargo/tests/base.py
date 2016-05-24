@@ -1,0 +1,81 @@
+from datetime import date
+from decimal import Decimal
+from django.test import TestCase
+from oscar_accounts.setup import create_default_accounts
+from soap.tests import SoapTest
+from .. import models
+
+
+class BaseTest(SoapTest, TestCase):
+    def setUp(self):
+        create_default_accounts()
+        return super().setUp()
+
+
+    def _build_us_single_credit_app(self, main_ssn):
+        app = models.USCreditApp()
+        app.region = 'US'
+        app.language = 'E'
+        app.app_type = 'I'
+        app.main_first_name = 'Joe'
+        app.main_last_name = 'Schmoe'
+        app.main_date_of_birth = date(1991, 1, 1)
+        app.main_address_line1 = '123 Evergreen Terrace'
+        app.main_address_city = 'Springfield'
+        app.main_home_value = '200000'
+        app.main_mortgage_balance = '50000'
+        app.main_annual_income = '150000'
+        app.email = 'foo@example.com'
+        app.main_ssn = main_ssn
+        app.main_address_state = 'NY'
+        app.main_address_postcode = '10001'
+        app.main_home_phone = '5555555555'
+        app.main_employer_phone = '5555555555'
+        return app
+
+    def _build_us_join_credit_app(self, main_ssn, joint_ssn):
+        app = models.USJointCreditApp()
+        app.region = 'US'
+        app.language = 'E'
+        app.app_type = 'I'
+        app.main_first_name = 'Joe'
+        app.main_last_name = 'Schmoe'
+        app.main_date_of_birth = date(1991, 1, 1)
+        app.main_address_line1 = '123 Evergreen Terrace'
+        app.main_address_city = 'Springfield'
+        app.main_home_value = '200000'
+        app.main_mortgage_balance = '50000'
+        app.main_annual_income = '150000'
+        app.email = 'foo@example.com'
+        app.main_ssn = main_ssn
+        app.main_address_state = 'NY'
+        app.main_address_postcode = '10001'
+        app.main_home_phone = '5555555555'
+        app.main_employer_phone = '5555555555'
+        app.joint_first_name = 'Jill'
+        app.joint_last_name = 'Schmoe'
+        app.joint_date_of_birth = date(1991, 1, 1)
+        app.joint_address_line1 = '123 Evergreen Terrace'
+        app.joint_address_city = 'Springfield'
+        app.joint_annual_income = '30000'
+        app.joint_ssn = joint_ssn
+        app.joint_address_state = 'NY'
+        app.joint_address_postcode = '10001'
+        app.joint_employer_phone = '5555555555'
+        return app
+
+    def _build_account(self, account_number):
+        # Make a fake credit line
+        app = models.USCreditApp()
+        app.region = 'US'
+        app.language = 'E'
+        app.app_type = 'I'
+        app.main_first_name = 'Joe'
+        app.main_last_name = 'Schmoe'
+        result = models.CreditApplicationResult()
+        result.application = app
+        result.transaction_status = models.CREDIT_APP_APPROVED
+        result.account_number = account_number
+        result.credit_limit = Decimal('7500.00')
+        account = result.save()
+        return account

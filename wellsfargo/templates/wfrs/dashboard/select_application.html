@@ -1,0 +1,23 @@
+{% extends 'wfrs/dashboard/form_base.html' %}
+{% load currency_filters %}
+{% load i18n %}
+
+{% block form_fields %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="table-header">
+                <h3>{% trans "Region information" %}</h3>
+            </div>
+            <div class="well">
+                {% include 'partials/form_field.html' with field=form.region %}
+                {% include 'partials/form_field.html' with field=form.language %}
+                {% include 'partials/form_field.html' with field=form.app_type %}
+
+                <div class="form-group">
+                    <a class="btn btn-default" href="{% url 'accounts-list' %}">{% trans "Cancel" %}</a>
+                    <button class="btn btn-primary" type="submit">{% trans "Continue" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

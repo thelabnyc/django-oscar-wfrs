@@ -1,0 +1,47 @@
+{% extends 'accounts/dashboard/transfer_detail.html' %}
+{% load currency_filters %}
+{% load i18n %}
+
+{% block dashboard_content %}
+    {{ block.super }}
+
+    {% if transfer.wfrs_metadata %}
+        <div class="panel panel-default">
+            <div class="panel-heading">{% trans "Wells Fargo Transfer Details" %}</div>
+            <div>
+                <table id="" class="table">
+                    <tbody>
+                        <tr>
+                            <th>{% trans "Transaction Type" %}</th>
+                            <td>{{ transfer.wfrs_metadata.type_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Ticket Number" %}</th>
+                            <td>{{ transfer.wfrs_metadata.ticket_number | default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Plan Number" %}</th>
+                            <td>{{ transfer.wfrs_metadata.plan_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Authorization Number" %}</th>
+                            <td>{{ transfer.wfrs_metadata.auth_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Status" %}</th>
+                            <td>{{ transfer.wfrs_metadata.status_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Message" %}</th>
+                            <td>{{ transfer.wfrs_metadata.message }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Disclosure" %}</th>
+                            <td>{{ transfer.wfrs_metadata.disclosure }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock dashboard_content %}

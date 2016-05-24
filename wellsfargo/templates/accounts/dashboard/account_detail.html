@@ -1,0 +1,23 @@
+{% extends 'accounts/dashboard/account_detail.html' %}
+{% load currency_filters %}
+{% load i18n %}
+
+{% block header %}
+<div class="page-header">
+    <span class="pull-right">
+        <a class="btn btn-primary" href="{% url 'accounts-update' account.id %}">{% trans "Edit" %}</a>
+        {% if account.wfrs_metadata %}
+            <a class="btn btn-primary" href="{% url 'wfrs-submit-transaction' account.id %}">{% trans "New Wells Fargo Transaction" %}</a>
+        {% else %}
+            <a href="{% url 'accounts-top-up' account.id %}" class="btn btn-primary">{% trans "Top-up" %}</a>
+            <a href="{% url 'accounts-withdraw' account.id %}" class="btn btn-primary">{% trans "Withdraw" %}</a>
+        {% endif %}
+        {% if not account.is_frozen %}
+            <a href="{% url 'accounts-freeze' account.id %}" class="btn btn-danger">{% trans "Freeze" %}</a>
+        {% else %}
+            <a href="{% url 'accounts-thaw' account.id %}" class="btn btn-success">{% trans "Thaw" %}</a>
+        {% endif %}
+    </span>
+    <h1>{{ account }}</h1>
+</div>
+{% endblock header %}

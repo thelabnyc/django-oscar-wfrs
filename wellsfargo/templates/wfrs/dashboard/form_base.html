@@ -1,0 +1,64 @@
+{% extends 'dashboard/layout.html' %}
+{% load currency_filters %}
+{% load i18n %}
+
+{% block title %}
+    {{ title }} | {% trans "Wells Fargo" %} | {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'accounts-list' %}">{% trans "Wells Fargo" %}</a>
+        </li>
+        <li class="active">{{ title }}</li>
+    </ul>
+{% endblock %}
+
+{% block headertext %}{{ title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="row">
+    <div class="col-md-12">
+        {% if form.is_bound and not form.is_valid %}
+            <div class="alert alert-danger">
+                <strong>{% trans "Please correct the errors below." %}</strong>
+            </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <i class="icon-exclamation-sign"></i> {{ error }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<form action="." method="post" class="form-stacked">
+    {% csrf_token %}
+    {% block form_fields %}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="table-header">
+                    <h3>{% trans "Form" %}</h3>
+                </div>
+                <div class="well">
+                    <p>{% trans "Fields marked with * are mandatory." %}</p>
+
+                    {% include 'partials/form_fields.html' with form=form %}
+
+                    <div class="form-group">
+                        <a class="btn btn-default" href="{% url 'accounts-list' %}">{% trans "Cancel" %}</a>
+                        <button class="btn btn-primary" type="submit">{% trans "Continue" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+</form>
+{% endblock dashboard_content %}
