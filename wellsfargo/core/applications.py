@@ -1,6 +1,12 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator, MinLengthValidator, MaxLengthValidator
+from django.core.validators import (
+    RegexValidator,
+    MinLengthValidator,
+    MaxLengthValidator,
+    MinValueValidator,
+    MaxValueValidator,
+)
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from .constants import (
@@ -35,7 +41,10 @@ class BaseCreditAppMixin(models.Model):
     language = models.CharField(_("Language"), null=False, blank=False, choices=LANGUAGES, max_length=1)
     app_type = models.CharField(_('Application Type'), null=False, blank=False, choices=APP_TYPES, max_length=1)
 
-    purchase_price = models.IntegerField(_("Requested Credit Amount"), null=True, blank=True)
+    purchase_price = models.IntegerField(_("Requested Credit Amount"), null=True, blank=True, validators=[
+        MinValueValidator(0),
+        MaxValueValidator(99999),
+    ])
 
     main_first_name = models.CharField(_("First Name"), null=False, blank=False, max_length=15)
     main_last_name = models.CharField(_("Last Name"), null=False, blank=False, max_length=20)
@@ -44,9 +53,18 @@ class BaseCreditAppMixin(models.Model):
     main_address_line1 = models.CharField(_("Address Line 1"), null=False, blank=False, max_length=35)
     main_address_line2 = models.CharField(_("Address Line 2"), null=True, blank=True, max_length=35)
     main_address_city = models.CharField(_("City"), null=False, blank=False, max_length=15)
-    main_home_value = models.IntegerField(_("Home Value"), null=True, blank=True)
-    main_mortgage_balance = models.IntegerField(_("Mortgage Balance"), null=True, blank=True)
-    main_annual_income = models.IntegerField(_("Annual Income"), null=False, blank=False)
+    main_home_value = models.IntegerField(_("Home Value"), null=True, blank=True, validators=[
+        MinValueValidator(0),
+        MaxValueValidator(9999999),
+    ])
+    main_mortgage_balance = models.IntegerField(_("Mortgage Balance"), null=True, blank=True, validators=[
+        MinValueValidator(0),
+        MaxValueValidator(9999999),
+    ])
+    main_annual_income = models.IntegerField(_("Annual Income"), null=False, blank=False, validators=[
+        MinValueValidator(0),
+        MaxValueValidator(999999),
+    ])
 
     insurance = models.BooleanField(_('Optional Insurance'), null=False)
     sales_person_id = models.CharField(_("Existing Sales Person ID"), null=True, blank=True, max_length=4, validators=[
@@ -80,7 +98,10 @@ class BaseJointCreditAppMixin(BaseCreditAppMixin):
     joint_address_line1 = models.CharField(_("Address Line 1"), null=False, blank=False, max_length=35)
     joint_address_line2 = models.CharField(_("Address Line 2"), null=True, blank=True, max_length=35)
     joint_address_city = models.CharField(_("City"), null=False, blank=False, max_length=15)
-    joint_annual_income = models.IntegerField(_("Annual Income"), null=False, blank=False)
+    joint_annual_income = models.IntegerField(_("Annual Income"), null=False, blank=False, validators=[
+        MinValueValidator(0),
+        MaxValueValidator(999999),
+    ])
 
     class Meta:
         abstract = True

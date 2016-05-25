@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'widget_tweaks',
     'oscar_accounts',
+    'rest_framework',
     'wellsfargo',
 ] + get_core_apps([])
 
