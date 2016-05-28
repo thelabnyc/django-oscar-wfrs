@@ -1,13 +1,15 @@
 from datetime import date
 from decimal import Decimal
-from django.test import TestCase
+from rest_framework.test import APITestCase
 from oscar_accounts.setup import create_default_accounts
 from soap.tests import SoapTest
 from ..core.constants import CREDIT_APP_APPROVED
 from ..core.structures import USCreditApp, USJointCreditApp, CreditApplicationResult
 
 
-class BaseTest(SoapTest, TestCase):
+class BaseTest(SoapTest, APITestCase):
+    fixtures = ['wfrs-test']
+
     def setUp(self):
         create_default_accounts()
         return super().setUp()

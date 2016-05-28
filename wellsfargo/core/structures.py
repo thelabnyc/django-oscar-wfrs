@@ -20,7 +20,7 @@ from .constants import TRANS_TYPES, TRANS_TYPE_AUTH, CREDIT_APP_APPROVED
 from .mixins import UnsavableModel
 
 from ..models import AccountMetadata
-from ..settings import WFRS_CREDIT_LINE
+from ..settings import WFRS_ACCOUNT_TYPE
 
 AccountType = get_model('oscar_accounts', 'AccountType')
 Account = get_model('oscar_accounts', 'Account')
@@ -140,9 +140,9 @@ class CreditApplicationResult(object):
             return None
 
         try:
-            wfrs = AccountType.objects.get(name=WFRS_CREDIT_LINE)
+            wfrs = AccountType.objects.get(name=WFRS_ACCOUNT_TYPE)
         except AccountType.DoesNotExist:
-            wfrs = AccountType.add_root(name=WFRS_CREDIT_LINE)
+            wfrs = AccountType.add_root(name=WFRS_ACCOUNT_TYPE)
             wfrs.save()
 
         try:

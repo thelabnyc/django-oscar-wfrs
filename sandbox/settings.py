@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'oscar_accounts',
     'rest_framework',
+    'oscarapi',
     'wellsfargo',
 ] + get_core_apps([])
 

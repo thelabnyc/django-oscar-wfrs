@@ -20,4 +20,9 @@ WFRS_USER_NAME = overridable('WFRS_USER_NAME', '')
 WFRS_PASSWORD = overridable('WFRS_PASSWORD', '')
 WFRS_MERCHANT_NUM = overridable('WFRS_MERCHANT_NUM', '')
 
-WFRS_CREDIT_LINE = overridable('WFRS_ACCOUNT_TYPE', 'Credit Line (Wells Fargo)')
+WFRS_ACCOUNT_TYPE = overridable('WFRS_ACCOUNT_TYPE', 'Credit Line (Wells Fargo)')
+
+WFRS_INITIAL_ORDER_STATUS = overridable('WFRS_INITIAL_ORDER_STATUS', 'new')
+WFRS_AUTH_PLAN_NUM = overridable('WFRS_API_AUTH_PLAN_NUM', '1001')
+WFRS_PAYMENT_SOURCE = overridable('WFRS_PAYMENT_SOURCE', 'Credit Line (Wells Fargo)')
+WFRS_TRANSACTION_STATUS = 'Complete'

@@ -11,3 +11,4 @@ django-oscar-accounts==0.4rc1
 django-oscar-api==1.0.4
 django-localflavor==1.3
 psycopg2==2.6.1
+PyYAML==3.11

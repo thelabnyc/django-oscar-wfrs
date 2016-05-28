@@ -16,10 +16,6 @@ class IsAccountOwner(permissions.BasePermission):
     def list_valid_account_ids(self, request):
         if not request.user.is_authenticated():
             return list_session_accounts(request)
-
-        if request.user.is_superuser:
-            return Account.objects.values_list('id', flat=True)
-
         is_primary = Q(primary_user=request.user)
         is_secondary = Q(secondary_users=request.user)
         return Account.objects.filter(is_primary | is_secondary).values_list('id', flat=True)

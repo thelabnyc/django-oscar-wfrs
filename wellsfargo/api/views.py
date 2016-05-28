@@ -8,12 +8,13 @@ from rest_framework import (
     generics,
 )
 from oscar.core.loading import get_model
-
+from oscarapi.views.checkout import CheckoutView as OscarCheckoutView
 from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT
 )
 from .serializers import (
+    CheckoutSerializer,
     AppSelectionSerializer,
     USCreditAppSerializer,
     USJointCreditAppSerializer,
@@ -26,6 +27,51 @@ from ..core import exceptions as core_exceptions
 from . import exceptions as api_exceptions
 
 Account = get_model('oscar_accounts', 'Account')
+
+
+class CheckoutView(OscarCheckoutView):
+    """
+    Checkout and use a WFRS account as payment.
+
+    POST(basket, shipping_address, wfrs_source_account,
+         [total, shipping_method_code, shipping_charge, billing_address]):
+    {
+        "basket": "/api/baskets/1/",
+        "wfrs_source_account": "/api/wfrs/accounts/42/",
+        "guest_email": "foo@example.com",
+        "total": "100.0",
+        "shipping_charge": {
+            "currency": "EUR",
+            "excl_tax": "10.0",
+            "tax": "0.6"
+        },
+        "shipping_method_code": "no-shipping-required",
+        "shipping_address": {
+            "country": "/api/countries/NL/",
+            "first_name": "Henk",
+            "last_name": "Van den Heuvel",
+            "line1": "Roemerlaan 44",
+            "line2": "",
+            "line3": "",
+            "line4": "Kroekingen",
+            "notes": "Niet STUK MAKEN OK!!!!",
+            "phone_number": "+31 26 370 4887",
+            "postcode": "7777KK",
+            "state": "Gerendrecht",
+            "title": "Mr"
+        }
+    }
+
+    Returns the order object.
+    """
+    serializer_class = CheckoutSerializer
+
+    def post(self, *args, **kwargs):
+        resp = super().post(*args, **kwargs)
+        # Work around bug where DRF think the order we're returning is a basket, checks basket.can_be_edited, and fails because it's an order.
+        self.permission_classes = []
+        return resp
+
 
 
 class SelectCreditAppView(generics.GenericAPIView):
