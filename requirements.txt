@@ -2,7 +2,12 @@
 instrumented-soap==1.1.0
 versiontag==1.0.3
 
-# Everything else
+# Test Reqs
+flake8===2.5.4
+psycopg2==2.6.1
+pyyaml==3.11
+
+# Pkg Reqs
 celery==3.1.23
 Django==1.9.6
 djangorestframework==3.3.2
@@ -11,5 +16,3 @@ django-oscar-accounts==0.4rc1
 django-oscar-api==1.0.4
 django-oscar-api-checkout==0.1.4
 django-localflavor==1.3
-psycopg2==2.6.1
-PyYAML==3.11

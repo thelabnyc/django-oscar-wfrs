@@ -21,7 +21,6 @@ setup_requires = [
 ]
 
 requires = [
-    'celery>=3.1.23',
     'Django>=1.9.6',
     'djangorestframework>=3.3.2',
     'django-oscar>=1.2.1',
@@ -31,6 +30,10 @@ requires = [
     'django-localflavor>=1.3',
     'instrumented-soap>=1.1.0',
 ]
+
+extras_require = {
+    'celery':  ['celery>=3.1.23'],
+}
 
 
 def fpath(name):
