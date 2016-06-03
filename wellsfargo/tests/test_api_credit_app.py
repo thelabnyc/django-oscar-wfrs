@@ -1,22 +1,13 @@
-from decimal import Decimal
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.reverse import reverse
 from oscar.core.loading import get_model
-from oscar_accounts.core import redemptions_account
 import mock
 
 from .base import BaseTest
 from . import responses
 
-from ..connector import actions
-from ..core.constants import CREDIT_APP_APPROVED
-from ..core.exceptions import CreditApplicationDenied, TransactionDenied
-from ..core.structures import TransactionRequest
-
 Account = get_model('oscar_accounts', 'Account')
-
 
 
 class CreditApplicationSelectorTest(BaseTest):

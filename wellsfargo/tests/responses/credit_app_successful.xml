@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <ns1:submitCreditAppResponse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://v1.services.webservices.retaildealer.wff.com">
+            <submitCreditAppReturn>
+                <authorizationNumber>000000</authorizationNumber>
+                <authorizedAmount>0.0</authorizedAmount>
+                <creditLimit>7500.0</creditLimit>
+                <dealerId/>
+                <faults xsi:nil="true"/>
+                <fieldInError1>0000</fieldInError1>
+                <fieldInError2>0000</fieldInError2>
+                <fieldInError3>0000</fieldInError3>
+                <fieldInError4>0000</fieldInError4>
+                <fieldInError5>0000</fieldInError5>
+                <merchantNumber>111111111111116</merchantNumber>
+                <retailerAccountNumber/>
+                <sorErrorDescription/>
+                <systemCode>000</systemCode>
+                <terminalNumber>0000</terminalNumber>
+                <transactionCode>A6</transactionCode>
+                <transactionStatus>E0</transactionStatus>
+                <uuid>21fa5918-2155-11e6-8b70-0242ac110003</uuid>
+                <wfAccountNumber>9999999999999999</wfAccountNumber>
+            </submitCreditAppReturn>
+        </ns1:submitCreditAppResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

@@ -57,6 +57,7 @@ class SubmitTransactionTest(BaseTest):
             plan_number='1001',
             amount=Decimal('2159.99'),
             ticket_number='D1234567890')
+
         def submit():
             actions.submit_transaction(request)
         self.assertRaises(TransactionDenied, submit)
@@ -80,6 +81,7 @@ class CreditInquiryTest(BaseTest):
         get_transport.return_value = self._build_transport_with_reply(responses.inquiry_failed)
 
         source = self._build_account('9999999999999990')
+
         # Account is invalid
         def submit():
             actions.submit_inquiry(source)
@@ -126,6 +128,7 @@ class CreditApplicationTest(BaseTest):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_invalid_ssn)
 
         app = self._build_us_single_credit_app(None)
+
         def submit():
             actions.submit_credit_application(app)
         self.assertRaises(ValidationError, submit)
@@ -136,6 +139,7 @@ class CreditApplicationTest(BaseTest):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_denied)
 
         app = self._build_us_single_credit_app('999999994')
+
         def submit():
             actions.submit_credit_application(app)
         self.assertRaises(CreditApplicationDenied, submit)

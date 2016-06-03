@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='transactionrequest',
             name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='transaction_requests', to=settings.AUTH_USER_MODEL, verbose_name='Requesting User'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='transaction_requests', to=settings.AUTH_USER_MODEL, verbose_name='Requesting User'),  # NOQA
         ),
     ]

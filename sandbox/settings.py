@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'oscar_accounts',
     'rest_framework',
     'oscarapi',
+    'oscarapicheckout',
     'wellsfargo',
 ] + get_core_apps([])
 
@@ -131,13 +132,45 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
 
+
+# Order Status Pipeline
+# Needed by oscarapicheckout
+ORDER_STATUS_PENDING = 'Pending'
+ORDER_STATUS_PAYMENT_DECLINED = 'Payment Declined'
+ORDER_STATUS_AUTHORIZED = 'Authorized'
+
+# Other statuses
+ORDER_STATUS_SHIPPED = 'Shipped'
+ORDER_STATUS_CANCELED = 'Canceled'
+
+
+OSCAR_INITIAL_ORDER_STATUS = ORDER_STATUS_PENDING
+OSCARAPI_INITIAL_ORDER_STATUS = ORDER_STATUS_PENDING
+OSCAR_ORDER_STATUS_PIPELINE = {
+    ORDER_STATUS_PENDING: (ORDER_STATUS_PAYMENT_DECLINED, ORDER_STATUS_AUTHORIZED, ORDER_STATUS_CANCELED),
+    ORDER_STATUS_PAYMENT_DECLINED: (ORDER_STATUS_CANCELED, ),
+    ORDER_STATUS_AUTHORIZED: (ORDER_STATUS_SHIPPED, ORDER_STATUS_CANCELED),
+    ORDER_STATUS_SHIPPED: (),
+    ORDER_STATUS_CANCELED: (),
+}
+
+OSCAR_INITIAL_LINE_STATUS = ORDER_STATUS_PENDING
+OSCAR_LINE_STATUS_PIPELINE = {
+    ORDER_STATUS_PENDING: (ORDER_STATUS_SHIPPED, ORDER_STATUS_CANCELED),
+    ORDER_STATUS_SHIPPED: (),
+    ORDER_STATUS_CANCELED: (),
+}
+
+
 # Oscar
 OSCAR_SHOP_NAME = "WFRS Sandbox"
 OSCAR_ALLOW_ANON_CHECKOUT = True
 OSCAR_DEFAULT_CURRENCY = 'USD'
 
+
 # Disable real emails
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+
 
 # Appends accounts to the dashboard navigation
 OSCAR_DASHBOARD_NAVIGATION.append({
@@ -167,3 +200,13 @@ OSCAR_DASHBOARD_NAVIGATION.append({
         },
     ]
 })
+
+
+# Configure payment methods
+API_ENABLED_PAYMENT_METHODS = [
+    {
+        'method': 'wellsfargo.methods.WellsFargo',
+        'permission': 'oscarapicheckout.permissions.Public',
+    },
+]
+

@@ -11,7 +11,7 @@ from localflavor.ca.ca_provinces import PROVINCE_CHOICES
 from localflavor.ca.forms import (
     CASocialInsuranceNumberField as CASocialInsuranceNumberFieldFormField,
     CAProvinceField as CAProvinceFieldFormField,
-    CAPostalCodeField  as CAPostalCodeFieldFormField,
+    CAPostalCodeField as CAPostalCodeFieldFormField,
     CAPhoneNumberField as CAPhoneNumberFieldFormField
 )
 

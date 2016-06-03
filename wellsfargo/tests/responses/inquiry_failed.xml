@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <ns1:submitInquiryResponse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://services.webservices.retaildealer.wff.com">
+            <submitInquiryReturn>
+                <accountBalance>0.0</accountBalance>
+                <address/>
+                <dealerId/>
+                <faults xsi:nil="true"/>
+                <firstName/>
+                <lastName/>
+                <lastPayment>0.0</lastPayment>
+                <lastPaymentDate>000000  </lastPaymentDate>
+                <merchantNumber>111111111111116</merchantNumber>
+                <middleInitial/>
+                <openToBuy>0.0</openToBuy>
+                <paymentDue>0.0</paymentDue>
+                <paymentDueDate>000000  </paymentDueDate>
+                <phone>0000000000</phone>
+                <retailerAccountNumber>9999999999999990</retailerAccountNumber>
+                <sorErrorDescription>DEMO INVALID ACCOUNT</sorErrorDescription>
+                <systemCode>000</systemCode>
+                <terminalNumber>0000</terminalNumber>
+                <transactionCode>8</transactionCode>
+                <transactionStatus>I1</transactionStatus>
+                <uuid>74de5f22-2154-11e6-b69e-0242ac110003</uuid>
+                <wfAccountNumber>9999999999999990</wfAccountNumber>
+            </submitInquiryReturn>
+        </ns1:submitInquiryResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

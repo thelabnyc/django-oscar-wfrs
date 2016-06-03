@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <ns1:submitCreditAppResponse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://v1.services.webservices.retaildealer.wff.com">
+            <submitCreditAppReturn>
+                <authorizationNumber xsi:nil="true"/>
+                <authorizedAmount xsi:nil="true"/>
+                <creditLimit xsi:nil="true"/>
+                <dealerId xsi:nil="true"/>
+                <faults soapenc:arrayType="ns2:WFFIFault[1]" xmlns:ns2="http://faults.webservices.retaildealer.wff.com" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="soapenc:Array">
+                    <faults>
+                        <adviceText/>
+                        <faultActor>WFFServices/RetailResponse</faultActor>
+                        <faultCodeAsString>RWS3020</faultCodeAsString>
+                        <faultDetailString>Please supply a valid main applicant SSN.</faultDetailString>
+                        <faultReason/>
+                        <faultString>RWS_INVALID_MAIN_SSN</faultString>
+                    </faults>
+                </faults>
+                <fieldInError1 xsi:nil="true"/>
+                <fieldInError2 xsi:nil="true"/>
+                <fieldInError3 xsi:nil="true"/>
+                <fieldInError4 xsi:nil="true"/>
+                <fieldInError5 xsi:nil="true"/>
+                <merchantNumber>111111111111116</merchantNumber>
+                <retailerAccountNumber xsi:nil="true"/>
+                <sorErrorDescription xsi:nil="true"/>
+                <systemCode xsi:nil="true"/>
+                <terminalNumber xsi:nil="true"/>
+                <transactionCode>A6</transactionCode>
+                <transactionStatus xsi:nil="true"/>
+                <uuid>7a1098b0-2155-11e6-a236-0242ac110003</uuid>
+                <wfAccountNumber xsi:nil="true"/>
+            </submitCreditAppReturn>
+        </ns1:submitCreditAppResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

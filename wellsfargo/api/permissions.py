@@ -28,6 +28,7 @@ class IsAccountOwner(permissions.BasePermission):
 def list_session_accounts(request):
     return request.session.get(SESSION_ACCOUNT_KEY, [])
 
+
 def add_session_account(request, account):
     accounts = list_session_accounts(request)
     accounts.append(account.id)

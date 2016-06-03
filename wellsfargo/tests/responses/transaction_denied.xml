@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <ns1:submitTransactionResponse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://services.webservices.retaildealer.wff.com">
+            <submitTransactionReturn>
+                <accountNumber>9999999999999990</accountNumber>
+                <amount>2159.99</amount>
+                <authorizationNumber>000000</authorizationNumber>
+                <disclosure/>
+                <faults xsi:nil="true"/>
+                <planNumber>1001</planNumber>
+                <ticketNumber>D1234567890</ticketNumber>
+                <transactionCode>5</transactionCode>
+                <transactionMessage>AUTH DENIED</transactionMessage>
+                <transactionStatus>A0</transactionStatus>
+                <uuid>6f87219a-2153-11e6-a8c1-0242ac110003</uuid>
+            </submitTransactionReturn>
+        </ns1:submitTransactionResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

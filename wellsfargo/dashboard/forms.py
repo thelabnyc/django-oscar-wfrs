@@ -67,6 +67,7 @@ class BaseCreditAppFormMixin(object):
 
 class USCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     dashboard_template = 'wfrs/dashboard/application_us_single.html'
+
     class Meta:
         model = USCreditApp
         widgets = WIDGETS
@@ -75,6 +76,7 @@ class USCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
 
 class USJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     dashboard_template = 'wfrs/dashboard/application_us_joint.html'
+
     class Meta:
         model = USJointCreditApp
         widgets = WIDGETS
@@ -83,6 +85,7 @@ class USJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
 
 class CACreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     dashboard_template = 'wfrs/dashboard/application_ca_single.html'
+
     class Meta:
         model = CACreditApp
         widgets = WIDGETS
@@ -91,6 +94,7 @@ class CACreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
 
 class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     dashboard_template = 'wfrs/dashboard/application_ca_joint.html'
+
     class Meta:
         model = CAJointCreditApp
         widgets = WIDGETS

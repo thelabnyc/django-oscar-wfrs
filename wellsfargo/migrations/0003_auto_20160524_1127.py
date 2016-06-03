@@ -18,21 +18,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cacreditapp',
             name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),  # NOQA
         ),
         migrations.AddField(
             model_name='cajointcreditapp',
             name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),  # NOQA
         ),
         migrations.AddField(
             model_name='uscreditapp',
             name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),  # NOQA
         ),
         migrations.AddField(
             model_name='usjointcreditapp',
             name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),  # NOQA
         ),
     ]

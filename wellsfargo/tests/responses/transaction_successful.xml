@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <ns1:submitTransactionResponse soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns1="http://services.webservices.retaildealer.wff.com">
+            <submitTransactionReturn>
+                <accountNumber>9999999999999991</accountNumber>
+                <amount>2159.99</amount>
+                <authorizationNumber>000000</authorizationNumber>
+                <disclosure>(DEMO) REGULAR TERMS WITH REGULAR PAYMENTS. THE REGULAR RATE IS 27.99%. THIS APR WILL VARY WITH THE MARKET BASED ON THE PRIME RATE.</disclosure>
+                <faults xsi:nil="true"/>
+                <planNumber>1001</planNumber>
+                <ticketNumber>D1234567890</ticketNumber>
+                <transactionCode>5</transactionCode>
+                <transactionMessage>APPROVED: 000000</transactionMessage>
+                <transactionStatus>A1</transactionStatus>
+                <uuid>6f9c34ae-2153-11e6-a8c1-0242ac110003</uuid>
+            </submitTransactionReturn>
+        </ns1:submitTransactionResponse>
+    </soapenv:Body>
+</soapenv:Envelope>
