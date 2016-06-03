@@ -209,4 +209,3 @@ API_ENABLED_PAYMENT_METHODS = [
         'permission': 'oscarapicheckout.permissions.Public',
     },
 ]
-
