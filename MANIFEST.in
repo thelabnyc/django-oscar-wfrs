@@ -1,2 +1,2 @@
 include *.txt *.md *.rst
-recursive-include wellsfargo *.html
+recursive-include wellsfargo *.html *.yaml

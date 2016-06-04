@@ -9,6 +9,7 @@ packages = [
     'wellsfargo',
     'wellsfargo.api',
     'wellsfargo.connector',
+    'wellsfargo.core',
     'wellsfargo.dashboard',
     'wellsfargo.management',
     'wellsfargo.management.commands',
