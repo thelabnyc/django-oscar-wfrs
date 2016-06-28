@@ -16,91 +16,91 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cacreditapp',
             name='main_annual_income',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cacreditapp',
             name='main_home_value',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cacreditapp',
             name='main_mortgage_balance',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cacreditapp',
             name='purchase_price',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='joint_annual_income',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='main_annual_income',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='main_home_value',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='main_mortgage_balance',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),  # NOQA
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='purchase_price',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),  # NOQA
         ),
         migrations.AlterField(
             model_name='uscreditapp',
             name='main_annual_income',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),  # NOQA
         ),
         migrations.AlterField(
             model_name='uscreditapp',
             name='main_home_value',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),  # NOQA
         ),
         migrations.AlterField(
             model_name='uscreditapp',
             name='main_mortgage_balance',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),  # NOQA
         ),
         migrations.AlterField(
             model_name='uscreditapp',
             name='purchase_price',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),  # NOQA
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='joint_annual_income',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),  # NOQA
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='main_annual_income',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),
+            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(999999)], verbose_name='Annual Income'),  # NOQA
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='main_home_value',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Home Value'),  # NOQA
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='main_mortgage_balance',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(9999999)], verbose_name='Mortgage Balance'),  # NOQA
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='purchase_price',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),
+            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Amount'),  # NOQA
         ),
     ]
