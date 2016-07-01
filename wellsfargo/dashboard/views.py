@@ -7,9 +7,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic.edit import FormView
 from oscar.core.loading import get_model
 from oscar_accounts.core import redemptions_account
-from .forms import SubmitTransactionForm, ApplicationSelectionForm, get_application_form_class
+from .forms import SubmitTransactionForm, ApplicationSelectionForm, ManualAddAccountForm, get_application_form_class
 from ..connector import actions
+from ..core.constants import CREDIT_APP_APPROVED
 from ..core.exceptions import CreditApplicationDenied, TransactionDenied
+from ..core.structures import CreditApplicationResult
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -112,3 +114,28 @@ class CreditApplicationView(FormView):
         }
         self.form_class = get_application_form_class(region, app_type)
         self.template_name = self.form_class.dashboard_template
+
+
+
+class AddExistingAccountView(FormView):
+    form_class = ManualAddAccountForm
+    template_name = 'wfrs/dashboard/add_account.html'
+
+    def form_valid(self, form):
+        struct = CreditApplicationResult()
+        struct.transaction_status = CREDIT_APP_APPROVED
+        struct.account_number = form.cleaned_data['account_number']
+        struct.credit_limit = form.cleaned_data['credit_limit']
+        account = struct.save(
+            owner=form.cleaned_data['primary_user'],
+            status=form.cleaned_data['status'],
+            name=form.cleaned_data['name'],
+            locale=form.cleaned_data['locale'])
+
+        url = reverse('accounts-detail', kwargs={'pk': account.pk})
+        return HttpResponseRedirect(url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Add Existing Wells Fargo Account')
+        return context

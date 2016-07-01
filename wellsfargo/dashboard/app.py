@@ -4,7 +4,8 @@ from oscar.core.application import Application
 from .views import (
     SubmitTransactionView,
     ApplicationSelectionView,
-    CreditApplicationView
+    CreditApplicationView,
+    AddExistingAccountView
 )
 
 
@@ -15,6 +16,7 @@ class WFRSDashboardApplication(Application):
     apply_step1 = ApplicationSelectionView
     apply_step2 = CreditApplicationView
     submit_transaction = SubmitTransactionView
+    add_existing = AddExistingAccountView
 
     def get_urls(self):
         urlpatterns = [
@@ -27,6 +29,9 @@ class WFRSDashboardApplication(Application):
             url(r'^transaction/new/(?P<source_id>\d+)/$',
                 self.submit_transaction.as_view(),
                 name='wfrs-submit-transaction'),
+            url(r'^add-existing/$',
+                self.add_existing.as_view(),
+                name='wfrs-add-account'),
         ]
         return self.post_process_urls(urlpatterns)
 

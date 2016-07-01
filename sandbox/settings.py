@@ -198,6 +198,10 @@ OSCAR_DASHBOARD_NAVIGATION.append({
             'label': 'Apply for a Credit Line (Wells Fargo)',
             'url_name': 'wfrs-apply-step1',
         },
+        {
+            'label': 'Add existing Wells Fargo account',
+            'url_name': 'wfrs-add-account',
+        },
     ]
 })
 

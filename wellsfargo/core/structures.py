@@ -135,7 +135,7 @@ class CreditApplicationResult(object):
         return (self.transaction_status == CREDIT_APP_APPROVED)
 
     @transaction.atomic()
-    def save(self, owner=None):
+    def save(self, owner=None, status=Account.OPEN, name=None, locale=None):
         if not self.is_approved:
             return None
 
@@ -152,16 +152,21 @@ class CreditApplicationResult(object):
             account.account_type = wfrs
             account.code = self.account_number
 
-        if self.application:
+        if name:
+            account.name = name
+        elif self.application:
             account.name = '%s – %s' % (self.application.full_name, self.account_number)
 
         account.primary_user = owner
-        account.status = Account.OPEN
+        account.status = status
         account.credit_limit = self.credit_limit
         account.save()
 
         meta, created = AccountMetadata.objects.get_or_create(account=account)
-        meta.locale = self.application.locale
+        if locale:
+            meta.locale = locale
+        elif self.application:
+            meta.locale = self.application.locale
         meta.account_number = self.account_number
         meta.save()
 
