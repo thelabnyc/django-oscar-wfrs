@@ -193,6 +193,14 @@ OSCAR_DASHBOARD_NAVIGATION.append({
             'label': 'Profit/loss report',
             'url_name': 'report-profit-loss',
         },
+    ]
+})
+
+
+OSCAR_DASHBOARD_NAVIGATION.append({
+    'label': 'Wells Fargo',
+    'icon': 'icon-globe',
+    'children': [
         # Wells Fargo Retail Services Views
         {
             'label': 'Apply for a Credit Line (Wells Fargo)',
@@ -201,6 +209,14 @@ OSCAR_DASHBOARD_NAVIGATION.append({
         {
             'label': 'Add existing Wells Fargo account',
             'url_name': 'wfrs-add-account',
+        },
+        {
+            'label': 'Financing Plans',
+            'url_name': 'wfrs-plan-list',
+        },
+        {
+            'label': 'Financing Plan Groups',
+            'url_name': 'wfrs-benefit-list',
         },
     ]
 })

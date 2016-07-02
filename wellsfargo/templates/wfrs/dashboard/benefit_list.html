@@ -1,0 +1,58 @@
+{% extends 'dashboard/layout.html' %}
+{% load i18n %}
+{% load currency_filters %}
+
+
+{% block title %}
+    {% trans "Plan Groups" %} | {% trans "Wells Fargo" %} | {{ block.super }}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+        </li>
+        <li class="active">{% trans "Plan Groups" %}</li>
+    </ul>
+{% endblock %}
+
+
+{% block header %}
+    <div class="page-header">
+        <a href="{% url 'wfrs-benefit-create' %}" class="btn btn-primary btn-lg pull-right">
+            <i class="icon-plus"></i> {% trans "Create new plan group" %}
+        </a>
+        <h1>{% trans "Financing Plan Groups" %}</h1>
+    </div>
+{% endblock header %}
+
+
+{% block dashboard_content %}
+    <table class="table table-striped table-bordered">
+        <caption><i class="icon-reorder icon-large"></i> {% trans "Financing Plan Groups" %}</caption>
+        {% if benefits %}
+            <thead>
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Description" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for benefit in benefits %}
+                    <tr>
+                        <td>{{ benefit.group_name }}</td>
+                        <td>{{ benefit.description }}</td>
+                        <td>
+                            <a href="{% url 'wfrs-benefit-edit' pk=benefit.pk %}" class="btn btn-primary">{% trans "Edit" %}</a>
+                            <a href="{% url 'wfrs-benefit-delete' pk=benefit.pk %}" class="btn btn-danger">{% trans "Delete" %}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <tr><td>{% trans "No plan groups found." %}</td></tr>
+        {% endif %}
+    </table>
+{% endblock %}

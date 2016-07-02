@@ -1,11 +1,15 @@
+from decimal import Decimal
 from django.core.validators import MinValueValidator, MinLengthValidator, MaxValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from oscar.core.loading import get_model
+from oscar.core.loading import get_model, get_class
 from .core.constants import LOCALE_CHOICES, TRANS_TYPES, TRANS_STATUSES
 
 Account = get_model('oscar_accounts', 'Account')
 Transfer = get_model('oscar_accounts', 'Transfer')
+Benefit = get_model('offer', 'Benefit')
+
+PostOrderAction = get_class('offer.results', 'PostOrderAction')
 
 
 class AccountMetadata(models.Model):
@@ -29,8 +33,7 @@ class TransferMetadata(models.Model):
     type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, max_length=2)
 
     ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
-    plan_number = models.CharField(_("Plan Number"), max_length=4, validators=[
-        MinLengthValidator(4),
+    plan_number = models.PositiveIntegerField(_("Plan Number"), validators=[
         MinValueValidator(1001),
         MaxValueValidator(9999),
     ])
@@ -55,3 +58,57 @@ class TransferMetadata(models.Model):
     @property
     def status_name(self):
         return dict(TRANS_STATUSES).get(self.status)
+
+
+class FinancingPlan(models.Model):
+    plan_number = models.PositiveIntegerField(_("Plan Number"), unique=True, validators=[
+        MinValueValidator(1001),
+        MaxValueValidator(9999),
+    ])
+    description = models.TextField(_("Description"))
+    apr = models.DecimalField(_("Annual percentage rate (0.0 – 100.0)"), max_digits=5, decimal_places=2, default='0.00', validators=[
+        MinValueValidator(Decimal('0.00')),
+        MaxValueValidator(Decimal('100.00')),
+    ])
+    term_months = models.PositiveSmallIntegerField(_("Term Length (months)"), default=12)
+
+    class Meta:
+        ordering = ('plan_number', )
+
+    def __str__(self):
+        return "%s (plan number %s)" % (self.description, self.plan_number)
+
+
+class FinancingPlanBenefit(Benefit):
+    group_name = models.CharField(_('Name'), max_length=200)
+    plans = models.ManyToManyField(FinancingPlan)
+
+    class Meta(Benefit.Meta):
+        app_label = 'wellsfargo'
+
+    def __str__(self):
+        return self.group_name
+
+    def apply(self, basket, condition, offer):
+        return PostOrderAction("Financing is available for your order")
+
+    def apply_deferred(self, basket, order, application):
+        return "Something happened"
+
+    @property
+    def name(self):
+        return self.group_name
+
+    @property
+    def description(self):
+        nums = ', '.join([str(p.plan_number) for p in self.plans.all()])
+        return "Causes the following Wells Fargo financing plans to be available: %s" % nums
+
+    def save(self, *args, **kwargs):
+        self.proxy_class = '%s.%s' % (FinancingPlanBenefitProxyConstructor.__module__, FinancingPlanBenefitProxyConstructor.__name__)
+        return super().save(*args, **kwargs)
+
+
+class FinancingPlanBenefitProxyConstructor(object):
+    def __new__(cls, id, **kwargs):
+        return FinancingPlanBenefit.objects.get(id=id)

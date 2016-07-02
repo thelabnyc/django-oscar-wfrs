@@ -13,6 +13,7 @@ from ..core.structures import (
     CACreditApp,
     CAJointCreditApp,
 )
+from ..models import FinancingPlan
 
 Basket = get_model('basket', 'Basket')
 BillingAddress = get_model('order', 'BillingAddress')
@@ -151,3 +152,14 @@ class AccountSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'balance': { 'read_only': True }
         }
+
+
+class FinancingPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinancingPlan
+        fields = (
+            'plan_number',
+            'description',
+            'apr',
+            'term_months',
+        )

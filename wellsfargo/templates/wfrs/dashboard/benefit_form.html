@@ -1,0 +1,52 @@
+{% extends 'dashboard/layout.html' %}
+{% load i18n %}
+{% load currency_filters %}
+
+{% block title %}
+    {% if plan %}
+        {% trans "Edit plan group" %} |
+    {% else %}
+        {% trans "Create new plan group" %} |
+    {% endif %}
+    {% trans "Wells Fargo" %} |
+    {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'wfrs-benefit-list' %}">{% trans "Wells Fargo Plan Groups" %}</a>
+        </li>
+        {% if benefit %}
+            <li class="active">{% trans "Edit plan group" %}</li>
+        {% else %}
+            <li class="active">{% trans "New plan group" %}</li>
+        {% endif %}
+    </ul>
+{% endblock %}
+
+{% block headertext %}
+    {% if benefit %}
+        {% trans "Edit plan groups" %}
+    {% else %}
+        {% trans "New plan groups" %}
+    {% endif %}
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="well">
+        <form action="." method="post" class="form-stacked">
+            {% csrf_token %}
+            {% include "dashboard/partials/form_fields.html" with form=form %}
+            {% block form_actions %}
+                <div class="form-actions">
+                    <button class="btn btn-primary btn-lg" type="submit" data-loading-text="{% trans 'Saving...' %}">{% trans "Save" %}</button> {% trans "or" %}
+                    <a href="{% url 'wfrs-benefit-list' %}">{% trans "cancel" %}</a>
+                </div>
+            {% endblock form_actions %}
+        </form>
+    </div>
+{% endblock %}

@@ -18,7 +18,7 @@ from ..core.structures import (
     CACreditApp,
     CAJointCreditApp
 )
-from ..models import AccountMetadata
+from ..models import AccountMetadata, FinancingPlan, FinancingPlanBenefit
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -125,6 +125,18 @@ class ManualAddAccountForm(forms.Form):
         super().__init__(*args, **kwargs)
         for name in ('name', 'primary_user', 'status', 'credit_limit', 'account_number', 'locale'):
             self.fields[name].required = True
+
+
+class FinancingPlanForm(forms.ModelForm):
+    class Meta:
+        model = FinancingPlan
+        fields = ('plan_number', 'description', 'apr', 'term_months')
+
+
+class FinancingPlanBenefitForm(forms.ModelForm):
+    class Meta:
+        model = FinancingPlanBenefit
+        fields = ('group_name', 'plans')
 
 
 def get_application_form_class(region, app_type):

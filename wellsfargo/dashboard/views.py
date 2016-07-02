@@ -4,20 +4,28 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic.edit import FormView
+from django.views import generic
 from oscar.core.loading import get_model
 from oscar_accounts.core import redemptions_account
-from .forms import SubmitTransactionForm, ApplicationSelectionForm, ManualAddAccountForm, get_application_form_class
 from ..connector import actions
 from ..core.constants import CREDIT_APP_APPROVED
 from ..core.exceptions import CreditApplicationDenied, TransactionDenied
 from ..core.structures import CreditApplicationResult
+from ..models import FinancingPlan, FinancingPlanBenefit
+from .forms import (
+    SubmitTransactionForm,
+    ApplicationSelectionForm,
+    ManualAddAccountForm,
+    FinancingPlanForm,
+    FinancingPlanBenefitForm,
+    get_application_form_class,
+)
 
 Account = get_model('oscar_accounts', 'Account')
 
 
 
-class SubmitTransactionView(FormView):
+class SubmitTransactionView(generic.FormView):
     template_name = 'wfrs/dashboard/submit_transaction.html'
     form_class = SubmitTransactionForm
 
@@ -60,7 +68,7 @@ class SubmitTransactionView(FormView):
 
 
 
-class ApplicationSelectionView(FormView):
+class ApplicationSelectionView(generic.FormView):
     template_name = 'wfrs/dashboard/select_application.html'
     form_class = ApplicationSelectionForm
 
@@ -75,7 +83,7 @@ class ApplicationSelectionView(FormView):
 
 
 
-class CreditApplicationView(FormView):
+class CreditApplicationView(generic.FormView):
     success_url = reverse_lazy('accounts-list')
 
     def get(self, request, region, language, app_type):
@@ -117,7 +125,7 @@ class CreditApplicationView(FormView):
 
 
 
-class AddExistingAccountView(FormView):
+class AddExistingAccountView(generic.FormView):
     form_class = ManualAddAccountForm
     template_name = 'wfrs/dashboard/add_account.html'
 
@@ -139,3 +147,61 @@ class AddExistingAccountView(FormView):
         context = super().get_context_data(**kwargs)
         context['title'] = _('Add Existing Wells Fargo Account')
         return context
+
+
+class FinancingPlanListView(generic.ListView):
+    model = FinancingPlan
+    template_name = "wfrs/dashboard/plan_list.html"
+    context_object_name = "plans"
+
+
+class FinancingPlanCreateView(generic.CreateView):
+    model = FinancingPlan
+    form_class = FinancingPlanForm
+    template_name = "wfrs/dashboard/plan_form.html"
+    success_url = reverse_lazy('wfrs-plan-list')
+    context_object_name = "plan"
+
+
+class FinancingPlanUpdateView(generic.UpdateView):
+    model = FinancingPlan
+    form_class = FinancingPlanForm
+    template_name = "wfrs/dashboard/plan_form.html"
+    success_url = reverse_lazy('wfrs-plan-list')
+    context_object_name = "plan"
+
+
+class FinancingPlanDeleteView(generic.DeleteView):
+    model = FinancingPlan
+    template_name = "wfrs/dashboard/plan_delete.html"
+    success_url = reverse_lazy('wfrs-plan-list')
+    context_object_name = "plan"
+
+
+class FinancingPlanBenefitListView(generic.ListView):
+    model = FinancingPlanBenefit
+    template_name = "wfrs/dashboard/benefit_list.html"
+    context_object_name = "benefits"
+
+
+class FinancingPlanBenefitCreateView(generic.CreateView):
+    model = FinancingPlanBenefit
+    form_class = FinancingPlanBenefitForm
+    template_name = "wfrs/dashboard/benefit_form.html"
+    success_url = reverse_lazy('wfrs-benefit-list')
+    context_object_name = "benefit"
+
+
+class FinancingPlanBenefitUpdateView(generic.UpdateView):
+    model = FinancingPlanBenefit
+    form_class = FinancingPlanBenefitForm
+    template_name = "wfrs/dashboard/benefit_form.html"
+    success_url = reverse_lazy('wfrs-benefit-list')
+    context_object_name = "benefit"
+
+
+class FinancingPlanBenefitDeleteView(generic.DeleteView):
+    model = FinancingPlanBenefit
+    template_name = "wfrs/dashboard/benefit_delete.html"
+    success_url = reverse_lazy('wfrs-benefit-list')
+    context_object_name = "benefit"

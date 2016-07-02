@@ -1,10 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
 from rest_framework import (
+    views,
     viewsets,
     generics,
 )
 from oscar.core.loading import get_model
+from oscarapi.basket import operations
 from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT
@@ -16,9 +18,11 @@ from .serializers import (
     CACreditAppSerializer,
     CAJointCreditAppSerializer,
     AccountSerializer,
+    FinancingPlanSerializer,
 )
 from .permissions import IsAccountOwner, add_session_account
 from ..core import exceptions as core_exceptions
+from ..utils import list_plans_for_basket
 from . import exceptions as api_exceptions
 
 Account = get_model('oscar_accounts', 'Account')
@@ -93,3 +97,11 @@ class AccountView(viewsets.ModelViewSet):
     def get_queryset(self):
         ids = IsAccountOwner.list_valid_account_ids(self.request)
         return Account.objects.filter(id__in=ids).order_by('id').all()
+
+
+class FinancingPlanView(views.APIView):
+    def get(self, request):
+        basket = operations.get_basket(request)
+        plans = list_plans_for_basket(basket)
+        ser = FinancingPlanSerializer(plans, many=True)
+        return Response(ser.data)

@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from oscar.core.loading import get_model
+from oscarapi.basket import operations
 from oscarapicheckout.methods import PaymentMethod, PaymentMethodSerializer
 from oscarapicheckout.states import Complete, Declined
 from .api.permissions import IsAccountOwner
 from .connector import actions
 from .core import exceptions
 from .core.structures import TransactionRequest
-from .settings import WFRS_ACCOUNT_TYPE, WFRS_AUTH_PLAN_NUM
+from .settings import WFRS_ACCOUNT_TYPE
+from .utils import list_plans_for_basket
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -14,6 +16,7 @@ Account = get_model('oscar_accounts', 'Account')
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
     _base_account_queryset = Account.active.filter(account_type__name=WFRS_ACCOUNT_TYPE)
     account = serializers.PrimaryKeyRelatedField(queryset=_base_account_queryset)
+    plan_number = serializers.IntegerField(min_value=1001, max_value=9999)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,14 +36,21 @@ class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
         valid_accounts = self._base_account_queryset.filter(pk__in=valid_account_ids)
         self.fields['account'].queryset = valid_accounts
 
+    def validate_plan_number(self, value):
+        basket = operations.get_basket(self.context['request'])
+        plans = list_plans_for_basket(basket)
+        plans = [p.plan_number for p in plans]
+        if value not in plans:
+            raise serializers.ValidationError("Plan number is not valid.")
+        return value
+
 
 class WellsFargo(PaymentMethod):
     name = 'Wells Fargo'
     code = 'wells-fargo'
     serializer_class = WellsFargoPaymentMethodSerializer
 
-
-    def _record_payment(self, request, order, amount, reference, account, **kwargs):
+    def _record_payment(self, request, order, amount, reference, account, plan_number, **kwargs):
         # Figure out how much to authorize
         source = self.get_source(order, reference)
         amount_to_allocate = amount - source.amount_allocated
@@ -48,7 +58,7 @@ class WellsFargo(PaymentMethod):
         # Perform an authorization with WFRS
         transaction_request = TransactionRequest.build_auth_request(
             source_account=account,
-            plan_number=WFRS_AUTH_PLAN_NUM,
+            plan_number=plan_number,
             amount=amount_to_allocate,
             ticket_number=order.number,
             user=order.user)

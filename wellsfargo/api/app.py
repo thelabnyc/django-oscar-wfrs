@@ -8,6 +8,7 @@ from .views import (
     CACreditAppView,
     CAJointCreditAppView,
     AccountView,
+    FinancingPlanView,
 )
 
 
@@ -23,6 +24,8 @@ class WFRSAPIApplication(Application):
 
             url(r'^accounts/$', AccountView.as_view({'get': 'list'}), name='wfrs-api-account-list'),
             url(r'^accounts/(?P<pk>[0-9]+)/$', AccountView.as_view({'get': 'retrieve'}), name='wfrs-api-account-detail'),
+
+            url(r'^plans/$', FinancingPlanView.as_view(), name='wfrs-api-plan-list'),
         ]
         return self.post_process_urls(urlpatterns)
 
