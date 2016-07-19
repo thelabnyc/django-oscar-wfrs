@@ -1,5 +1,7 @@
 from oscar.defaults import *  # noqa
+from oscarbluelight.defaults import *  # NOQA
 from oscar import OSCAR_MAIN_TEMPLATE_DIR, get_core_apps
+from oscarbluelight import BLUELIGHT_TEMPLATE_DIR
 from oscar_accounts import TEMPLATE_DIR as ACCOUNTS_TEMPLATE_DIR
 from wellsfargo import WFRS_TEMPLATE_DIR
 import os
@@ -28,7 +30,12 @@ INSTALLED_APPS = [
     'oscarapi',
     'oscarapicheckout',
     'wellsfargo',
-] + get_core_apps([])
+] + get_core_apps([
+    'oscarbluelight.dashboard.offers',
+    'oscarbluelight.dashboard.vouchers',
+    'oscarbluelight.offer',
+    'oscarbluelight.voucher',
+])
 
 
 LOGGING = {
@@ -75,6 +82,7 @@ TEMPLATES = [
         'DIRS': [
             WFRS_TEMPLATE_DIR,
             ACCOUNTS_TEMPLATE_DIR,
+            BLUELIGHT_TEMPLATE_DIR,
             OSCAR_MAIN_TEMPLATE_DIR,
         ],
         'APP_DIRS': True,

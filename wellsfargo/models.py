@@ -105,10 +105,5 @@ class FinancingPlanBenefit(Benefit):
         return "Causes the following Wells Fargo financing plans to be available: %s" % nums
 
     def save(self, *args, **kwargs):
-        self.proxy_class = '%s.%s' % (FinancingPlanBenefitProxyConstructor.__module__, FinancingPlanBenefitProxyConstructor.__name__)
+        self.proxy_class = '%s.%s' % (FinancingPlanBenefit.__module__, FinancingPlanBenefit.__name__)
         return super().save(*args, **kwargs)
-
-
-class FinancingPlanBenefitProxyConstructor(object):
-    def __new__(cls, id, **kwargs):
-        return FinancingPlanBenefit.objects.get(id=id)
