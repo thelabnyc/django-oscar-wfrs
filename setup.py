@@ -27,8 +27,8 @@ requires = [
     'django-oscar>=1.2.1',
     'django-oscar-accounts>=0.4rc1',
     'django-oscar-api>=1.0.4',
-    'django-oscar-api-checkout==0.1.4',
-    'django-oscar-bluelight==0.3.0',
+    'django-oscar-api-checkout>=0.1.4',
+    'django-oscar-bluelight>=0.3.0',
     'django-localflavor>=1.3',
     'instrumented-soap>=1.1.0',
 ]
