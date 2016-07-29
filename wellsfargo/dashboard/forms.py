@@ -11,14 +11,16 @@ from ..core.constants import (
     LOCALES,
     APP_TYPES, LANGUAGES, REGIONS
 )
-from ..core.structures import (
+from ..models import (
+    AccountMetadata,
+    FinancingPlan,
+    FinancingPlanBenefit,
     TransactionRequest,
     USCreditApp,
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp
 )
-from ..models import AccountMetadata, FinancingPlan, FinancingPlanBenefit
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -37,7 +39,7 @@ WIDGETS = {
 class SubmitTransactionForm(forms.ModelForm):
     class Meta:
         model = TransactionRequest
-        fields = '__all__'
+        exclude = ('transfer', )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

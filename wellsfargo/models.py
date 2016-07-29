@@ -1,9 +1,19 @@
 from decimal import Decimal
-from django.core.validators import MinValueValidator, MinLengthValidator, MaxValueValidator
+from django.conf import settings
+from django.core.validators import MinValueValidator, MinLengthValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model, get_class
-from .core.constants import LOCALE_CHOICES, TRANS_TYPES, TRANS_STATUSES
+from oscar_accounts.core import redemptions_account
+from .core.constants import LOCALE_CHOICES, TRANS_TYPES, TRANS_STATUSES, TRANS_TYPE_AUTH
+from .core.applications import (
+    USCreditAppMixin,
+    BaseCreditAppMixin,
+    USJointCreditAppMixin,
+    BaseJointCreditAppMixin,
+    CACreditAppMixin,
+    CAJointCreditAppMixin
+)
 
 Account = get_model('oscar_accounts', 'Account')
 Transfer = get_model('oscar_accounts', 'Transfer')
@@ -12,60 +22,15 @@ Benefit = get_model('offer', 'Benefit')
 PostOrderAction = get_class('offer.results', 'PostOrderAction')
 
 
-class AccountMetadata(models.Model):
-    account = models.OneToOneField(Account,
-        verbose_name=_("Account"),
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='wfrs_metadata')
-    locale = models.CharField(_('Locale'), choices=LOCALE_CHOICES, max_length=5)
-    account_number = models.CharField(_("Wells Fargo Account Number"), max_length=16, validators=[
-        MinLengthValidator(16),
-        MinLengthValidator(16),
-    ])
-
-
-class TransferMetadata(models.Model):
-    transfer = models.OneToOneField(Transfer,
-        verbose_name=_("Transfer"),
-        on_delete=models.CASCADE,
-        related_name='wfrs_metadata')
-    type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, max_length=2)
-
-    ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
-    plan_number = models.PositiveIntegerField(_("Plan Number"), validators=[
-        MinValueValidator(1001),
-        MaxValueValidator(9999),
-    ])
-
-    auth_number = models.CharField(_("Authorization Number"), null=True, blank=True, max_length=6, default='000000')
-    status = models.CharField(_("Status"), choices=TRANS_STATUSES, max_length=2)
-    message = models.TextField(_("Message"))
-    disclosure = models.TextField(_("Disclosure"))
-
-    @classmethod
-    def build_auth_request(cls, plan_number, ticket_number, amount):
-        request = cls()
-        request.plan_number = plan_number
-        request.ticket_number = ticket_number
-        request.amount = amount
-        return request
-
-    @property
-    def type_name(self):
-        return dict(TRANS_TYPES).get(self.type_code)
-
-    @property
-    def status_name(self):
-        return dict(TRANS_STATUSES).get(self.status)
-
-
 class FinancingPlan(models.Model):
+    """
+    An individual WFRS plan number and related metadata about it
+    """
     plan_number = models.PositiveIntegerField(_("Plan Number"), unique=True, validators=[
         MinValueValidator(1001),
         MaxValueValidator(9999),
     ])
-    description = models.TextField(_("Description"))
+    description = models.TextField(_("Description"), blank=True, default='')
     apr = models.DecimalField(_("Annual percentage rate (0.0 – 100.0)"), max_digits=5, decimal_places=2, default='0.00', validators=[
         MinValueValidator(Decimal('0.00')),
         MaxValueValidator(Decimal('100.00')),
@@ -80,6 +45,10 @@ class FinancingPlan(models.Model):
 
 
 class FinancingPlanBenefit(Benefit):
+    """
+    A group of WFRS plan numbers made available to a customer as the applied benefit of an offer or voucher. This
+    makes it possible to offer different plan numbers to different customers based on any of the normal offer conditions.
+    """
     group_name = models.CharField(_('Name'), max_length=200)
     plans = models.ManyToManyField(FinancingPlan)
 
@@ -107,3 +76,126 @@ class FinancingPlanBenefit(Benefit):
     def save(self, *args, **kwargs):
         self.proxy_class = '%s.%s' % (FinancingPlanBenefit.__module__, FinancingPlanBenefit.__name__)
         return super().save(*args, **kwargs)
+
+
+class AccountMetadata(models.Model):
+    """
+    Store WFRS specific metadata about an account
+    """
+    account = models.OneToOneField(Account,
+        verbose_name=_("Account"),
+        on_delete=models.CASCADE,
+        primary_key=True,
+        related_name='wfrs_metadata')
+    locale = models.CharField(_('Locale'), choices=LOCALE_CHOICES, max_length=5)
+    account_number = models.CharField(_("Wells Fargo Account Number"), max_length=16, validators=[
+        MinLengthValidator(16),
+        MinLengthValidator(16),
+    ])
+
+
+class TransferMetadata(models.Model):
+    """
+    Store WFRS specific metadata about a transfer
+    """
+    transfer = models.OneToOneField(Transfer,
+        verbose_name=_("Transfer"),
+        on_delete=models.CASCADE,
+        related_name='wfrs_metadata')
+    type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, max_length=2)
+
+    ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
+    financing_plan = models.ForeignKey(FinancingPlan,
+        verbose_name=_("Plan Number"),
+        null=True, blank=False,
+        on_delete=models.SET_NULL)
+
+    auth_number = models.CharField(_("Authorization Number"), null=True, blank=True, max_length=6, default='000000')
+    status = models.CharField(_("Status"), choices=TRANS_STATUSES, max_length=2)
+    message = models.TextField(_("Message"))
+    disclosure = models.TextField(_("Disclosure"))
+
+    @classmethod
+    def build_auth_request(cls, financing_plan, ticket_number, amount):
+        request = cls()
+        request.financing_plan = financing_plan
+        request.ticket_number = ticket_number
+        request.amount = amount
+        return request
+
+    @property
+    def type_name(self):
+        return dict(TRANS_TYPES).get(self.type_code)
+
+    @property
+    def status_name(self):
+        return dict(TRANS_STATUSES).get(self.status)
+
+
+class TransactionRequest(models.Model):
+    """
+    A log of a request for a WFRS transaction
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        verbose_name=_("Requesting User"),
+        related_name='transaction_requests',
+        on_delete=models.CASCADE)
+    type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, default=TRANS_TYPE_AUTH, max_length=2)
+    source_account = models.ForeignKey(Account,
+        verbose_name=_("Source Account"),
+        related_name='source_requests',
+        on_delete=models.CASCADE)
+    dest_account = models.ForeignKey(Account,
+        verbose_name=_("Destination Account"),
+        related_name='dest_requests',
+        on_delete=models.CASCADE)
+    ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
+    financing_plan = models.ForeignKey(FinancingPlan,
+        verbose_name=_("Plan Number"),
+        null=True, blank=False,
+        on_delete=models.SET_NULL)
+    amount = models.DecimalField(decimal_places=2, max_digits=12)
+    auth_number = models.CharField(_("Authorization Number"), max_length=6, default='000000', validators=[
+        MinLengthValidator(6),
+        MinLengthValidator(6),
+        RegexValidator(r'^[0-9]{6}$'),
+    ])
+    transfer = models.OneToOneField(Transfer,
+        null=True, editable=False,
+        verbose_name=_("Transfer"),
+        on_delete=models.SET_NULL,
+        related_name='transfer_request')
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
+
+    @classmethod
+    def build_auth_request(cls, user, source_account, financing_plan, amount, dest_account=None, ticket_number=None):
+        if not dest_account:
+            dest_account = redemptions_account()
+        request = cls()
+        request.user = user
+        request.type_code = TRANS_TYPE_AUTH
+        request.source_account = source_account
+        request.dest_account = dest_account
+        request.ticket_number = ticket_number
+        request.financing_plan = financing_plan
+        request.amount = amount
+        request.auth_number = '000000'
+        request.save()
+        return request
+
+
+class USCreditApp(USCreditAppMixin, BaseCreditAppMixin):
+    pass
+
+
+class USJointCreditApp(USJointCreditAppMixin, BaseJointCreditAppMixin):
+    pass
+
+
+class CACreditApp(CACreditAppMixin, BaseCreditAppMixin):
+    pass
+
+
+class CAJointCreditApp(CAJointCreditAppMixin, BaseJointCreditAppMixin):
+    pass

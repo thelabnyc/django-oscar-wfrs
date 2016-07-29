@@ -1,24 +1,14 @@
 #!/usr/bin/env python
 import codecs
 import os.path
-from setuptools import setup
+from setuptools import setup, find_packages
 from versiontag import get_version, cache_git_tag
 
 
-packages = [
-    'wellsfargo',
-    'wellsfargo.api',
-    'wellsfargo.connector',
-    'wellsfargo.core',
-    'wellsfargo.dashboard',
-    'wellsfargo.management',
-    'wellsfargo.management.commands',
-    'wellsfargo.migrations',
-    'wellsfargo.tests',
-]
+packages = find_packages()
 
 setup_requires = [
-    'versiontag>=1.0.3',
+    'versiontag>=1.1.0',
 ]
 
 requires = [

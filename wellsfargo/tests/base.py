@@ -1,10 +1,12 @@
 from datetime import date
 from decimal import Decimal
+from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from oscar_accounts.setup import create_default_accounts
 from soap.tests import SoapTest
 from ..core.constants import CREDIT_APP_APPROVED
-from ..core.structures import USCreditApp, USJointCreditApp, CreditApplicationResult
+from ..core.structures import CreditApplicationResult
+from ..models import USCreditApp, USJointCreditApp
 
 
 class BaseTest(SoapTest, APITestCase):
@@ -12,11 +14,13 @@ class BaseTest(SoapTest, APITestCase):
 
     def setUp(self):
         create_default_accounts()
+        self.joe = User.objects.create_user(username='joe', password='schmoe')
         return super().setUp()
 
 
     def _build_us_single_credit_app(self, main_ssn):
         app = USCreditApp()
+        app.user = self.joe
         app.region = 'US'
         app.language = 'E'
         app.app_type = 'I'
@@ -36,8 +40,9 @@ class BaseTest(SoapTest, APITestCase):
         app.main_employer_phone = '5555555555'
         return app
 
-    def _build_us_join_credit_app(self, main_ssn, joint_ssn):
+    def _build_us_joint_credit_app(self, main_ssn, joint_ssn):
         app = USJointCreditApp()
+        app.user = self.joe
         app.region = 'US'
         app.language = 'E'
         app.app_type = 'I'
@@ -69,12 +74,7 @@ class BaseTest(SoapTest, APITestCase):
 
     def _build_account(self, account_number):
         # Make a fake credit line
-        app = USCreditApp()
-        app.region = 'US'
-        app.language = 'E'
-        app.app_type = 'I'
-        app.main_first_name = 'Joe'
-        app.main_last_name = 'Schmoe'
+        app = self._build_us_single_credit_app('999-99-9991')
         result = CreditApplicationResult()
         result.application = app
         result.transaction_status = CREDIT_APP_APPROVED

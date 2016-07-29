@@ -10,7 +10,7 @@ import logging
 from ..core.constants import CREDIT_APP_APPROVED, TRANS_APPROVED, TRANS_TYPE_INQUIRY, TRANS_TYPE_APPLY
 from ..core.exceptions import TransactionDenied, CreditApplicationDenied
 from ..core.structures import CreditApplicationResult, AccountInquiryResult
-from ..models import TransferMetadata
+from ..models import TransferMetadata, FinancingPlan
 from ..settings import (
     WFRS_TRANSACTION_WSDL,
     WFRS_INQUIRY_WSDL,
@@ -34,7 +34,7 @@ def submit_transaction(trans_request):
     request.transactionCode = trans_request.type_code
     request.localeString = trans_request.source_account.wfrs_metadata.locale
     request.accountNumber = trans_request.source_account.wfrs_metadata.account_number
-    request.planNumber = trans_request.plan_number
+    request.planNumber = trans_request.financing_plan.plan_number
     request.amount = _as_decimal(trans_request.amount)
     request.authorizationNumber = trans_request.auth_number
     request.ticketNumber = trans_request.ticket_number
@@ -64,11 +64,13 @@ def submit_transaction(trans_request):
             transfer=transfer,
             type_code=resp.transactionCode,
             ticket_number=resp.ticketNumber,
-            plan_number=resp.planNumber,
+            financing_plan=FinancingPlan.objects.filter(plan_number=resp.planNumber).first(),
             auth_number=resp.authorizationNumber,
             status=resp.transactionStatus,
             message=resp.transactionMessage,
             disclosure=resp.disclosure)
+        trans_request.transfer = transfer
+        trans_request.save()
     return transfer
 
 

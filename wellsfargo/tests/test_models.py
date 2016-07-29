@@ -1,5 +1,4 @@
 from decimal import Decimal
-from django.contrib.auth.models import User
 from oscar.core.loading import get_model
 from oscar_accounts import core, facade
 from .base import BaseTest
@@ -96,25 +95,9 @@ class CreditApplicationResultTest(BaseTest):
         self.assertIsNone(acct)
 
 
-    def test_approved_save_anon(self):
+    def test_approved_save_user(self):
         result = self._build_app_result('999999990', 'E0')
         account = result.save()
-        self.assertEqual(account.account_type.name, 'Credit Line (Wells Fargo)')
-        self.assertEqual(account.code, '9999999999999991')
-        self.assertEqual(account.name, 'Joe Schmoe – 9999999999999991')
-        self.assertIsNone(account.primary_user)
-        self.assertEqual(account.status, 'Open')
-        self.assertEqual(account.credit_limit, Decimal('7500.00'))
-        self.assertEqual(account.wfrs_metadata.locale, 'en_US')
-        self.assertEqual(account.wfrs_metadata.account_number, '9999999999999991')
-
-
-    def test_approved_save_user(self):
-        owner = User.objects.create_user(username='joe')
-
-        result = self._build_app_result('999999990', 'E0')
-        account = result.save(owner)
-
         self.assertEqual(account.account_type.name, 'Credit Line (Wells Fargo)')
         self.assertEqual(account.code, '9999999999999991')
         self.assertEqual(account.name, 'Joe Schmoe – 9999999999999991')

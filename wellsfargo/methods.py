@@ -6,9 +6,9 @@ from oscarapicheckout.states import Complete, Declined
 from .api.permissions import IsAccountOwner
 from .connector import actions
 from .core import exceptions
-from .core.structures import TransactionRequest
 from .settings import WFRS_ACCOUNT_TYPE
 from .utils import list_plans_for_basket
+from .models import FinancingPlan, TransactionRequest
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -16,14 +16,13 @@ Account = get_model('oscar_accounts', 'Account')
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
     _base_account_queryset = Account.active.filter(account_type__name=WFRS_ACCOUNT_TYPE)
     account = serializers.PrimaryKeyRelatedField(queryset=_base_account_queryset)
-    plan_number = serializers.IntegerField(min_value=1001, max_value=9999)
+    financing_plan = serializers.PrimaryKeyRelatedField(queryset=FinancingPlan.objects.get_queryset())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # We require a request because we need to know what accounts are valid for the
-        # user to be drafting from. This is derived from the user when authenticated or
-        # the session store when anonymous
+        # user to be drafting from. This is tied to the currently authenticated user.
         request = self.context.get('request', None)
         assert request is not None, (
             "`%s` requires the request in the serializer"
@@ -36,13 +35,10 @@ class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
         valid_accounts = self._base_account_queryset.filter(pk__in=valid_account_ids)
         self.fields['account'].queryset = valid_accounts
 
-    def validate_plan_number(self, value):
+        # Limit plans by the user's basket (plan availability is driven by offer/voucher conditions)
         basket = operations.get_basket(self.context['request'])
         plans = list_plans_for_basket(basket)
-        plans = [p.plan_number for p in plans]
-        if value not in plans:
-            raise serializers.ValidationError("Plan number is not valid.")
-        return value
+        self.fields['financing_plan'].queryset = FinancingPlan.objects.filter(id__in=[p.id for p in plans])
 
 
 class WellsFargo(PaymentMethod):
@@ -50,18 +46,18 @@ class WellsFargo(PaymentMethod):
     code = 'wells-fargo'
     serializer_class = WellsFargoPaymentMethodSerializer
 
-    def _record_payment(self, request, order, amount, reference, account, plan_number, **kwargs):
+    def _record_payment(self, request, order, amount, reference, account, financing_plan, **kwargs):
         # Figure out how much to authorize
         source = self.get_source(order, reference)
         amount_to_allocate = amount - source.amount_allocated
 
         # Perform an authorization with WFRS
         transaction_request = TransactionRequest.build_auth_request(
+            user=order.user,
             source_account=account,
-            plan_number=plan_number,
+            financing_plan=financing_plan,
             amount=amount_to_allocate,
-            ticket_number=order.number,
-            user=order.user)
+            ticket_number=order.number)
         try:
             transfer = actions.submit_transaction(transaction_request)
         except exceptions.TransactionDenied:

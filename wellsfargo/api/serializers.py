@@ -7,13 +7,13 @@ from ..core.constants import (
     INDIVIDUAL, JOINT,
     ENGLISH, FRENCH,
 )
-from ..core.structures import (
+from ..models import (
+    FinancingPlan,
     USCreditApp,
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp,
 )
-from ..models import FinancingPlan
 
 Basket = get_model('basket', 'Basket')
 BillingAddress = get_model('order', 'BillingAddress')
@@ -34,21 +34,21 @@ class AppSelectionSerializer(serializers.ModelSerializer):
 
 
 class BaseCreditAppSerializer(serializers.ModelSerializer):
-    def create(self, validated_data):
+    def save(self):
         request = self.context['request']
 
-        # Build application class
+        # Build application class and save record to DB to record the attempt
         Application = self.Meta.model
-        app = Application(**validated_data)
+        app = Application(**self.validated_data)
+        app.user = request.user
+        app.save()
 
-        # Sub to WF
+        # Submit application to to Wells
         resp = actions.submit_credit_application(app)
 
-        # Save and return an account
-        owner = None
-        if hasattr(request, 'user') and request.user.is_authenticated():
-            owner = request.user
-        return resp.save(owner)
+        # Use the Wells response to create a new account in the DB (if the application was approved)
+        account = resp.save(owner=request.user)
+        return account
 
 
 class USCreditAppSerializer(BaseCreditAppSerializer):

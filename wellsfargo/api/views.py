@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
 from rest_framework import (
@@ -20,7 +21,7 @@ from .serializers import (
     AccountSerializer,
     FinancingPlanSerializer,
 )
-from .permissions import IsAccountOwner, add_session_account
+from .permissions import IsAccountOwner
 from ..core import exceptions as core_exceptions
 from ..utils import list_plans_for_basket
 from . import exceptions as api_exceptions
@@ -29,6 +30,7 @@ Account = get_model('oscar_accounts', 'Account')
 
 
 class SelectCreditAppView(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated, )
     serializer_class = AppSelectionSerializer
 
     def post(self, request):
@@ -54,6 +56,8 @@ class SelectCreditAppView(generics.GenericAPIView):
 
 
 class BaseCreditAppView(generics.GenericAPIView):
+    permission_classes = (IsAuthenticated, )
+
     def post(self, request):
         serializer = self.get_serializer_class()(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -63,34 +67,37 @@ class BaseCreditAppView(generics.GenericAPIView):
         except core_exceptions.CreditApplicationDenied:
             raise api_exceptions.CreditApplicationDenied()
 
-        add_session_account(request, account)
         serializer = AccountSerializer(account, context={'request': request})
         return Response(serializer.data)
 
 
 
 class USCreditAppView(BaseCreditAppView):
+    permission_classes = (IsAuthenticated, )
     serializer_class = USCreditAppSerializer
 
 
 
 class USJointCreditAppView(BaseCreditAppView):
+    permission_classes = (IsAuthenticated, )
     serializer_class = USJointCreditAppSerializer
 
 
 
 class CACreditAppView(BaseCreditAppView):
+    permission_classes = (IsAuthenticated, )
     serializer_class = CACreditAppSerializer
 
 
 
 class CAJointCreditAppView(BaseCreditAppView):
+    permission_classes = (IsAuthenticated, )
     serializer_class = CAJointCreditAppSerializer
 
 
 
 class AccountView(viewsets.ModelViewSet):
-    permission_classes = (IsAccountOwner, )
+    permission_classes = (IsAuthenticated, IsAccountOwner)
     model = Account
     serializer_class = AccountSerializer
 
@@ -100,6 +107,8 @@ class AccountView(viewsets.ModelViewSet):
 
 
 class FinancingPlanView(views.APIView):
+    permission_classes = (IsAuthenticated, )
+
     def get(self, request):
         basket = operations.get_basket(request)
         plans = list_plans_for_basket(basket)

@@ -1,24 +1,10 @@
 from decimal import Decimal
-from django.conf import settings
-from django.core.validators import MinLengthValidator, RegexValidator
-from django.db import models, transaction
+from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model
 from oscar_accounts import names, facade
-from oscar_accounts.core import redemptions_account
 import logging
-
-from .applications import (
-    USCreditAppMixin,
-    BaseCreditAppMixin,
-    USJointCreditAppMixin,
-    BaseJointCreditAppMixin,
-    CACreditAppMixin,
-    CAJointCreditAppMixin
-)
-from .constants import TRANS_TYPES, TRANS_TYPE_AUTH, CREDIT_APP_APPROVED
-from .mixins import UnsavableModel
-
+from .constants import CREDIT_APP_APPROVED
 from ..models import AccountMetadata
 from ..settings import WFRS_ACCOUNT_TYPE
 
@@ -27,72 +13,6 @@ Account = get_model('oscar_accounts', 'Account')
 
 logger = logging.getLogger(__name__)
 
-
-# |==============================================================|
-# | Request objects for connector.actions                        |
-# |==============================================================|
-
-class TransactionRequest(UnsavableModel, models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Requesting User"),
-        related_name='transaction_requests',
-        on_delete=models.CASCADE)
-    type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, default=TRANS_TYPE_AUTH, max_length=2)
-    source_account = models.ForeignKey(Account,
-        verbose_name=_("Source Account"),
-        related_name='source_requests',
-        on_delete=models.CASCADE)
-    dest_account = models.ForeignKey(Account,
-        verbose_name=_("Destination Account"),
-        related_name='dest_requests',
-        on_delete=models.CASCADE)
-    ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
-    plan_number = models.CharField(_("Plan Number"), max_length=4, validators=[
-        MinLengthValidator(4),
-    ])
-    amount = models.DecimalField(decimal_places=2, max_digits=12)
-    auth_number = models.CharField(_("Authorization Number"), max_length=6, default='000000', validators=[
-        MinLengthValidator(6),
-        MinLengthValidator(6),
-        RegexValidator(r'^[0-9]{6}$'),
-    ])
-
-    @classmethod
-    def build_auth_request(cls, source_account, plan_number, amount, dest_account=None, ticket_number=None, user=None):
-        if not dest_account:
-            dest_account = redemptions_account()
-        request = cls()
-        request.user = user
-        request.type_code = TRANS_TYPE_AUTH
-        request.source_account = source_account
-        request.dest_account = dest_account
-        request.plan_number = plan_number
-        request.amount = amount
-        request.auth_number = '000000'
-        request.ticket_number = ticket_number
-        return request
-
-
-class USCreditApp(UnsavableModel, USCreditAppMixin, BaseCreditAppMixin):
-    pass
-
-
-class USJointCreditApp(UnsavableModel, USJointCreditAppMixin, BaseJointCreditAppMixin):
-    pass
-
-
-class CACreditApp(UnsavableModel, CACreditAppMixin, BaseCreditAppMixin):
-    pass
-
-
-class CAJointCreditApp(UnsavableModel, CAJointCreditAppMixin, BaseJointCreditAppMixin):
-    pass
-
-
-# |==============================================================|
-# | Response objects for connector.actions                       |
-# |==============================================================|
 
 class AccountInquiryResult(object):
     account = None
@@ -157,11 +77,13 @@ class CreditApplicationResult(object):
         elif self.application:
             account.name = '%s – %s' % (self.application.full_name, self.account_number)
 
-        account.primary_user = owner
+        # Save account
+        account.primary_user = owner or self.application.user
         account.status = status
         account.credit_limit = self.credit_limit
         account.save()
 
+        # Save WFRS account metadata
         meta, created = AccountMetadata.objects.get_or_create(account=account)
         if locale:
             meta.locale = locale
@@ -169,5 +91,10 @@ class CreditApplicationResult(object):
             meta.locale = self.application.locale
         meta.account_number = self.account_number
         meta.save()
+
+        # Link application to newly created account
+        if self.application:
+            self.application.account = account
+            self.application.save()
 
         return account

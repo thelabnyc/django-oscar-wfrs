@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.reverse import reverse
 from oscar.core.loading import get_model
@@ -12,6 +11,7 @@ Account = get_model('oscar_accounts', 'Account')
 
 class CreditApplicationSelectorTest(BaseTest):
     def test_us_i(self):
+        self.client.login(username='joe', password='schmoe')
         url = reverse('wfrs-api-apply-select')
         data = {
             'region': 'US',
@@ -22,6 +22,7 @@ class CreditApplicationSelectorTest(BaseTest):
         self.assertTrue(response.data['url'].endswith('/apply/us-individual/'))
 
     def test_us_j(self):
+        self.client.login(username='joe', password='schmoe')
         url = reverse('wfrs-api-apply-select')
         data = {
             'region': 'US',
@@ -32,6 +33,7 @@ class CreditApplicationSelectorTest(BaseTest):
         self.assertTrue(response.data['url'].endswith('/apply/us-joint/'))
 
     def test_ca_i(self):
+        self.client.login(username='joe', password='schmoe')
         url = reverse('wfrs-api-apply-select')
         data = {
             'region': 'CA',
@@ -42,6 +44,7 @@ class CreditApplicationSelectorTest(BaseTest):
         self.assertTrue(response.data['url'].endswith('/apply/ca-individual/'))
 
     def test_ca_j(self):
+        self.client.login(username='joe', password='schmoe')
         url = reverse('wfrs-api-apply-select')
         data = {
             'region': 'CA',
@@ -52,6 +55,7 @@ class CreditApplicationSelectorTest(BaseTest):
         self.assertTrue(response.data['url'].endswith('/apply/ca-joint/'))
 
     def test_mx_i(self):
+        self.client.login(username='joe', password='schmoe')
         url = reverse('wfrs-api-apply-select')
         data = {
             'region': 'MX',
@@ -59,6 +63,15 @@ class CreditApplicationSelectorTest(BaseTest):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_anonymous(self):
+        url = reverse('wfrs-api-apply-select')
+        data = {
+            'region': 'US',
+            'app_type': 'I'
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class USIndivCreditApplicationTest(BaseTest):
@@ -110,29 +123,12 @@ class USIndivCreditApplicationTest(BaseTest):
         data = self.build_valid_request()
         response = self.client.post(url, data, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsNotNone(response.data['id'])
-        self.assertIsNotNone(response.data['url'])
-        self.assertIsNotNone(response.data['account_type'])
-        self.assertEqual(response.data['account_type_name'], 'Credit Line (Wells Fargo)')
-        self.assertEqual(response.data['name'], 'Joe Schmoe – 9999999999999999')
-        self.assertIsNone(response.data['description'])
-        self.assertEqual(response.data['code'], '9999999999999999')
-        self.assertEqual(response.data['status'], 'Open')
-        self.assertIsNone(response.data['primary_user'])
-        self.assertEqual(response.data['secondary_users'], [])
-        self.assertEqual(response.data['credit_limit'], '7500.00')
-        self.assertEqual(response.data['balance'], '0.00')
-        self.assertIsNone(response.data['start_date'])
-        self.assertIsNone(response.data['end_date'])
-        self.assertEqual(response.data['locale'], 'en_US')
-        self.assertEqual(response.data['account_number'], '9999999999999999')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @mock.patch('soap.get_transport')
     def test_submit_authd(self, get_transport):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_successful)
 
-        User.objects.create_user(username='joe', password='schmoe')
         self.client.login(username='joe', password='schmoe')
 
         url = reverse(self.view_name)
@@ -158,7 +154,6 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.data['account_number'], '9999999999999999')
 
     def test_submit_invalid(self):
-        User.objects.create_user(username='joe', password='schmoe')
         self.client.login(username='joe', password='schmoe')
 
         url = reverse(self.view_name)
@@ -171,7 +166,6 @@ class USIndivCreditApplicationTest(BaseTest):
     def test_submit_denied(self, get_transport):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_denied)
 
-        User.objects.create_user(username='joe', password='schmoe')
         self.client.login(username='joe', password='schmoe')
 
         url = reverse(self.view_name)

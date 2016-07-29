@@ -9,8 +9,11 @@ from django.core.validators import (
 )
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from oscar.core.loading import get_model
 from .constants import (
     US, CA,
+    ENGLISH,
+    INDIVIDUAL,
     APP_TYPES,
     HOUSING_STATUSES,
     LANGUAGES,
@@ -24,22 +27,31 @@ from .fields import (
     USZipCodeField,
     USPhoneNumberField,
     CASocialInsuranceNumberField,
+    DateOfBirthField,
     CAProvinceField,
     CAPostalCodeField,
     CAPhoneNumberField
 )
 
+Account = get_model('oscar_accounts', 'Account')
+
 
 class BaseCreditAppMixin(models.Model):
+    account = models.OneToOneField(Account,
+        null=True, editable=False,
+        verbose_name=_("Account"),
+        on_delete=models.SET_NULL,
+        related_name='+')
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
+        null=False, blank=False,
         verbose_name=_("Owner"),
-        related_name='credit_applications',
+        related_name='+',
         on_delete=models.CASCADE)
 
-    region = models.CharField(_("Region"), null=False, blank=False, choices=REGIONS, max_length=15)
-    language = models.CharField(_("Language"), null=False, blank=False, choices=LANGUAGES, max_length=1)
-    app_type = models.CharField(_('Application Type'), null=False, blank=False, choices=APP_TYPES, max_length=1)
+    region = models.CharField(_("Region"), null=False, blank=False, choices=REGIONS, max_length=15, default=US)
+    language = models.CharField(_("Language"), null=False, blank=False, choices=LANGUAGES, max_length=1, default=ENGLISH)
+    app_type = models.CharField(_('Application Type'), null=False, blank=False, choices=APP_TYPES, max_length=1, default=INDIVIDUAL)
 
     purchase_price = models.IntegerField(_("Requested Credit Amount"), null=True, blank=True, validators=[
         MinValueValidator(0),
@@ -49,7 +61,7 @@ class BaseCreditAppMixin(models.Model):
     main_first_name = models.CharField(_("First Name"), null=False, blank=False, max_length=15)
     main_last_name = models.CharField(_("Last Name"), null=False, blank=False, max_length=20)
     main_middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
-    main_date_of_birth = models.DateField(_("Date of Birth"), null=False, blank=False)
+    main_date_of_birth = DateOfBirthField(_("Date of Birth"), blank=False)
     main_address_line1 = models.CharField(_("Address Line 1"), null=False, blank=False, max_length=35)
     main_address_line2 = models.CharField(_("Address Line 2"), null=True, blank=True, max_length=35)
     main_address_city = models.CharField(_("City"), null=False, blank=False, max_length=15)
@@ -66,7 +78,7 @@ class BaseCreditAppMixin(models.Model):
         MaxValueValidator(999999),
     ])
 
-    insurance = models.BooleanField(_('Optional Insurance'), null=False)
+    insurance = models.BooleanField(_('Optional Insurance'), null=False, default=False)
     sales_person_id = models.CharField(_("Existing Sales Person ID"), null=True, blank=True, max_length=4, validators=[
         MinLengthValidator(4),
         MaxLengthValidator(4),
@@ -74,8 +86,13 @@ class BaseCreditAppMixin(models.Model):
     new_sales_person = models.CharField(_("New Sales Person Name"), null=True, blank=True, max_length=10)
     email = models.EmailField(_("Email"), null=False, blank=False, max_length=80)
 
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
+
     class Meta:
         abstract = True
+        verbose_name = "Credit Application"
+        verbose_name_plural = "Credit Applications"
 
     @property
     def locale(self):
@@ -94,7 +111,7 @@ class BaseJointCreditAppMixin(BaseCreditAppMixin):
     joint_first_name = models.CharField(_("First Name"), null=False, blank=False, max_length=15)
     joint_last_name = models.CharField(_("Last Name"), null=False, blank=False, max_length=20)
     joint_middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
-    joint_date_of_birth = models.DateField(_("Date of Birth"), null=False, blank=False)
+    joint_date_of_birth = DateOfBirthField(_("Date of Birth"), blank=False)
     joint_address_line1 = models.CharField(_("Address Line 1"), null=False, blank=False, max_length=35)
     joint_address_line2 = models.CharField(_("Address Line 2"), null=True, blank=True, max_length=35)
     joint_address_city = models.CharField(_("City"), null=False, blank=False, max_length=15)
@@ -105,6 +122,8 @@ class BaseJointCreditAppMixin(BaseCreditAppMixin):
 
     class Meta:
         abstract = True
+        verbose_name = "Joint Credit Application"
+        verbose_name_plural = "Joint Credit Applications"
 
     @property
     def is_joint(self):
@@ -134,6 +153,8 @@ class USCreditAppMixin(models.Model):
 
     class Meta:
         abstract = True
+        verbose_name = "US Individual Credit Application"
+        verbose_name_plural = "US Individual Credit Applications"
 
 
 class USJointCreditAppMixin(USCreditAppMixin):
@@ -152,6 +173,8 @@ class USJointCreditAppMixin(USCreditAppMixin):
 
     class Meta:
         abstract = True
+        verbose_name = "US Joint Credit Application"
+        verbose_name_plural = "US Joint Credit Applications"
 
 
 class CACreditAppMixin(models.Model):
@@ -184,6 +207,8 @@ class CACreditAppMixin(models.Model):
 
     class Meta:
         abstract = True
+        verbose_name = "CA Individual Credit Application"
+        verbose_name_plural = "CA Individual Credit Applications"
 
     def clean(self):
         self._clean_dl_province('main_drivers_license_province', self.main_photo_id_type, self.main_drivers_license_province)
@@ -218,6 +243,8 @@ class CAJointCreditAppMixin(CACreditAppMixin):
 
     class Meta:
         abstract = True
+        verbose_name = "CA Joint Credit Application"
+        verbose_name_plural = "CA Joint Credit Applications"
 
     def clean(self):
         self._clean_dl_province('joint_drivers_license_province', self.joint_photo_id_type, self.joint_drivers_license_province)

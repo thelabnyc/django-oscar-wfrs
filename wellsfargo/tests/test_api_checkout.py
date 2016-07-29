@@ -26,13 +26,13 @@ class CheckoutTest(BaseTest):
             type=Condition.VALUE,
             value='1.00')
 
-        plan = FinancingPlan.objects.create(
+        self.plan = FinancingPlan.objects.create(
             plan_number=9999,
             description='Pay for stuff sometime in the next 12 months',
             apr='9.95',
             term_months=12)
         benefit = FinancingPlanBenefit.objects.create(group_name='Financing is available')
-        benefit.plans.add(plan)
+        benefit.plans.add(self.plan)
 
         ConditionalOffer.objects.create(
             name='Financing is available',
@@ -48,35 +48,11 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        user = User.objects.create_user(username='joe', password='schmoe')
         account = self._build_account('9999999999999999')
-        account.primary_user = user
+        account.primary_user = self.joe
         account.save()
 
         self.client.login(username='joe', password='schmoe')
-
-        # Should be successful
-        basket_id = self._prepare_basket()
-        self._check_available_plans()
-        resp = self._checkout(basket_id, account)
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        resp = self._fetch_payment_states()
-        self.assertEqual(resp.data['order_status'], 'Authorized')
-        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
-        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
-
-
-    @mock.patch('soap.get_transport')
-    def test_checkout_anon(self, get_transport):
-        """Full checkout process using minimal api calls"""
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
-
-        account = self._build_account('9999999999999999')
-
-        # Put the account into the user's session
-        session = self.client.session
-        session['wfrs_accounts'] = [account.id]
-        session.save()
 
         # Should be successful
         basket_id = self._prepare_basket()
@@ -94,9 +70,8 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_denied)
 
-        user = User.objects.create_user(username='joe', password='schmoe')
         account = self._build_account('9999999999999999')
-        account.primary_user = user
+        account.primary_user = self.joe
         account.save()
 
         self.client.login(username='joe', password='schmoe')
@@ -117,11 +92,10 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        user1 = User.objects.create_user(username='joe', password='schmoe')
         User.objects.create_user(username='smitty', password='schmoe')
 
         account = self._build_account('9999999999999999')
-        account.primary_user = user1
+        account.primary_user = self.joe
         account.save()
 
         # Client is not the user who owns the account
@@ -137,15 +111,16 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        user = User.objects.create_user(username='joe', password='schmoe')
-
         account = self._build_account('9999999999999999')
-        account.primary_user = user
+        account.primary_user = self.joe
         account.save()
 
-        # Client is anonymous
         basket_id = self._prepare_basket()
-        self._check_available_plans()
+
+        # Client is anonymous
+        url = reverse('wfrs-api-plan-list')
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN)
         resp = self._checkout(basket_id, account)
         self.assertEqual(resp.status_code, status.HTTP_406_NOT_ACCEPTABLE)
 
@@ -155,9 +130,8 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        user = User.objects.create_user(username='joe', password='schmoe')
         account = self._build_account('9999999999999999')
-        account.primary_user = user
+        account.primary_user = self.joe
         account.save()
 
         self.client.login(username='joe', password='schmoe')
@@ -165,7 +139,7 @@ class CheckoutTest(BaseTest):
         # Should be successful
         basket_id = self._prepare_basket()
         self._check_available_plans()
-        resp = self._checkout(basket_id, account, plan_number=2000)
+        resp = self._checkout(basket_id, account, plan_id=self.plan.id + 1)
         self.assertEqual(resp.status_code, status.HTTP_406_NOT_ACCEPTABLE)
 
 
@@ -220,7 +194,10 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.data[0]['plan_number'], 9999)
 
 
-    def _checkout(self, basket_id, account, plan_number=9999):
+    def _checkout(self, basket_id, account, plan_id=None):
+        if not plan_id:
+            plan_id = self.plan.id
+
         data = {
             "guest_email": "joe@example.com",
             "basket": reverse('basket-detail', args=[basket_id]),
@@ -248,12 +225,13 @@ class CheckoutTest(BaseTest):
                 "wells-fargo": {
                     "enabled": True,
                     "account": account.id,
-                    "plan_number": plan_number,
+                    "financing_plan": plan_id,
                 }
             }
         }
         url = reverse('api-checkout')
-        return self.client.post(url, data, format='json')
+        resp = self.client.post(url, data, format='json')
+        return resp
 
 
     def _fetch_payment_states(self):

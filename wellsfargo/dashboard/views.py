@@ -38,7 +38,7 @@ class SubmitTransactionView(generic.FormView):
         form = self.get_form()
         if form.is_valid():
             try:
-                actions.submit_transaction( form.save(commit=False) )
+                actions.submit_transaction( form.save() )
                 return self.form_valid(form)
             except TransactionDenied as e:
                 messages.add_message(request, messages.ERROR, _('Transaction was denied by Wells Fargo'))
@@ -54,7 +54,7 @@ class SubmitTransactionView(generic.FormView):
         return {
             'source_account': self.account.id,
             'dest_account': redemptions_account().id,
-            'user': self.request.user.id,
+            'user': self.account.primary_user.id,
         }
 
     def get_context_data(self, **kwargs):
@@ -95,9 +95,9 @@ class CreditApplicationView(generic.FormView):
         form = self.get_form()
         if form.is_valid():
             try:
-                app = form.save(commit=False)
+                app = form.save()
                 resp = actions.submit_credit_application(app)
-                account = resp.save(app.user)
+                account = resp.save()
                 return self.form_valid(account)
             except CreditApplicationDenied as e:
                 messages.add_message(request, messages.ERROR, _('Credit Application was denied by Wells Fargo'))

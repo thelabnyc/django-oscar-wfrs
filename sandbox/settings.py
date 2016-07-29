@@ -233,7 +233,11 @@ OSCAR_DASHBOARD_NAVIGATION.append({
 # Configure payment methods
 API_ENABLED_PAYMENT_METHODS = [
     {
-        'method': 'wellsfargo.methods.WellsFargo',
+        'method': 'oscarapicheckout.methods.Cash',
         'permission': 'oscarapicheckout.permissions.Public',
+    },
+    {
+        'method': 'wellsfargo.methods.WellsFargo',
+        'permission': 'wellsfargo.permissions.IsAuthenticated',
     },
 ]
