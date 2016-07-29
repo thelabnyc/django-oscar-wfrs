@@ -226,6 +226,10 @@ OSCAR_DASHBOARD_NAVIGATION.append({
             'label': 'Financing Plan Groups',
             'url_name': 'wfrs-benefit-list',
         },
+        {
+            'label': 'Credit Applications',
+            'url_name': 'wfrs-application-list',
+        },
     ]
 })
 

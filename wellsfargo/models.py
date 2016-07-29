@@ -186,16 +186,57 @@ class TransactionRequest(models.Model):
 
 
 class USCreditApp(USCreditAppMixin, BaseCreditAppMixin):
-    pass
+    APP_TYPE_CODE = 'us-individual'
+    account = models.OneToOneField(Account,
+        null=True, editable=False,
+        verbose_name=_("Account"),
+        on_delete=models.SET_NULL,
+        related_name='us_individual_credit_app')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=False, blank=False,
+        verbose_name=_("Owner"),
+        related_name='us_individual_credit_apps',
+        on_delete=models.CASCADE)
+
 
 
 class USJointCreditApp(USJointCreditAppMixin, BaseJointCreditAppMixin):
-    pass
+    APP_TYPE_CODE = 'us-joint'
+    account = models.OneToOneField(Account,
+        null=True, editable=False,
+        verbose_name=_("Account"),
+        on_delete=models.SET_NULL,
+        related_name='us_joint_credit_app')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=False, blank=False,
+        verbose_name=_("Owner"),
+        related_name='us_joint_credit_apps',
+        on_delete=models.CASCADE)
 
 
 class CACreditApp(CACreditAppMixin, BaseCreditAppMixin):
-    pass
+    APP_TYPE_CODE = 'ca-individual'
+    account = models.OneToOneField(Account,
+        null=True, editable=False,
+        verbose_name=_("Account"),
+        on_delete=models.SET_NULL,
+        related_name='ca_individual_credit_app')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=False, blank=False,
+        verbose_name=_("Owner"),
+        related_name='ca_individual_credit_apps',
+        on_delete=models.CASCADE)
 
 
 class CAJointCreditApp(CAJointCreditAppMixin, BaseJointCreditAppMixin):
-    pass
+    APP_TYPE_CODE = 'ca-joint'
+    account = models.OneToOneField(Account,
+        null=True, editable=False,
+        verbose_name=_("Account"),
+        on_delete=models.SET_NULL,
+        related_name='ca_joint_credit_app')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=False, blank=False,
+        verbose_name=_("Owner"),
+        related_name='ca_joint_credit_apps',
+        on_delete=models.CASCADE)

@@ -11,17 +11,34 @@ from ..connector import actions
 from ..core.constants import CREDIT_APP_APPROVED
 from ..core.exceptions import CreditApplicationDenied, TransactionDenied
 from ..core.structures import CreditApplicationResult
-from ..models import FinancingPlan, FinancingPlanBenefit
+from ..models import (
+    FinancingPlan,
+    FinancingPlanBenefit,
+    USCreditApp,
+    USJointCreditApp,
+    CACreditApp,
+    CAJointCreditApp,
+)
 from .forms import (
     SubmitTransactionForm,
     ApplicationSelectionForm,
     ManualAddAccountForm,
     FinancingPlanForm,
     FinancingPlanBenefitForm,
+    ApplicationSearchForm,
     get_application_form_class,
 )
 
 Account = get_model('oscar_accounts', 'Account')
+
+
+DEFAULT_APPLICATION = USCreditApp
+APPLICATION_MODELS = {
+    USCreditApp.APP_TYPE_CODE: USCreditApp,
+    USJointCreditApp.APP_TYPE_CODE: USJointCreditApp,
+    CACreditApp.APP_TYPE_CODE: CACreditApp,
+    CAJointCreditApp.APP_TYPE_CODE: CAJointCreditApp,
+}
 
 
 
@@ -205,3 +222,30 @@ class FinancingPlanBenefitDeleteView(generic.DeleteView):
     template_name = "wfrs/dashboard/benefit_delete.html"
     success_url = reverse_lazy('wfrs-benefit-list')
     context_object_name = "benefit"
+
+
+class CreditApplicationListView(generic.ListView):
+    template_name = "wfrs/dashboard/application_list.html"
+    context_object_name = "applications"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.form = ApplicationSearchForm(request.GET)
+        self.form.is_valid()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        app_type = self.form.cleaned_data['app_type']
+        return APPLICATION_MODELS.get(app_type, DEFAULT_APPLICATION).objects.order_by('-created_datetime').all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form
+        return context
+
+
+class CreditApplicationDetailView(generic.DetailView):
+    template_name = "wfrs/dashboard/application_detail.html"
+
+    def get_queryset(self):
+        app_type = self.kwargs.get('app_type')
+        return APPLICATION_MODELS.get(app_type, DEFAULT_APPLICATION).objects.all()

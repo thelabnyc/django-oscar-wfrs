@@ -14,6 +14,8 @@ from .views import (
     FinancingPlanBenefitCreateView,
     FinancingPlanBenefitUpdateView,
     FinancingPlanBenefitDeleteView,
+    CreditApplicationListView,
+    CreditApplicationDetailView,
 )
 
 
@@ -33,6 +35,8 @@ class WFRSDashboardApplication(Application):
     benefit_create = FinancingPlanBenefitCreateView
     benefit_update = FinancingPlanBenefitUpdateView
     benefit_delete = FinancingPlanBenefitDeleteView
+    application_list = CreditApplicationListView
+    application_detail = CreditApplicationDetailView
 
     def get_urls(self):
         urlpatterns = [
@@ -74,6 +78,13 @@ class WFRSDashboardApplication(Application):
             url(r'^benefits/(?P<pk>[0-9]+)/delete/$',
                 self.benefit_delete.as_view(),
                 name='wfrs-benefit-delete'),
+
+            url(r'^applications/$',
+                self.application_list.as_view(),
+                name='wfrs-application-list'),
+            url(r'^applications/(?P<app_type>[a-z\-]+)/(?P<pk>[0-9]+)/$',
+                self.application_detail.as_view(),
+                name='wfrs-application-detail'),
         ]
         return self.post_process_urls(urlpatterns)
 

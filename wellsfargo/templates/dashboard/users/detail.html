@@ -1,0 +1,106 @@
+{% extends 'oscar/dashboard/users/detail.html' %}
+{% load i18n %}
+
+
+{% block tab_nav %}
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#user_orders" data-toggle="tab">{% trans "Orders" %}</a></li>
+        <li><a href="#user_addresses" data-toggle="tab">{% trans "Addresses" %}</a></li>
+        <li><a href="#user_reviews" data-toggle="tab">{% trans "Reviews" %}</a></li>
+        <li><a href="#user_credit_applications" data-toggle="tab">{% trans "Credit Applications" %}</a></li>
+    </ul>
+{% endblock %}
+
+
+
+{% block user_reviews %}
+    {{ block.super }}
+
+    <div id="user_credit_applications" class="tab-pane">
+            <h2>{% trans "Credit Applications" %}</h2>
+
+            <table class="table table-striped table-bordered table-hover">
+                <caption>{% trans "United States Individual Credit Applications" %}</caption>
+                {% if customer.us_individual_credit_apps.count %}
+                    <tr>
+                        <th>{% trans "Applicant Name 1" %}</th>
+                        <th>{% trans "Applicant Name 2" %}</th>
+                        <th>{% trans "Account" %}</th>
+                        <th>{% trans "Created Date" %}</th>
+                        <th>{% trans "Modified Date" %}</th>
+                        <th></th>
+                    </tr>
+                    {% for app in customer.us_individual_credit_apps.all %}
+                        {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
+                    {% endfor %}
+                {% else %}
+                    <tr><td>{% trans "No applications found." %}</td></tr>
+                {% endif %}
+            </table>
+
+
+
+            <table class="table table-striped table-bordered table-hover">
+                <caption>{% trans "United States Joint Credit Applications" %}</caption>
+                {% if customer.us_joint_credit_apps.count %}
+                    <tr>
+                        <th>{% trans "Applicant Name 1" %}</th>
+                        <th>{% trans "Applicant Name 2" %}</th>
+                        <th>{% trans "Account" %}</th>
+                        <th>{% trans "Created Date" %}</th>
+                        <th>{% trans "Modified Date" %}</th>
+                        <th></th>
+                    </tr>
+                    {% for app in customer.us_joint_credit_apps.all %}
+                        {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
+                    {% endfor %}
+                {% else %}
+                    <tr><td>{% trans "No applications found." %}</td></tr>
+                {% endif %}
+            </table>
+
+
+
+            <table class="table table-striped table-bordered table-hover">
+                <caption>{% trans "Canada Individual Credit Applications" %}</caption>
+                {% if customer.ca_individual_credit_apps.count %}
+                    <tr>
+                        <th>{% trans "Applicant Name 1" %}</th>
+                        <th>{% trans "Applicant Name 2" %}</th>
+                        <th>{% trans "Account" %}</th>
+                        <th>{% trans "Created Date" %}</th>
+                        <th>{% trans "Modified Date" %}</th>
+                        <th></th>
+                    </tr>
+                    {% for app in customer.ca_individual_credit_apps.all %}
+                        {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
+                    {% endfor %}
+                {% else %}
+                    <tr><td>{% trans "No applications found." %}</td></tr>
+                {% endif %}
+            </table>
+
+
+
+            <table class="table table-striped table-bordered table-hover">
+                <caption>{% trans "Canada Joint Credit Applications" %}</caption>
+                {% if customer.ca_joint_credit_apps.count %}
+                    <tr>
+                        <th>{% trans "Applicant Name 1" %}</th>
+                        <th>{% trans "Applicant Name 2" %}</th>
+                        <th>{% trans "Account" %}</th>
+                        <th>{% trans "Created Date" %}</th>
+                        <th>{% trans "Modified Date" %}</th>
+                        <th></th>
+                    </tr>
+                    {% for app in customer.ca_joint_credit_apps.all %}
+                        {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
+                    {% endfor %}
+                {% else %}
+                    <tr><td>{% trans "No applications found." %}</td></tr>
+                {% endif %}
+            </table>
+        </table>
+
+    </div>
+{% endblock %}

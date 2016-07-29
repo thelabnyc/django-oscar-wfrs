@@ -1,0 +1,291 @@
+{% extends 'dashboard/layout.html' %}
+{% load i18n %}
+{% load currency_filters %}
+{% load wfrs_filters %}
+
+{% block title %}
+    {% trans "Credit Application Details" %} |
+    {% trans "Wells Fargo" %} |
+    {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'wfrs-application-list' %}?app_type={{ object.APP_TYPE_CODE }}">{% trans "Credit Applications" %}</a>
+        </li>
+        <li class="active">{% trans "Credit Application Details" %}</li>
+    </ul>
+{% endblock %}
+
+{% block headertext %}
+    {% trans "Credit Application Details" %}
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-header">
+                <h2>{% trans "General" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <td>{% trans "Account" %}</td>
+                    <td>
+                        {% if object.account %}
+                            <a href="{% url 'accounts-detail' pk=object.account.pk %}">{{ object.account }}</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Email Address" %}</td>
+                    <td>{{ object.email | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Created Date" %}</td>
+                    <td>{{ object.created_datetime | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Modified Date" %}</td>
+                    <td>{{ object.modified_datetime | default:"-" }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <div class="table-header">
+                <h2>{% trans "Main Applicant" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th colspan="2">{% trans "Name" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "First Name" %}</td>
+                    <td>{{ object.main_first_name | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Last Name" %}</td>
+                    <td>{{ object.main_last_name | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Middle Initial" %}</td>
+                    <td>{{ object.main_middle_initial | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Social Security Number / Social Insurance Number" %}</td>
+                    <td>{{ object.main_ssn | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Address" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Line 1" %}</td>
+                    <td>{{ object.main_address_line1 | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Line 2" %}</td>
+                    <td>{{ object.main_address_line2 | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "City" %}</td>
+                    <td>{{ object.main_address_city | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "State" %}</td>
+                    <td>{{ object.main_address_state | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Postal Code" %}</td>
+                    <td>{{ object.main_address_postcode | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Contact" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Home Phone" %}</td>
+                    <td>{{ object.main_home_phone | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Cell Phone" %}</td>
+                    <td>{{ object.main_cell_phone | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Residence" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Home Value" %}</td>
+                    <td>{{ object.main_home_value | currency | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Mortgage Balance" %}</td>
+                    <td>{{ object.main_mortgage_balance | currency | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Time at Address" %}</td>
+                    <td>{{ object.main_time_at_address | timeat }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Housing Status" %}</td>
+                    <td>{{ object.main_housing_status | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Employment" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Occupation" %}</td>
+                    <td>{{ object.main_occupation | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Annual Income" %}</td>
+                    <td>{{ object.main_annual_income | currency | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Employer Name" %}</td>
+                    <td>{{ object.main_employer_name | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Time at Employer" %}</td>
+                    <td>{{ object.main_time_at_employer | timeat }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Employer Phone" %}</td>
+                    <td>{{ object.main_employer_phone | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Photo ID" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Photo ID Type" %}</td>
+                    <td>{{ object.main_photo_id_type | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Photo ID Number" %}</td>
+                    <td>{{ object.main_photo_id_number | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Driver's License Province" %}</td>
+                    <td>{{ object.main_drivers_license_province | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Photo ID Expiration Date" %}</td>
+                    <td>{{ object.main_photo_id_expiration | default:"-" }}</td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="table-header">
+                <h2>{% trans "Secondary Applicant" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th colspan="2">{% trans "Name" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "First Name" %}</td>
+                    <td>{{ object.joint_first_name | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Last Name" %}</td>
+                    <td>{{ object.joint_last_name | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Middle Initial" %}</td>
+                    <td>{{ object.joint_middle_initial | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Social Security Number / Social Insurance Number" %}</td>
+                    <td>{{ object.joint_ssn | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Address" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Line 1" %}</td>
+                    <td>{{ object.joint_address_line1 | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Line 2" %}</td>
+                    <td>{{ object.joint_address_line2 | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "City" %}</td>
+                    <td>{{ object.joint_address_city | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "State" %}</td>
+                    <td>{{ object.joint_address_state | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Postal Code" %}</td>
+                    <td>{{ object.joint_address_postcode | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Contact" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Cell Phone" %}</td>
+                    <td>{{ object.joint_cell_phone | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Employment" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Occupation" %}</td>
+                    <td>{{ object.joint_occupation | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Annual Income" %}</td>
+                    <td>{{ object.joint_annual_income | currency | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Employer Name" %}</td>
+                    <td>{{ object.joint_employer_name | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Time at Employer" %}</td>
+                    <td>{{ object.joint_time_at_employer | timeat }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Employer Phone" %}</td>
+                    <td>{{ object.joint_employer_phone | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <th colspan="2">{% trans "Photo ID" %}</th>
+                </tr>
+                <tr>
+                    <td>{% trans "Photo ID Type" %}</td>
+                    <td>{{ object.joint_photo_id_type | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Photo ID Number" %}</td>
+                    <td>{{ object.joint_photo_id_number | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Driver's License Province" %}</td>
+                    <td>{{ object.joint_drivers_license_province | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Photo ID Expiration Date" %}</td>
+                    <td>{{ object.joint_photo_id_expiration | default:"-" }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}

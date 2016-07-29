@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<tr>
+    <td>{{ app.main_last_name }}, {{ app.main_first_name }}</td>
+    <td>
+        {% if app.joint_last_name %}
+            {{ app.joint_last_name }}, {{ app.joint_first_name }}
+        {% else %}
+            -
+        {% endif %}
+    </td>
+    <td>
+        {% if app.account %}
+            <a href="{% url 'accounts-detail' pk=app.account.pk %}">{{ app.account }}</a>
+        {% else %}
+            -
+        {% endif %}
+    </td>
+    <td>{{ app.created_datetime }}</td>
+    <td>{{ app.modified_datetime }}</td>
+    <td>
+        <a href="{% url 'wfrs-application-detail' app_type=app.APP_TYPE_CODE pk=app.pk %}" class="btn btn-primary">{% trans "View" %}</a>
+    </td>
+</tr>

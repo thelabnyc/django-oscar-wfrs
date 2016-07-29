@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import (
     RegexValidator,
@@ -37,18 +36,6 @@ Account = get_model('oscar_accounts', 'Account')
 
 
 class BaseCreditAppMixin(models.Model):
-    account = models.OneToOneField(Account,
-        null=True, editable=False,
-        verbose_name=_("Account"),
-        on_delete=models.SET_NULL,
-        related_name='+')
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=False, blank=False,
-        verbose_name=_("Owner"),
-        related_name='+',
-        on_delete=models.CASCADE)
-
     region = models.CharField(_("Region"), null=False, blank=False, choices=REGIONS, max_length=15, default=US)
     language = models.CharField(_("Language"), null=False, blank=False, choices=LANGUAGES, max_length=1, default=ENGLISH)
     app_type = models.CharField(_('Application Type'), null=False, blank=False, choices=APP_TYPES, max_length=1, default=INDIVIDUAL)
@@ -93,6 +80,7 @@ class BaseCreditAppMixin(models.Model):
         abstract = True
         verbose_name = "Credit Application"
         verbose_name_plural = "Credit Applications"
+        ordering = ('-created_datetime', )
 
     @property
     def locale(self):

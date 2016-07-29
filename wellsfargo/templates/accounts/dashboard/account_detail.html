@@ -3,21 +3,44 @@
 {% load i18n %}
 
 {% block header %}
-<div class="page-header">
-    <span class="pull-right">
-        <a class="btn btn-primary" href="{% url 'accounts-update' account.id %}">{% trans "Edit" %}</a>
-        {% if account.wfrs_metadata %}
-            <a class="btn btn-primary" href="{% url 'wfrs-submit-transaction' account.id %}">{% trans "New Wells Fargo Transaction" %}</a>
-        {% else %}
-            <a href="{% url 'accounts-top-up' account.id %}" class="btn btn-primary">{% trans "Top-up" %}</a>
-            <a href="{% url 'accounts-withdraw' account.id %}" class="btn btn-primary">{% trans "Withdraw" %}</a>
-        {% endif %}
-        {% if not account.is_frozen %}
-            <a href="{% url 'accounts-freeze' account.id %}" class="btn btn-danger">{% trans "Freeze" %}</a>
-        {% else %}
-            <a href="{% url 'accounts-thaw' account.id %}" class="btn btn-success">{% trans "Thaw" %}</a>
-        {% endif %}
-    </span>
-    <h1>{{ account }}</h1>
-</div>
+    <div class="page-header">
+        <span class="pull-right">
+            <a class="btn btn-primary" href="{% url 'accounts-update' account.id %}">{% trans "Edit" %}</a>
+            {% if account.wfrs_metadata %}
+                <a class="btn btn-primary" href="{% url 'wfrs-submit-transaction' account.id %}">{% trans "New Wells Fargo Transaction" %}</a>
+            {% else %}
+                <a href="{% url 'accounts-top-up' account.id %}" class="btn btn-primary">{% trans "Top-up" %}</a>
+                <a href="{% url 'accounts-withdraw' account.id %}" class="btn btn-primary">{% trans "Withdraw" %}</a>
+            {% endif %}
+            {% if not account.is_frozen %}
+                <a href="{% url 'accounts-freeze' account.id %}" class="btn btn-danger">{% trans "Freeze" %}</a>
+            {% else %}
+                <a href="{% url 'accounts-thaw' account.id %}" class="btn btn-success">{% trans "Thaw" %}</a>
+            {% endif %}
+        </span>
+        <h1>{{ account }}</h1>
+    </div>
 {% endblock header %}
+
+
+{% block dashboard_content %}
+    {% if account.wfrs_metadata %}
+        <div class="panel panel-default">
+            <div class="panel-heading">{% trans "Wells Fargo Account Details" %}</div>
+            <table class="panel-body table">
+                <tbody>
+                    <tr>
+                        <th>{% trans "Locale" %}</th>
+                        <td>{{ account.wfrs_metadata.locale }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Account Number" %}</th>
+                        <td>{{ account.wfrs_metadata.account_number }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {{ block.super }}
+{% endblock dashboard_content %}
