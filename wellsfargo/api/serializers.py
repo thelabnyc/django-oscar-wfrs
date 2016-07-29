@@ -158,6 +158,7 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinancingPlan
         fields = (
+            'id',
             'plan_number',
             'description',
             'apr',
