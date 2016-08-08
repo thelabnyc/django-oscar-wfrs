@@ -75,7 +75,9 @@ class CreditApplicationResult(object):
         if name:
             account.name = name
         elif self.application:
-            account.name = '%s – %s' % (self.application.full_name, self.account_number)
+            account.name = '%s – xxxxxxxxxxxx%s' % (self.application.full_name, self.account_number[-4:])
+        else:
+            account.name = 'xxxxxxxxxxxx%s' % (self.account_number[-4:])
 
         # Save account
         account.primary_user = owner or self.application.user

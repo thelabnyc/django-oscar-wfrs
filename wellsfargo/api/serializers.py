@@ -6,6 +6,7 @@ from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT,
     ENGLISH, FRENCH,
+    LOCALE_CHOICES, EN_US
 )
 from ..models import (
     FinancingPlan,
@@ -119,38 +120,30 @@ class CAJointCreditAppSerializer(BaseCreditAppSerializer):
 
 class AccountSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='wfrs-api-account-detail')
-
-    account_type = serializers.PrimaryKeyRelatedField(read_only=True)
-    account_type_name = serializers.CharField(source='account_type.name', read_only=True)
-
-    primary_user = serializers.SlugRelatedField(read_only=True, slug_field='username')
-    secondary_users = serializers.SlugRelatedField(many=True, read_only=True, slug_field='username')
-
-    locale = serializers.CharField(source='wfrs_metadata.locale', read_only=True)
-    account_number = serializers.CharField(source='wfrs_metadata.account_number', read_only=True)
+    locale = serializers.ChoiceField(source='wfrs_metadata.locale', choices=LOCALE_CHOICES, default=EN_US)
+    account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16, source='wfrs_metadata.account_number')
 
     class Meta:
         model = Account
         fields = (
             'id',
             'url',
-            'account_type',
-            'account_type_name',
             'name',
             'description',
             'code',
             'status',
-            'primary_user',
-            'secondary_users',
             'credit_limit',
             'balance',
-            'start_date',
-            'end_date',
             'locale',
             'account_number',
         )
         extra_kwargs = {
-            'balance': { 'read_only': True }
+            'name': { 'read_only': True },
+            'description': { 'read_only': True },
+            'code': { 'read_only': True },
+            'status': { 'read_only': True },
+            'credit_limit': { 'read_only': True },
+            'balance': { 'read_only': True },
         }
 
 

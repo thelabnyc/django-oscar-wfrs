@@ -138,18 +138,12 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNotNone(response.data['id'])
         self.assertIsNotNone(response.data['url'])
-        self.assertIsNotNone(response.data['account_type'])
-        self.assertEqual(response.data['account_type_name'], 'Credit Line (Wells Fargo)')
-        self.assertEqual(response.data['name'], 'Joe Schmoe – 9999999999999999')
+        self.assertEqual(response.data['name'], 'Joe Schmoe – xxxxxxxxxxxx9999')
         self.assertIsNone(response.data['description'])
         self.assertEqual(response.data['code'], '9999999999999999')
         self.assertEqual(response.data['status'], 'Open')
-        self.assertEqual(response.data['primary_user'], 'joe')
-        self.assertEqual(response.data['secondary_users'], [])
         self.assertEqual(response.data['credit_limit'], '7500.00')
         self.assertEqual(response.data['balance'], '0.00')
-        self.assertIsNone(response.data['start_date'])
-        self.assertIsNone(response.data['end_date'])
         self.assertEqual(response.data['locale'], 'en_US')
         self.assertEqual(response.data['account_number'], '9999999999999999')
 
@@ -174,3 +168,23 @@ class USIndivCreditApplicationTest(BaseTest):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['detail'], 'Credit Application was denied by Wells Fargo')
+
+    def test_manual_add(self):
+        self.client.login(username='joe', password='schmoe')
+
+        url = reverse('wfrs-api-account-list')
+        data = {
+            "account_number": "1111111111111111"
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data['id'])
+        self.assertIsNotNone(response.data['url'])
+        self.assertEqual(response.data['name'], 'xxxxxxxxxxxx1111')
+        self.assertIsNone(response.data['description'])
+        self.assertEqual(response.data['code'], '1111111111111111')
+        self.assertEqual(response.data['status'], 'Open')
+        self.assertIsNone(response.data['credit_limit'])
+        self.assertEqual(response.data['balance'], '0.00')
+        self.assertEqual(response.data['locale'], 'en_US')
+        self.assertEqual(response.data['account_number'], '1111111111111111')

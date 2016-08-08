@@ -5,13 +5,16 @@ from rest_framework import (
     views,
     viewsets,
     generics,
+    status,
 )
 from oscar.core.loading import get_model
 from oscarapi.basket import operations
 from ..core.constants import (
     US, CA,
-    INDIVIDUAL, JOINT
+    INDIVIDUAL, JOINT,
+    CREDIT_APP_APPROVED
 )
+from ..core.structures import CreditApplicationResult
 from .serializers import (
     AppSelectionSerializer,
     USCreditAppSerializer,
@@ -104,6 +107,31 @@ class AccountView(viewsets.ModelViewSet):
     def get_queryset(self):
         ids = IsAccountOwner.list_valid_account_ids(self.request)
         return Account.objects.filter(id__in=ids).order_by('id').all()
+
+    def post(self, request, pk=None):
+        serializer = self.get_serializer_class()(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        struct = CreditApplicationResult()
+        struct.transaction_status = CREDIT_APP_APPROVED
+        struct.account_number = serializer.validated_data['wfrs_metadata']['account_number']
+        struct.credit_limit = None
+        account = struct.save(
+            owner=request.user,
+            locale=serializer.validated_data['wfrs_metadata']['locale'])
+
+        serializer = AccountSerializer(account, context={'request': request})
+        return Response(serializer.data)
+
+    def delete(self, request, pk=None):
+        if not pk:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            acct = self.get_queryset().get(pk=pk)
+        except Account.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        acct.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FinancingPlanView(views.APIView):

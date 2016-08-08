@@ -100,7 +100,7 @@ class CreditApplicationResultTest(BaseTest):
         account = result.save()
         self.assertEqual(account.account_type.name, 'Credit Line (Wells Fargo)')
         self.assertEqual(account.code, '9999999999999991')
-        self.assertEqual(account.name, 'Joe Schmoe – 9999999999999991')
+        self.assertEqual(account.name, 'Joe Schmoe – xxxxxxxxxxxx9991')
         self.assertEqual(account.primary_user.username, 'joe')
         self.assertEqual(account.status, 'Open')
         self.assertEqual(account.credit_limit, Decimal('7500.00'))
