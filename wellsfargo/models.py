@@ -62,7 +62,7 @@ class FinancingPlanBenefit(Benefit):
         return PostOrderAction("Financing is available for your order")
 
     def apply_deferred(self, basket, order, application):
-        return "Something happened"
+        return "Financing was available for your order: %s" % self.group_name
 
     @property
     def name(self):
