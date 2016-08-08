@@ -94,6 +94,7 @@ class CreditApplicationResult(object):
 
         # Link application to newly created account
         if self.application:
+            self.application.__class__.objects.filter(account=account).update(account=None)
             self.application.account = account
             self.application.save()
 
