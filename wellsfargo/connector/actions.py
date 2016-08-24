@@ -54,6 +54,8 @@ def submit_transaction(trans_request):
 
     # Persist transaction data and WF specific metadata
     with transaction.atomic():
+        if trans_request.source_account.primary_user != trans_request.user:
+            trans_request.source_account.secondary_users.add(trans_request.user)
         transfer = facade.transfer(
             source=trans_request.source_account,
             destination=trans_request.dest_account,
