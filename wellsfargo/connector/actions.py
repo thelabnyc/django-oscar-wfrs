@@ -26,9 +26,8 @@ logger = logging.getLogger(__name__)
 def submit_transaction(trans_request):
     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
 
-    trans_request.source_account.secondary_users.add(trans_request.user)
+    trans_request.source_account.primary_user = trans_request.user
     trans_request.source_account.save()
-
     if not trans_request.source_account.can_be_authorised_by(trans_request.user):
         raise TransactionDenied('%s can not authorize transfer from %s' % (trans_request.user, trans_request.source_account))
 
