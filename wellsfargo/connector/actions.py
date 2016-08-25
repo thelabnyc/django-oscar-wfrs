@@ -26,6 +26,12 @@ logger = logging.getLogger(__name__)
 def submit_transaction(trans_request):
     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
 
+    trans_request.source_account.secondary_users.add(trans_request.user)
+    trans_request.source_account.save()
+
+    if not trans_request.source_account.can_be_authorised_by(trans_request.user):
+        raise TransactionDenied('%s can not authorize transfer from %s' % (trans_request.user, trans_request.source_account))
+
     request = client.factory.create('ns2:Transaction')
     request.userName = WFRS_USER_NAME
     request.setupPassword = WFRS_PASSWORD
@@ -54,8 +60,6 @@ def submit_transaction(trans_request):
 
     # Persist transaction data and WF specific metadata
     with transaction.atomic():
-        trans_request.source_account.secondary_users.add(trans_request.user)
-        trans_request.source_account.save()
         transfer = facade.transfer(
             source=trans_request.source_account,
             destination=trans_request.dest_account,
