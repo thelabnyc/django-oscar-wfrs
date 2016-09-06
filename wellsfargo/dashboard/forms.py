@@ -132,7 +132,7 @@ class ManualAddAccountForm(forms.Form):
 class FinancingPlanForm(forms.ModelForm):
     class Meta:
         model = FinancingPlan
-        fields = ('plan_number', 'description', 'apr', 'term_months')
+        fields = ('plan_number', 'description', 'apr', 'term_months', 'is_default_plan')
 
 
 class FinancingPlanBenefitForm(forms.ModelForm):

@@ -36,12 +36,18 @@ class FinancingPlan(models.Model):
         MaxValueValidator(Decimal('100.00')),
     ])
     term_months = models.PositiveSmallIntegerField(_("Term Length (months)"), default=12)
+    is_default_plan = models.BooleanField(_("Is Default Plan?"), default=False)
 
     class Meta:
         ordering = ('plan_number', )
 
     def __str__(self):
         return "%s (plan number %s)" % (self.description, self.plan_number)
+
+    def save(self, *args, **kwargs):
+        if self.is_default_plan:
+            self.__class__._default_manager.filter(is_default_plan=True).update(is_default_plan=False)
+        super().save(*args, **kwargs)
 
 
 class FinancingPlanBenefit(Benefit):
