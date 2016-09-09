@@ -17,4 +17,4 @@ def reconcile_accounts(self):
             resp = actions.submit_inquiry(account)
             resp.reconcile()
         except ValidationError as e:
-            logging.error('Failed to reconcile account %s due to ValidationError[%s]' % (account, e.message))
+            logging.warning('Failed to reconcile account %s due to ValidationError[%s]' % (account, e.message))
