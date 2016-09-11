@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
@@ -67,6 +69,10 @@ class BaseCreditAppView(generics.GenericAPIView):
 
         try:
             account = serializer.save()
+        except DjangoValidationError as e:
+            raise DRFValidationError({
+                'non_field_errors': [e.message]
+            })
         except core_exceptions.CreditApplicationDenied:
             raise api_exceptions.CreditApplicationDenied()
 
