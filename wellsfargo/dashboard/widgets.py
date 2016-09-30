@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
 from django.utils.html import format_html
 from django.forms.utils import flatatt
-from django.utils.safestring import mark_safe
 
 
 class FuzzyDurationWidget(Widget):
@@ -124,7 +123,7 @@ class TypeAheadModelSelect(Input):
             attrs_hidden['value'] = force_text(value)
         if attrs_hidden.get('value'):
             attrs_auto['value'] = force_text(self.model.objects.filter(pk=attrs_hidden['value']).first() or '')
-        attrs_auto['autocomplete'] = 'none';
+        attrs_auto['autocomplete'] = 'none'
         attrs_auto['id'] += '_auto'
 
         html = format_html('<input{} />', flatatt(attrs_auto))
