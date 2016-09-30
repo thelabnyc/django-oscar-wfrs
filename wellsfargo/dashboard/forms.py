@@ -1,10 +1,11 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.forms.models import fields_for_model
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model
 from oscar.forms.widgets import DatePickerInput
-from .widgets import FuzzyDurationWidget, BooleanSelect
+from .widgets import FuzzyDurationWidget, BooleanSelect, TypeAheadModelSelect
 from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT,
@@ -25,6 +26,9 @@ from ..models import (
 Account = get_model('oscar_accounts', 'Account')
 
 WIDGETS = {
+    'user': TypeAheadModelSelect(view='wfrs-api-user-autocomplete', model=User, attrs={
+        'placeholder': _('Start typing to search for a user')
+    }),
     'main_date_of_birth': DatePickerInput(),
     'joint_date_of_birth': DatePickerInput(),
     'main_photo_id_expiration': DatePickerInput(),
@@ -127,6 +131,9 @@ class ManualAddAccountForm(forms.Form):
         super().__init__(*args, **kwargs)
         for name in ('name', 'primary_user', 'status', 'credit_limit', 'account_number', 'locale'):
             self.fields[name].required = True
+        self.fields['primary_user'].widget = TypeAheadModelSelect(view='wfrs-api-user-autocomplete', model=User, attrs={
+            'placeholder': _('Start typing to search for a user')
+        })
 
 
 class FinancingPlanForm(forms.ModelForm):

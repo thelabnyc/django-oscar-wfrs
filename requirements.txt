@@ -6,11 +6,13 @@ versiontag==1.0.3
 flake8===2.5.4
 psycopg2==2.6.1
 pyyaml==3.11
+elasticsearch==1.9.0
 
 # Pkg Reqs
 celery==3.1.23
 Django==1.9.6
 djangorestframework==3.3.2
+django-haystack==2.5.0
 django-oscar==1.2.1
 django-oscar-accounts==0.4rc1
 django-oscar-api==1.0.4

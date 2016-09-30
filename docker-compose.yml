@@ -1,5 +1,7 @@
 postgres:
   image: postgres:9.4
+elasticsearch:
+    image: elasticsearch:1
 
 test:
   build: .
@@ -8,5 +10,6 @@ test:
     - "8000:8000"
   links:
     - postgres
+    - elasticsearch
   volumes:
     - .:/code

@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from haystack.query import SearchQuerySet
 from rest_framework.exceptions import ValidationError as DRFValidationError
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
 from rest_framework import (
@@ -28,10 +29,30 @@ from .serializers import (
 )
 from .permissions import IsAccountOwner
 from ..core import exceptions as core_exceptions
+from ..models import AccountOwner
 from ..utils import list_plans_for_basket
 from . import exceptions as api_exceptions
 
 Account = get_model('oscar_accounts', 'Account')
+
+
+
+class AutocompleteAccountOwnerView(views.APIView):
+    permission_classes = (IsAdminUser, )
+
+    def get(self, request):
+        text = request.GET.get('term')
+        if not text:
+            return Response([])
+        results = SearchQuerySet().models(AccountOwner).autocomplete(text=text)
+        users = []
+        for u in results:
+            users.append({
+                'id': u.user_id,
+                'label': ('%s %s <%s> (%s)' % (u.first_name, u.last_name, u.email, u.username)).strip()
+            })
+        return Response(users)
+
 
 
 class SelectCreditAppView(generics.GenericAPIView):

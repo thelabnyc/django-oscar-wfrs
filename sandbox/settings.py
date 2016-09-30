@@ -116,7 +116,9 @@ DATABASES = {
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://elasticsearch:9200/',
+        'INDEX_NAME': 'haystack',
     },
 }
 

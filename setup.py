@@ -14,6 +14,7 @@ setup_requires = [
 requires = [
     'Django>=1.9.6',
     'djangorestframework>=3.3.2',
+    'django-haystack>=2.5.0',
     'django-oscar>=1.2.1',
     'django-oscar-accounts>=0.4rc1',
     'django-oscar-api>=1.0.4',

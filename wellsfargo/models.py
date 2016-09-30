@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MinLengthValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -20,6 +21,12 @@ Transfer = get_model('oscar_accounts', 'Transfer')
 Benefit = get_model('offer', 'Benefit')
 
 PostOrderAction = get_class('offer.results', 'PostOrderAction')
+
+
+class AccountOwner(User):
+    """Only exists so that our haystack search index doesn't conflict with any other haystack indexes on auth.User"""
+    class Meta:
+        proxy = True
 
 
 class FinancingPlan(models.Model):

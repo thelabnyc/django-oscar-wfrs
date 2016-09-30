@@ -2,6 +2,7 @@ from django.conf.urls import url
 from oscar.core.application import Application
 
 from .views import (
+    AutocompleteAccountOwnerView,
     SelectCreditAppView,
     USCreditAppView,
     USJointCreditAppView,
@@ -15,6 +16,8 @@ from .views import (
 class WFRSAPIApplication(Application):
     def get_urls(self):
         urlpatterns = [
+            url(r'^user-autocomplete/$', AutocompleteAccountOwnerView.as_view(), name='wfrs-api-user-autocomplete'),
+
             url(r'^apply/$', SelectCreditAppView.as_view(), name='wfrs-api-apply-select'),
 
             url(r'^apply/us-individual/$', USCreditAppView.as_view(), name='wfrs-api-apply-us-individual'),

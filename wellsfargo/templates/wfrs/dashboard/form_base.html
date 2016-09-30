@@ -1,6 +1,7 @@
 {% extends 'dashboard/layout.html' %}
 {% load currency_filters %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}
     {{ title }} | {% trans "Wells Fargo" %} | {{ block.super }}
@@ -60,3 +61,9 @@
     {% endblock %}
 </form>
 {% endblock dashboard_content %}
+
+
+{% block extrascripts %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'wellsfargo/lib/typeahead.bundle.min.js' %}"></script>
+{% endblock %}
