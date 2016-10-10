@@ -35,7 +35,7 @@ Changelog
 Code Areas of Interest
 ======================
 
-- connector - Wells Fargo SOAP API integration. Sorry not public [docs](https://docs.google.com/document/d/13Z2GIo10MEoHDdiHApPaZKq3OjFAJN9NCAXt-MfiS-k/edit)
+- connector - Wells Fargo SOAP API integration. Sorry not public `docs <https://docs.google.com/document/d/13Z2GIo10MEoHDdiHApPaZKq3OjFAJN9NCAXt-MfiS-k/edit/>`_.
 - api - django-rest-framework based api
 - core - django-oscar-wfrs django models
 - dashboard - Oscar Dashboard UI extension
