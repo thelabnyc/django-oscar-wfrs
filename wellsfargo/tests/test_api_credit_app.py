@@ -82,6 +82,7 @@ class USIndivCreditApplicationTest(BaseTest):
             'region': 'US',
             'app_type': 'I',
             'language': 'E',
+            'purchase_price': 2000,
             'main_ssn': '999999991',
             'main_first_name': 'Joe',
             'main_last_name': 'Schmoe',
