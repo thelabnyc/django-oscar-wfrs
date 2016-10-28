@@ -16,3 +16,8 @@ Changelog
 0.1.0
 ------------------
 - Initial release.
+
+Template Tags
+=============
+
+- `get_default_plan` returns the default financing plan object
