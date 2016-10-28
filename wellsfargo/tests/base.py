@@ -23,6 +23,7 @@ class BaseTest(SoapTest, APITestCase):
         app.user = self.joe
         app.region = 'US'
         app.language = 'E'
+        app.purchase_price = 2000
         app.app_type = 'I'
         app.main_first_name = 'Joe'
         app.main_last_name = 'Schmoe'

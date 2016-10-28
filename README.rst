@@ -39,3 +39,8 @@ Code Areas of Interest
 - api - django-rest-framework based api
 - core - django-oscar-wfrs django models
 - dashboard - Oscar Dashboard UI extension
+
+Template Tags
+=============
+
+- `get_default_plan` returns the default financing plan object
