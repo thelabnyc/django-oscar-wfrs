@@ -50,7 +50,7 @@ def submit_transaction(trans_request):
     # Check for faults
     if resp.faults:
         for fault in resp.faults:
-            logger.error(fault.faultDetailString)
+            logger.info(fault.faultDetailString)
             raise ValidationError(fault.faultDetailString)
 
     # Check for approval
@@ -97,7 +97,7 @@ def submit_inquiry(account):
     # Check for faults
     if resp.faults:
         for fault in resp.faults:
-            logger.error(fault.faultDetailString)
+            logger.info(fault.faultDetailString)
             raise ValidationError(fault.faultDetailString)
 
     # Check for errors
@@ -189,13 +189,13 @@ def submit_credit_application(app):
     # Check for faults
     if resp.faults:
         for fault in resp.faults:
-            logger.error(fault.faultDetailString)
+            logger.info(fault.faultDetailString)
             raise ValidationError(fault.faultDetailString)
 
     # Check for errors
     error_msg = resp.sorErrorDescription.strip() if resp.sorErrorDescription else None
     if error_msg:
-        logger.error(error_msg)
+        logger.info(error_msg)
         raise ValidationError(error_msg)
 
     # Check for approval
