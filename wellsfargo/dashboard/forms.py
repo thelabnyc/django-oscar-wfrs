@@ -143,9 +143,18 @@ class FinancingPlanForm(forms.ModelForm):
 
 
 class FinancingPlanBenefitForm(forms.ModelForm):
+    CPATH = '%s.%s' % (FinancingPlanBenefit.__module__, FinancingPlanBenefit.__name__)
+    proxy_class = forms.ChoiceField(
+        choices=(
+            (CPATH, _('Wells Fargo Financing Plan Group')),
+        ),
+        disabled=True,
+        initial=CPATH,
+        label=_('Benefit Type'))
+
     class Meta:
         model = FinancingPlanBenefit
-        fields = ('group_name', 'plans')
+        fields = ('proxy_class', 'group_name', 'plans')
 
 
 class ApplicationSearchForm(forms.Form):

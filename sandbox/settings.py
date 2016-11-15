@@ -247,3 +247,8 @@ API_ENABLED_PAYMENT_METHODS = [
         'permission': 'wellsfargo.permissions.IsAuthenticated',
     },
 ]
+
+# Custom benefits
+BLUELIGHT_BENEFIT_CLASSES += [  # NOQA
+    ('wellsfargo.models.FinancingPlanBenefit', 'Activate Wells Fargo Plan Number Group'),
+]

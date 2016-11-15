@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import exceptions
 from django.core.validators import MinValueValidator, MinLengthValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -86,9 +87,13 @@ class FinancingPlanBenefit(Benefit):
         nums = ', '.join([str(p.plan_number) for p in self.plans.all()])
         return "Causes the following Wells Fargo financing plans to be available: %s" % nums
 
-    def save(self, *args, **kwargs):
-        self.proxy_class = '%s.%s' % (FinancingPlanBenefit.__module__, FinancingPlanBenefit.__name__)
-        return super().save(*args, **kwargs)
+    def _clean(self):
+        group_name = getattr(self, 'group_name', None)
+        if not group_name:
+            raise exceptions.ValidationError(_((
+                "Wells Fargo Financing Plan Benefit must have a group name. "
+                "Use the Financing > Wells Fargo Plan Group dashboard to create this type of benefit."
+            )))
 
 
 class AccountMetadata(models.Model):

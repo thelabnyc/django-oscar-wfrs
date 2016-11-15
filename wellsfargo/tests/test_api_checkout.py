@@ -31,7 +31,9 @@ class CheckoutTest(BaseTest):
             description='Pay for stuff sometime in the next 12 months',
             apr='9.95',
             term_months=12)
-        benefit = FinancingPlanBenefit.objects.create(group_name='Financing is available')
+        benefit = FinancingPlanBenefit.objects.create(
+            proxy_class='wellsfargo.models.FinancingPlanBenefit',
+            group_name='Financing is available')
         benefit.plans.add(self.plan)
 
         ConditionalOffer.objects.create(

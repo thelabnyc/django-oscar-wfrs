@@ -19,21 +19,23 @@ requires = [
     'django-oscar-accounts>=0.4rc1',
     'django-oscar-api>=1.0.4',
     'django-oscar-api-checkout>=0.1.4',
-    'django-oscar-bluelight>=0.3.0',
+    'django-oscar-bluelight>=0.5.0',
     'django-localflavor>=1.3',
     'instrumented-soap>=1.1.0',
 ]
 
 extras_require = {
-    'celery':  ['celery>=3.1.23'],
+    'celery': ['celery>=3.1.23'],
 }
 
 
 def fpath(name):
     return os.path.join(os.path.dirname(__file__), name)
 
+
 def read(fname):
     return codecs.open(fpath(fname), encoding='utf-8').read()
+
 
 cache_git_tag()
 
