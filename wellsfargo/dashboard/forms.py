@@ -24,6 +24,7 @@ from ..models import (
 )
 
 Account = get_model('oscar_accounts', 'Account')
+BillingAddress = get_model('order', 'BillingAddress')
 
 WIDGETS = {
     'user': TypeAheadModelSelect(view='wfrs-api-user-autocomplete', model=User, attrs={
@@ -113,8 +114,12 @@ class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
 
 
 class ManualAddAccountForm(forms.Form):
-    _account_fields = fields_for_model(Account, fields=['name', 'primary_user', 'status', 'credit_limit'])
-    _meta_fields = fields_for_model(AccountMetadata, fields=['account_number', 'locale'])
+    _account_fields = fields_for_model(Account, fields=[
+        'name', 'primary_user', 'status', 'credit_limit'])
+    _meta_fields = fields_for_model(AccountMetadata, fields=[
+        'account_number', 'locale'])
+    _address_fields = fields_for_model(BillingAddress, fields=[
+        'title','first_name', 'last_name', 'line1', 'line2', 'line3', 'line4', 'state', 'postcode', 'country'])
 
     name = _account_fields['name']
     primary_user = _account_fields['primary_user']
@@ -124,12 +129,28 @@ class ManualAddAccountForm(forms.Form):
         (Account.CLOSED, Account.CLOSED),
     ))
     credit_limit = _account_fields['credit_limit']
+
     account_number = _meta_fields['account_number']
     locale = _meta_fields['locale']
 
+    title = _address_fields['title']
+    first_name = _address_fields['first_name']
+    last_name = _address_fields['last_name']
+    line1 = _address_fields['line1']
+    line2 = _address_fields['line2']
+    line3 = _address_fields['line3']
+    line4 = _address_fields['line4']
+    state = _address_fields['state']
+    postcode = _address_fields['postcode']
+    country = _address_fields['country']
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for name in ('name', 'primary_user', 'status', 'credit_limit', 'account_number', 'locale'):
+        required_fields = (
+            'name', 'primary_user', 'status', 'credit_limit', 'account_number', 'locale',
+            'first_name', 'last_name', 'line1', 'line4', 'state', 'postcode', 'country',
+        )
+        for name in required_fields:
             self.fields[name].required = True
         self.fields['primary_user'].widget = TypeAheadModelSelect(view='wfrs-api-user-autocomplete', model=User, attrs={
             'placeholder': _('Start typing to search for a user')

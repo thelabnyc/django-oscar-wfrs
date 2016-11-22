@@ -175,7 +175,46 @@ class USIndivCreditApplicationTest(BaseTest):
 
         url = reverse('wfrs-api-account-list')
         data = {
-            "account_number": "1111111111111111"
+            'account_number': '1111111111111111',
+            'billing_address': {
+                'title': 'Ms',
+                'first_name': 'Jill',
+                'last_name': 'Schmoe',
+                'line1': '111 Wall St',
+                'line4': 'New York',
+                'state': 'NY',
+                'postcode': '10001',
+                'country': '/api/countries/US/',
+            }
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data['id'])
+        self.assertIsNotNone(response.data['url'])
+        self.assertEqual(response.data['name'], 'Ms Jill Schmoe – xxxxxxxxxxxx1111')
+        self.assertIsNone(response.data['description'])
+        self.assertEqual(response.data['code'], '1111111111111111')
+        self.assertEqual(response.data['status'], 'Open')
+        self.assertIsNone(response.data['credit_limit'])
+        self.assertEqual(response.data['balance'], '0.00')
+        self.assertEqual(response.data['locale'], 'en_US')
+        self.assertEqual(response.data['account_number'], '1111111111111111')
+        self.assertEqual(response.data['billing_address']['title'], 'Ms')
+        self.assertEqual(response.data['billing_address']['first_name'], 'Jill')
+        self.assertEqual(response.data['billing_address']['last_name'], 'Schmoe')
+        self.assertEqual(response.data['billing_address']['line1'], '111 Wall St')
+        self.assertEqual(response.data['billing_address']['line2'], '')
+        self.assertEqual(response.data['billing_address']['line4'], 'New York')
+        self.assertEqual(response.data['billing_address']['state'], 'NY')
+        self.assertEqual(response.data['billing_address']['postcode'], '10001')
+        self.assertEqual(response.data['billing_address']['country'], 'http://testserver/api/countries/US/')
+
+    def test_manual_add_without_billing_address(self):
+        self.client.login(username='joe', password='schmoe')
+
+        url = reverse('wfrs-api-account-list')
+        data = {
+            "account_number": "1111111111111111",
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -189,3 +228,4 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.data['balance'], '0.00')
         self.assertEqual(response.data['locale'], 'en_US')
         self.assertEqual(response.data['account_number'], '1111111111111111')
+        self.assertIsNone(response.data['billing_address'])

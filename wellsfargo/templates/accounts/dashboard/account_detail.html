@@ -37,6 +37,18 @@
                         <th>{% trans "Account Number" %}</th>
                         <td>{{ account.wfrs_metadata.account_number }}</td>
                     </tr>
+                    <tr>
+                        <th>{% trans "Billing Address" %}</th>
+                        <td>
+                            {% if account.wfrs_metadata.billing_address %}
+                                <p>
+                                    {% for field in account.wfrs_metadata.billing_address.active_address_fields %}
+                                        {{ field }}<br/>
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

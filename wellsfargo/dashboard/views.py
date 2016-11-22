@@ -155,7 +155,19 @@ class AddExistingAccountView(generic.FormView):
             owner=form.cleaned_data['primary_user'],
             status=form.cleaned_data['status'],
             name=form.cleaned_data['name'],
-            locale=form.cleaned_data['locale'])
+            locale=form.cleaned_data['locale'],
+            billing_address={
+                'title': form.cleaned_data['title'],
+                'first_name': form.cleaned_data['first_name'],
+                'last_name': form.cleaned_data['last_name'],
+                'line1': form.cleaned_data['line1'],
+                'line2': form.cleaned_data['line2'],
+                'line3': form.cleaned_data['line3'],
+                'line4': form.cleaned_data['line4'],
+                'state': form.cleaned_data['state'],
+                'postcode': form.cleaned_data['postcode'],
+                'country': form.cleaned_data['country'],
+            })
 
         url = reverse('accounts-detail', kwargs={'pk': account.pk})
         return HttpResponseRedirect(url)

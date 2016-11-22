@@ -10,6 +10,8 @@ from ..settings import WFRS_ACCOUNT_TYPE
 
 AccountType = get_model('oscar_accounts', 'AccountType')
 Account = get_model('oscar_accounts', 'Account')
+Country = get_model('address', 'Country')
+BillingAddress = get_model('order', 'BillingAddress')
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +57,7 @@ class CreditApplicationResult(object):
         return (self.transaction_status == CREDIT_APP_APPROVED)
 
     @transaction.atomic()
-    def save(self, owner=None, status=Account.OPEN, name=None, locale=None):
+    def save(self, owner=None, status=Account.OPEN, name=None, locale=None, billing_address=None):
         if not self.is_approved:
             return None
 
@@ -65,6 +67,27 @@ class CreditApplicationResult(object):
             wfrs = AccountType.add_root(name=WFRS_ACCOUNT_TYPE)
             wfrs.save()
 
+        # Save billing address from application
+        if not billing_address and self.application:
+            billing_address = {
+                'first_name': self.application.main_first_name,
+                'last_name': self.application.main_last_name,
+                'line1': self.application.main_address_line1,
+                'line2': self.application.main_address_line2,
+                'line4': self.application.main_address_city,
+                'state': self.application.main_address_state,
+                'postcode': self.application.main_address_postcode,
+                'country': Country.objects.get(iso_3166_1_a2=self.application.region),
+            }
+
+        # If a dictionary was passed in for the BillingAddress, convert it into an object
+        if billing_address and not isinstance(billing_address, BillingAddress):
+            for field in ('first_name', 'last_name', 'line1', 'line2', 'line4', 'state', 'postcode'):
+                billing_address[field] = billing_address.get(field) or ''
+            billing_address = BillingAddress(**billing_address)
+            billing_address.save()
+
+        # Make an account using the given account number
         try:
             account = Account.objects.get(account_type=wfrs, code=self.account_number)
         except Account.DoesNotExist:
@@ -72,12 +95,16 @@ class CreditApplicationResult(object):
             account.account_type = wfrs
             account.code = self.account_number
 
+        # Try and name the account somewhat usefully
+        masked_acct_num = 'xxxxxxxxxxxx%s' % self.account_number[-4:]
         if name:
             account.name = name
         elif self.application:
-            account.name = '%s – xxxxxxxxxxxx%s' % (self.application.full_name, self.account_number[-4:])
+            account.name = '%s – %s' % (self.application.full_name, masked_acct_num)
+        elif billing_address:
+            account.name = '%s – %s' % (billing_address.salutation, masked_acct_num)
         else:
-            account.name = 'xxxxxxxxxxxx%s' % (self.account_number[-4:])
+            account.name = masked_acct_num
 
         # Save account
         account.primary_user = owner or self.application.user
@@ -92,6 +119,7 @@ class CreditApplicationResult(object):
         elif self.application:
             meta.locale = self.application.locale
         meta.account_number = self.account_number
+        meta.billing_address = billing_address
         meta.save()
 
         # Link application to newly created account
