@@ -119,7 +119,7 @@ class ManualAddAccountForm(forms.Form):
     _meta_fields = fields_for_model(AccountMetadata, fields=[
         'account_number', 'locale'])
     _address_fields = fields_for_model(BillingAddress, fields=[
-        'title','first_name', 'last_name', 'line1', 'line2', 'line3', 'line4', 'state', 'postcode', 'country'])
+        'title', 'first_name', 'last_name', 'line1', 'line2', 'line3', 'line4', 'state', 'postcode', 'country'])
 
     name = _account_fields['name']
     primary_user = _account_fields['primary_user']
