@@ -31,6 +31,10 @@ We suggest running this a few times a day to fetch the latest account statuses.
 Changelog
 =========
 
+0.2.6
+------------------
+- Add a relation between wellsfargo.AccountMetadata and order.BillingAddress.
+
 0.2.5
 ------------------
 - Prevent creating invalid WFRS Plan Group Benefits in the standard bluelight benefit dashboard.
