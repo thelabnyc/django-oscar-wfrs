@@ -40,13 +40,15 @@
                     <tr>
                         <th>{% trans "Billing Address" %}</th>
                         <td>
-                            {% if account.wfrs_metadata.billing_address %}
-                                <p>
+                            <p>
+                                {% if account.wfrs_metadata.billing_address %}
                                     {% for field in account.wfrs_metadata.billing_address.active_address_fields %}
                                         {{ field }}<br/>
                                     {% endfor %}
-                                </p>
-                            {% endif %}
+                                {% else %}
+                                    <em>None</em>
+                                {% endif %}
+                            </p>
                         </td>
                     </tr>
                 </tbody>
