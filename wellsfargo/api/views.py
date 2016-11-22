@@ -143,9 +143,11 @@ class AccountView(viewsets.ModelViewSet):
         struct.transaction_status = CREDIT_APP_APPROVED
         struct.account_number = serializer.validated_data['wfrs_metadata']['account_number']
         struct.credit_limit = None
+
         account = struct.save(
             owner=request.user,
-            locale=serializer.validated_data['wfrs_metadata']['locale'])
+            locale=serializer.validated_data['wfrs_metadata']['locale'],
+            billing_address=serializer.validated_data['wfrs_metadata'].get('billing_address'))
 
         serializer = AccountSerializer(account, context={'request': request})
         return Response(serializer.data)

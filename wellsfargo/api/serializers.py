@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from oscar.core.loading import get_model
+from oscarapi.serializers import InlineBillingAddressSerializer
 from ..connector import actions
 from ..core.constants import (
     US, CA,
@@ -122,6 +123,7 @@ class AccountSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='wfrs-api-account-detail')
     locale = serializers.ChoiceField(source='wfrs_metadata.locale', choices=LOCALE_CHOICES, default=EN_US)
     account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16, source='wfrs_metadata.account_number')
+    billing_address = InlineBillingAddressSerializer(source='wfrs_metadata.billing_address', required=False)
 
     class Meta:
         model = Account
@@ -136,6 +138,7 @@ class AccountSerializer(serializers.HyperlinkedModelSerializer):
             'balance',
             'locale',
             'account_number',
+            'billing_address',
         )
         extra_kwargs = {
             'name': { 'read_only': True },

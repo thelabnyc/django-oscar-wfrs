@@ -110,6 +110,11 @@ class AccountMetadata(models.Model):
         MinLengthValidator(16),
         MinLengthValidator(16),
     ])
+    billing_address = models.OneToOneField('order.BillingAddress',
+        null=True, blank=True,
+        verbose_name=_("Billing Address"),
+        on_delete=models.SET_NULL,
+        related_name='+')
 
 
 class TransferMetadata(models.Model):

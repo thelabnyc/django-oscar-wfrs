@@ -9,12 +9,25 @@
                 <h3>{% trans "Add Existing Account" %}</h3>
             </div>
             <div class="well">
+                <h4>Basic Information</h4>
                 {% include 'dashboard/partials/form_field.html' with field=form.name %}
                 {% include 'dashboard/partials/form_field.html' with field=form.primary_user %}
                 {% include 'dashboard/partials/form_field.html' with field=form.status %}
                 {% include 'dashboard/partials/form_field.html' with field=form.credit_limit %}
                 {% include 'dashboard/partials/form_field.html' with field=form.account_number %}
                 {% include 'dashboard/partials/form_field.html' with field=form.locale %}
+
+                <h4>Billing Address</h4>
+                {% include 'dashboard/partials/form_field.html' with field=form.title %}
+                {% include 'dashboard/partials/form_field.html' with field=form.first_name %}
+                {% include 'dashboard/partials/form_field.html' with field=form.last_name %}
+                {% include 'dashboard/partials/form_field.html' with field=form.line1 %}
+                {% include 'dashboard/partials/form_field.html' with field=form.line2 %}
+                {% include 'dashboard/partials/form_field.html' with field=form.line3 %}
+                {% include 'dashboard/partials/form_field.html' with field=form.line4 %}
+                {% include 'dashboard/partials/form_field.html' with field=form.state %}
+                {% include 'dashboard/partials/form_field.html' with field=form.postcode %}
+                {% include 'dashboard/partials/form_field.html' with field=form.country %}
 
                 <div class="form-group">
                     <a class="btn btn-default" href="{% url 'accounts-list' %}">{% trans "Cancel" %}</a>
