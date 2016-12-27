@@ -31,6 +31,10 @@ We suggest running this a few times a day to fetch the latest account statuses.
 Changelog
 =========
 
+0.3.0
+------------------
+- Move API credentials into database, optionally triggered by user group.
+
 0.2.6
 ------------------
 - Add a relation between wellsfargo.AccountMetadata and order.BillingAddress.
