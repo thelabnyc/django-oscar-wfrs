@@ -55,7 +55,7 @@ class SubmitTransactionView(generic.FormView):
         form = self.get_form()
         if form.is_valid():
             try:
-                actions.submit_transaction( form.save() )
+                actions.submit_transaction(form.save(), current_user=request.user)
                 return self.form_valid(form)
             except TransactionDenied as e:
                 messages.add_message(request, messages.ERROR, _('Transaction was denied by Wells Fargo'))
@@ -113,7 +113,7 @@ class CreditApplicationView(generic.FormView):
         if form.is_valid():
             try:
                 app = form.save()
-                resp = actions.submit_credit_application(app)
+                resp = actions.submit_credit_application(app, current_user=request.user)
                 account = resp.save()
                 return self.form_valid(account)
             except CreditApplicationDenied as e:

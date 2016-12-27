@@ -2,6 +2,11 @@ from django.contrib import admin
 from . import models
 
 
+@admin.register(models.APICredentials)
+class APICredentialsAdmin(admin.ModelAdmin):
+    list_display = ['priority', 'username', 'password', 'merchant_num', 'user_group']
+
+
 @admin.register(models.AccountMetadata)
 class AccountMetadataAdmin(admin.ModelAdmin):
     list_display = ['account', 'locale', 'account_number']

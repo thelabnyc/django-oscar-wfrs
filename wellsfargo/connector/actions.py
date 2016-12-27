@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from oscar_accounts import facade
@@ -10,20 +10,17 @@ import logging
 from ..core.constants import CREDIT_APP_APPROVED, TRANS_APPROVED, TRANS_TYPE_INQUIRY, TRANS_TYPE_APPLY
 from ..core.exceptions import TransactionDenied, CreditApplicationDenied
 from ..core.structures import CreditApplicationResult, AccountInquiryResult
-from ..models import TransferMetadata, FinancingPlan
+from ..models import APICredentials, TransferMetadata, FinancingPlan
 from ..settings import (
     WFRS_TRANSACTION_WSDL,
     WFRS_INQUIRY_WSDL,
-    WFRS_CREDIT_APP_WSDL,
-    WFRS_USER_NAME,
-    WFRS_PASSWORD,
-    WFRS_MERCHANT_NUM
+    WFRS_CREDIT_APP_WSDL
 )
 
 logger = logging.getLogger(__name__)
 
 
-def submit_transaction(trans_request):
+def submit_transaction(trans_request, current_user=None):
     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
 
     trans_request.source_account.primary_user = trans_request.user
@@ -31,10 +28,12 @@ def submit_transaction(trans_request):
     if not trans_request.source_account.can_be_authorised_by(trans_request.user):
         raise TransactionDenied('%s can not authorize transfer from %s' % (trans_request.user, trans_request.source_account))
 
+    creds = APICredentials.get_credentials(current_user)
+
     request = client.factory.create('ns2:Transaction')
-    request.userName = WFRS_USER_NAME
-    request.setupPassword = WFRS_PASSWORD
-    request.merchantNumber = WFRS_MERCHANT_NUM
+    request.userName = creds.username
+    request.setupPassword = creds.password
+    request.merchantNumber = creds.merchant_num
     request.uuid = uuid.uuid1()
     request.transactionCode = trans_request.type_code
     request.localeString = trans_request.source_account.wfrs_metadata.locale
@@ -79,13 +78,15 @@ def submit_transaction(trans_request):
     return transfer
 
 
-def submit_inquiry(account):
+def submit_inquiry(account, current_user=None):
     client = soap.get_client(WFRS_INQUIRY_WSDL, 'WFRS')
 
+    creds = APICredentials.get_credentials(current_user)
+
     request = client.factory.create('ns2:Inquiry')
-    request.userName = WFRS_USER_NAME
-    request.setupPassword = WFRS_PASSWORD
-    request.merchantNumber = WFRS_MERCHANT_NUM
+    request.userName = creds.username
+    request.setupPassword = creds.password
+    request.merchantNumber = creds.merchant_num
     request.uuid = uuid.uuid1()
     request.transactionCode = TRANS_TYPE_INQUIRY
     request.localeString = account.wfrs_metadata.locale
@@ -108,18 +109,19 @@ def submit_inquiry(account):
     # Build response
     result = AccountInquiryResult()
     result.account = account
-    result.balence = _as_decimal(resp.accountBalance)
+    result.balance = _as_decimal(resp.accountBalance)
     result.open_to_buy = _as_decimal(resp.openToBuy)
     return result
 
 
-def submit_credit_application(app):
+def submit_credit_application(app, current_user=None):
     client = soap.get_client(WFRS_CREDIT_APP_WSDL, 'WFRS')
     data = client.factory.create('ns2:CreditApp')
 
-    data.userName = WFRS_USER_NAME
-    data.setupPassword = WFRS_PASSWORD
-    data.merchantNumber = WFRS_MERCHANT_NUM
+    creds = APICredentials.get_credentials(current_user)
+    data.userName = creds.username
+    data.setupPassword = creds.password
+    data.merchantNumber = creds.merchant_num
 
     data.uuid = uuid.uuid1()
     data.transactionCode = TRANS_TYPE_APPLY
@@ -224,4 +226,7 @@ def _format_ssn(number):
 
 
 def _as_decimal(string):
-    return Decimal(string).quantize(Decimal('.01'))
+    try:
+        return Decimal(string).quantize(Decimal('.01'))
+    except (TypeError, InvalidOperation):
+        return Decimal('0.00')

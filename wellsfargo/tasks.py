@@ -14,7 +14,7 @@ def reconcile_accounts(self):
         account = m.account
         logger.info('Reconciling account %s' % account)
         try:
-            resp = actions.submit_inquiry(account)
+            resp = actions.submit_inquiry(account, current_user=account.primary_user)
             resp.reconcile()
         except ValidationError as e:
             logging.warning('Failed to reconcile account %s due to ValidationError[%s]' % (account, e.message))

@@ -46,7 +46,7 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
         app.save()
 
         # Submit application to to Wells
-        resp = actions.submit_credit_application(app)
+        resp = actions.submit_credit_application(app, current_user=request.user)
 
         # Use the Wells response to create a new account in the DB (if the application was approved)
         account = resp.save(owner=request.user)

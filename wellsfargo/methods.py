@@ -59,7 +59,7 @@ class WellsFargo(PaymentMethod):
             amount=amount_to_allocate,
             ticket_number=order.number)
         try:
-            transfer = actions.submit_transaction(transaction_request)
+            transfer = actions.submit_transaction(transaction_request, current_user=request.user)
         except exceptions.TransactionDenied:
             return Declined(amount)
 
