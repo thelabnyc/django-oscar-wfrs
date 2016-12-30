@@ -45,6 +45,7 @@ class FinancingPlan(models.Model):
     ])
     term_months = models.PositiveSmallIntegerField(_("Term Length (months)"), default=12)
     is_default_plan = models.BooleanField(_("Is Default Plan?"), default=False)
+    requires_credit_line = models.BooleanField(_('Requires pre-existing credit line'), default=False)
 
     class Meta:
         ordering = ('plan_number', )
