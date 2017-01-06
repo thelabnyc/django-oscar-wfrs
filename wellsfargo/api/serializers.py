@@ -159,4 +159,5 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
             'description',
             'apr',
             'term_months',
+            'allow_credit_application',
         )
