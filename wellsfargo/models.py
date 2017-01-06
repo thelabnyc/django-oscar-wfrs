@@ -74,6 +74,7 @@ class FinancingPlan(models.Model):
     ])
     term_months = models.PositiveSmallIntegerField(_("Term Length (months)"), default=12)
     is_default_plan = models.BooleanField(_("Is Default Plan?"), default=False)
+    allow_credit_application = models.BooleanField(_('Allow new credit applications when user is eligible for this plan?'), default=True)
 
     class Meta:
         ordering = ('plan_number', )

@@ -39,6 +39,7 @@
                     <th>{% trans "Term Length (months)" %}</th>
                     <th>{% trans "Description" %}</th>
                     <th>{% trans "Is Default" %}</th>
+                    <th>{% trans "Allow New Credit Applications" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -52,6 +53,7 @@
                         <td>{{ plan.term_months }}</td>
                         <td>{{ plan.description }}</td>
                         <td>{{ plan.is_default_plan }}</td>
+                        <td>{{ plan.allow_credit_application }}</td>
                         <td>
                             <a href="{% url 'wfrs-plan-edit' pk=plan.pk %}" class="btn btn-primary">{% trans "Edit" %}</a>
                             <a href="{% url 'wfrs-plan-delete' pk=plan.pk %}" class="btn btn-danger">{% trans "Delete" %}</a>
