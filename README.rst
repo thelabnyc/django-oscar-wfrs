@@ -31,6 +31,10 @@ We suggest running this a few times a day to fetch the latest account statuses.
 Changelog
 =========
 
+0.3.1
+------------------
+- Add boolean for controlling whether or not to display a credit application form to the client.
+
 0.3.0
 ------------------
 - Move API credentials into database, optionally triggered by user group.
