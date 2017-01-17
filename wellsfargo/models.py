@@ -248,8 +248,15 @@ class USCreditApp(USCreditAppMixin, BaseCreditAppMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=False, blank=False,
         verbose_name=_("Owner"),
+        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='us_individual_credit_apps',
         on_delete=models.CASCADE)
+    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        verbose_name=_("Submitting User"),
+        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
+        related_name='+',
+        on_delete=models.SET_NULL)
 
 
 
@@ -263,8 +270,15 @@ class USJointCreditApp(USJointCreditAppMixin, BaseJointCreditAppMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=False, blank=False,
         verbose_name=_("Owner"),
+        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='us_joint_credit_apps',
         on_delete=models.CASCADE)
+    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        verbose_name=_("Submitting User"),
+        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
+        related_name='+',
+        on_delete=models.SET_NULL)
 
 
 class CACreditApp(CACreditAppMixin, BaseCreditAppMixin):
@@ -277,8 +291,15 @@ class CACreditApp(CACreditAppMixin, BaseCreditAppMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=False, blank=False,
         verbose_name=_("Owner"),
+        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='ca_individual_credit_apps',
         on_delete=models.CASCADE)
+    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        verbose_name=_("Submitting User"),
+        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
+        related_name='+',
+        on_delete=models.SET_NULL)
 
 
 class CAJointCreditApp(CAJointCreditAppMixin, BaseJointCreditAppMixin):
@@ -291,5 +312,12 @@ class CAJointCreditApp(CAJointCreditAppMixin, BaseJointCreditAppMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=False, blank=False,
         verbose_name=_("Owner"),
+        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='ca_joint_credit_apps',
         on_delete=models.CASCADE)
+    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        verbose_name=_("Submitting User"),
+        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
+        related_name='+',
+        on_delete=models.SET_NULL)

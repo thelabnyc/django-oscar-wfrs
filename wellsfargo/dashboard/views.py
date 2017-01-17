@@ -113,6 +113,8 @@ class CreditApplicationView(generic.FormView):
         if form.is_valid():
             try:
                 app = form.save()
+                app.submitting_user = request.user
+                app.save()
                 resp = actions.submit_credit_application(app, current_user=request.user)
                 account = resp.save()
                 return self.form_valid(account)

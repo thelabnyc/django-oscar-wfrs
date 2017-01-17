@@ -4,7 +4,7 @@ from . import models
 
 @admin.register(models.APICredentials)
 class APICredentialsAdmin(admin.ModelAdmin):
-    list_display = ['priority', 'username', 'password', 'merchant_num', 'user_group']
+    list_display = ['priority', 'username', 'merchant_num', 'user_group']
 
 
 @admin.register(models.AccountMetadata)

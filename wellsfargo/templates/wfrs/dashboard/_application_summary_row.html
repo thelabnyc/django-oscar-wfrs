@@ -10,8 +10,22 @@
         {% endif %}
     </td>
     <td>
+        {% if app.user %}
+            <a href="{% url 'dashboard:user-detail' pk=app.user.pk %}">{{ app.user.get_full_name | default:app.user.username }}</a>
+        {% else %}
+            -
+        {% endif %}
+    </td>
+    <td>
+        {% if app.submitting_user %}
+            <a href="{% url 'dashboard:user-detail' pk=app.submitting_user.pk %}">{{ app.submitting_user.get_full_name | default:app.submitting_user.username }}</a>
+        {% else %}
+            -
+        {% endif %}
+    </td>
+    <td>
         {% if app.account %}
-            <a href="{% url 'accounts-detail' pk=app.account.pk %}">{{ app.account }}</a>
+            <a href="{% url 'accounts-detail' pk=app.account.pk %}">{{ app.account.name }}</a>
         {% else %}
             -
         {% endif %}

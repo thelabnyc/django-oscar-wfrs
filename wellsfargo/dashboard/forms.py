@@ -157,6 +157,13 @@ class ManualAddAccountForm(forms.Form):
         })
 
 
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if Account.objects.filter(name=name).count() > 0:
+            raise forms.ValidationError("Account name must be unique.")
+        return name
+
+
 class FinancingPlanForm(forms.ModelForm):
     class Meta:
         model = FinancingPlan

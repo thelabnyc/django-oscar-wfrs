@@ -196,7 +196,7 @@ class TypeAheadModelSelect(Input):
                 }
             </style>
             <script type="text/javascript">
-                document.body.onload = function() {
+                document.addEventListener('DOMContentLoaded', function() {
                     var source = new Bloodhound({
                         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('label'),
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -218,7 +218,7 @@ class TypeAheadModelSelect(Input):
                     auto.bind('typeahead:select', function(event, selected) {
                         hidden.val(selected.id);
                     });
-                };
+                }, false);
             </script>
         """
         return mark_safe(html)

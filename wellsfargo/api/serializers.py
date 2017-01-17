@@ -43,6 +43,7 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
         Application = self.Meta.model
         app = Application(**self.validated_data)
         app.user = request.user
+        app.submitting_user = request.user
         app.save()
 
         # Submit application to to Wells
