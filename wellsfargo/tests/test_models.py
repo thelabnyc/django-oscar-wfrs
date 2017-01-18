@@ -94,7 +94,7 @@ class AccountInquiryResultTest(BaseTest):
         self.assertEqual(source.credit_limit, Decimal('7500.00'))
         self.assertEqual(source.balance, Decimal('-999.99'))
 
-        # Customer made a payment
+        # Customer made a payment of $199.99
         inquiry = AccountInquiryResult()
         inquiry.account = source
         inquiry.balance = Decimal('800.00')
@@ -105,7 +105,7 @@ class AccountInquiryResultTest(BaseTest):
         self.assertEqual(source.credit_limit, Decimal('7500.00'))
         self.assertEqual(source.balance, Decimal('-800.00'))
 
-        # Wells Fargo lowered the Customer's credit limit
+        # Wells Fargo lowered the Customer's credit limit by $700
         inquiry = AccountInquiryResult()
         inquiry.account = source
         inquiry.balance = Decimal('800.00')
@@ -116,7 +116,7 @@ class AccountInquiryResultTest(BaseTest):
         self.assertEqual(source.credit_limit, Decimal('6800.00'))
         self.assertEqual(source.balance, Decimal('-800.00'))
 
-        # Wells Fargo lowered the Customer's credit limit again and the customer made a payment
+        # Wells Fargo lowered the Customer's credit limit by $1100 and the customer made a payment of $100.
         inquiry = AccountInquiryResult()
         inquiry.account = source
         inquiry.balance = Decimal('700.00')
@@ -126,6 +126,17 @@ class AccountInquiryResultTest(BaseTest):
         # Check account balance
         self.assertEqual(source.credit_limit, Decimal('5700.00'))
         self.assertEqual(source.balance, Decimal('-700.00'))
+
+        # Customer bought something somewhere else for $200.
+        inquiry = AccountInquiryResult()
+        inquiry.account = source
+        inquiry.balance = Decimal('900.00')
+        inquiry.open_to_buy = Decimal('4800.00')
+        inquiry.reconcile()
+
+        # Check account balance
+        self.assertEqual(source.credit_limit, Decimal('5700.00'))
+        self.assertEqual(source.balance, Decimal('-900.00'))
 
 
 class CreditApplicationResultTest(BaseTest):

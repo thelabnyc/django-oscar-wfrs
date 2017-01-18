@@ -29,21 +29,30 @@ class AccountInquiryResult(object):
         balance_us = self.account.balance
         balance_change = balance_wf - balance_us
         if balance_change != Decimal('0.00'):
-            logger.info('Reconciling balance offset of %s on account %s' % (balance_change, self.account))
-            facade.transfer(
-                description=_('Automatic compensating transaction during reconciliation with Wells Fargo Retail Services.'),
-                source=Account.objects.get(name=names.BANK),
-                destination=self.account,
-                amount=balance_change,
-                user=user)
+            self._create_compensating_transaction(balance_change, user)
         else:
-            logger.info('Reconciliation not needed. Recorded balance matches WFRS records for account %s' % (self.account))
+            logger.info('Reconciliation not needed. Recorded balance matches WFRS records for account #%s' % (self.account.pk))
 
         assert self.account.balance == balance_wf
 
         # Adjust the credit limit to match WF. Should be equal to the sum of `balance` and `open_to_buy`
         self.account.credit_limit = (self.balance + self.open_to_buy)
         self.account.save()
+
+    def _create_compensating_transaction(self, balance_change, user):
+        logger.info('Reconciling balance offset of %s on account #%s' % (balance_change, self.account.pk))
+        bank = Account.objects.get(name=names.BANK)
+        if balance_change > 0:
+            source = bank
+            destination = self.account
+        else:
+            source = self.account
+            destination = bank
+        balance_change = abs(balance_change)
+        descr = _('Automatic compensating transaction during reconciliation with Wells Fargo Retail Services.')
+        facade.transfer(description=descr, source=source, destination=destination, amount=balance_change, user=user)
+        logger.info('Brought account #%s into balance by transferring %s from account #%s to account #%s' % (
+            self.account.pk, balance_change, source.pk, destination.pk))
 
 
 class CreditApplicationResult(object):
