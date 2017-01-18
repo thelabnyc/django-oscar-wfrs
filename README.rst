@@ -31,6 +31,11 @@ We suggest running this a few times a day to fetch the latest account statuses.
 Changelog
 =========
 
+0.4.0
+------------------
+- Add improved credit application search functionality to dashboard.
+- Fix bug where AccountInquiryResult.reconcile() would sometimes attempt to make a debit with a negative amount.
+
 0.3.1
 ------------------
 - Add boolean for controlling whether or not to display a credit application form to the client.
