@@ -1,11 +1,26 @@
 {{ object.email }}
-
-{{ object.main_first_name }} {{ object.main_last_name }} {{ object.main_middle_initial }} {{ object.main_address_line1 }} {{ object.main_address_line2 }} {{ object.main_address_city }} {{ object.main_address_state }} {{ object.main_address_postcode }} {{ object.main_home_phone }} {{ object.main_employer_name }} {{ object.main_employer_phone }} {{ object.main_cell_phone }} {{ object.main_occupation }}
-
-{{ object.joint_first_name }} {{ object.joint_last_name }} {{ object.joint_middle_initial }} {{ object.joint_address_line1 }} {{ object.joint_address_line2 }} {{ object.joint_address_city }} {{ object.joint_address_state }} {{ object.joint_address_postcode }} {{ object.joint_employer_name }} {{ object.joint_employer_phone }} {{ object.joint_cell_phone }} {{ object.joint_occupation }}
-
+{{ object.main_first_name }} {{ object.main_middle_initial }} {{ object.main_last_name }}
+{{ object.main_address_line1 }}
+{{ object.main_address_line2 }}
+{{ object.main_address_city }}
+{{ object.main_address_state }}
+{{ object.main_address_postcode }}
+{{ object.main_home_phone }}
+{{ object.main_employer_name }}
+{{ object.main_employer_phone }}
+{{ object.main_cell_phone }}
+{{ object.main_occupation }}
+{{ object.joint_first_name }} {{ object.joint_middle_initial }} {{ object.joint_last_name }}
+{{ object.joint_address_line1 }}
+{{ object.joint_address_line2 }}
+{{ object.joint_address_city }}
+{{ object.joint_address_state }}
+{{ object.joint_address_postcode }}
+{{ object.joint_employer_name }}
+{{ object.joint_employer_phone }}
+{{ object.joint_cell_phone }}
+{{ object.joint_occupation }}
 {{ object.user.get_full_name }}
-
 {{ object.submitting_user.get_full_name }}
-
-{{ object.account.name }} {{ object.account.code }}
+{{ object.account.name }}
+{{ object.account.code }}

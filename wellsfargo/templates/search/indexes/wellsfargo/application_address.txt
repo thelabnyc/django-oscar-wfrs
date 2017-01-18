@@ -1,0 +1,10 @@
+{{ object.main_address_line1 }}
+{{ object.main_address_line2 }}
+{{ object.main_address_city }}
+{{ object.main_address_state }}
+{{ object.main_address_postcode }}
+{{ object.joint_address_line1 }}
+{{ object.joint_address_line2 }}
+{{ object.joint_address_city }}
+{{ object.joint_address_state }}
+{{ object.joint_address_postcode }}

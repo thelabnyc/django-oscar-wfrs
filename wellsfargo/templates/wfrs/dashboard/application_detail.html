@@ -36,7 +36,7 @@
                     <td>{% trans "Account" %}</td>
                     <td>
                         {% if object.account %}
-                            <a href="{% url 'accounts-detail' pk=object.account.pk %}">{{ object.account }}</a>
+                            <a href="{% url 'accounts-detail' pk=object.account.pk %}">{{ object.account.name }}</a>
                         {% else %}
                             -
                         {% endif %}

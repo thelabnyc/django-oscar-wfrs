@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.forms.models import fields_for_model
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model
-from oscar.forms.widgets import DatePickerInput
+from oscar.forms.widgets import DatePickerInput, DateTimePickerInput
 from .widgets import FuzzyDurationWidget, BooleanSelect, TypeAheadModelSelect
 from ..core.constants import (
     US, CA,
@@ -186,7 +186,21 @@ class FinancingPlanBenefitForm(forms.ModelForm):
 
 
 class ApplicationSearchForm(forms.Form):
+    # Basic Search
     search_text = forms.CharField(required=False, label="Search")
+
+    # Advanced Search
+    name = forms.CharField(required=False, label="Applicant Name")
+    email = forms.CharField(required=False, label="Applicant Email Address")
+    address = forms.CharField(required=False, label="Applicant Address")
+    phone = forms.CharField(required=False, label="Applicant Phone Number")
+    created_date_from = forms.DateTimeField(required=False, label=_("Submitted After"), widget=DateTimePickerInput)
+    created_date_to = forms.DateTimeField(required=False, label=_("Submitted Before"), widget=DateTimePickerInput)
+    submitted_by = forms.CharField(required=False, label="Submitted By")
+
+    # Hidden filters linked to by other parts of the application
+    user_id = forms.IntegerField(required=False, widget=forms.HiddenInput())
+    submitting_user_id = forms.IntegerField(required=False, widget=forms.HiddenInput())
 
 
 def get_application_form_class(region, app_type):

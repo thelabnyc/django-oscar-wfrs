@@ -1,0 +1,2 @@
+{{ object.main_first_name }} {{ object.main_last_name }} {{ object.main_middle_initial }}
+{{ object.joint_first_name }} {{ object.joint_last_name }} {{ object.joint_middle_initial }}

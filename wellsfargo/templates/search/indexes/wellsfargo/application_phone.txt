@@ -1,0 +1,5 @@
+{{ object.main_home_phone }}
+{{ object.main_employer_phone }}
+{{ object.main_cell_phone }}
+{{ object.joint_employer_phone }}
+{{ object.joint_cell_phone }}

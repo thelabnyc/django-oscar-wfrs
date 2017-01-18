@@ -1,0 +1,5 @@
+{% if record.submitting_user_username and record.submitting_user_id %}
+    <a href="{% url 'dashboard:user-detail' pk=record.submitting_user_id %}">{{ record.submitting_user_full_name | default:record.submitting_user_username }}</a>
+{% else %}
+    -
+{% endif %}

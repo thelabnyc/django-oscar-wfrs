@@ -1,0 +1,5 @@
+{% if record.account_name and record.account_id %}
+    <a href="{% url 'accounts-detail' pk=record.account_id %}">{{ record.account_name }}</a>
+{% else %}
+    -
+{% endif %}

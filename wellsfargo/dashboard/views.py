@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
+from django_tables2 import SingleTableView
 from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 from oscar.core.loading import get_model
@@ -30,6 +32,8 @@ from .forms import (
     ApplicationSearchForm,
     get_application_form_class,
 )
+from .tables import CreditApplicationIndexTable
+
 
 Account = get_model('oscar_accounts', 'Account')
 
@@ -240,28 +244,101 @@ class FinancingPlanBenefitDeleteView(generic.DeleteView):
     context_object_name = "benefit"
 
 
-class CreditApplicationListView(generic.ListView):
+class CreditApplicationListView(SingleTableView):
     template_name = "wfrs/dashboard/application_list.html"
-    context_object_name = "applications"
-
-    def dispatch(self, request, *args, **kwargs):
-        self.form = ApplicationSearchForm(request.GET)
-        self.form.is_valid()
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        qs = SearchQuerySet().models(*APPLICATION_MODELS.values())
-
-        search_text = self.form.cleaned_data.get('search_text', '')
-        if search_text:
-            qs = qs.filter(text=AutoQuery(search_text))
-
-        return qs.all()
+    form_class = ApplicationSearchForm
+    table_class = CreditApplicationIndexTable
+    context_table_name = 'applications'
+    filter_descrs = []
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form
+        context['search_filters'] = self.filter_descrs
         return context
+
+    def get_description(self, form):
+        if form.is_valid() and any(form.cleaned_data.values()):
+            return _('Credit Application Search Results')
+        return _('Credit Applications')
+
+    def get_table(self, **kwargs):
+        table = super().get_table(**kwargs)
+        table.caption = self.get_description(self.form)
+        return table
+
+    def get_queryset(self):
+        qs = SearchQuerySet().models(*APPLICATION_MODELS.values())
+        # Default ordering
+        if not self.request.GET.get('sort'):
+            qs = qs.order_by('-created_datetime')
+        # Apply search filters
+        qs = self.apply_search(qs)
+        return qs
+
+    def apply_search(self, qs):
+        self.filter_descrs = []
+        self.form = self.form_class(self.request.GET)
+        if not self.form.is_valid():
+            return qs
+        data = self.form.cleaned_data
+
+        # Basic search
+        search_text = data.get('search_text')
+        if search_text:
+            qs = qs.filter(text=AutoQuery(search_text))
+            self.filter_descrs.append(_('Application contains “{text}”').format(text=search_text))
+
+        # Advanced search
+        name = data.get('name')
+        if name:
+            qs = qs.filter(name=name)
+            self.filter_descrs.append(_('Applicant name contains “{name}”').format(name=name))
+
+        email = data.get('email')
+        if email:
+            qs = qs.filter(email=email)
+            self.filter_descrs.append(_('Applicant email contains “{email}”').format(email=email))
+
+        address = data.get('address')
+        if address:
+            qs = qs.filter(address=address)
+            self.filter_descrs.append(_('Applicant address contains “{address}”').format(address=address))
+
+        phone = data.get('phone')
+        if phone:
+            qs = qs.filter(phone__exact=phone)
+            self.filter_descrs.append(_('Phone number contains “{phone}”').format(phone=phone))
+
+        created_date_from = data.get('created_date_from')
+        if created_date_from:
+            qs = qs.filter(created_datetime__gt=created_date_from)
+            self.filter_descrs.append(_('Application submitted after {date}').format(date=created_date_from.strftime('%c')))
+
+        created_date_to = data.get('created_date_to')
+        if created_date_to:
+            qs = qs.filter(created_datetime__lt=created_date_to)
+            self.filter_descrs.append(_('Application submitted before {date}').format(date=created_date_to.strftime('%c')))
+
+        submitted_by = data.get('submitted_by')
+
+        user_id = data.get('user_id')
+        if user_id:
+            user = get_object_or_404(get_user_model(), pk=user_id)
+            qs = qs.filter(user_id=user_id)
+            self.filter_descrs.append(_('Application owned by “{name}”').format(name=user.get_full_name()))
+
+        submitting_user_id = data.get('submitting_user_id')
+        submitted_by = data.get('submitted_by')
+        if submitting_user_id:
+            user = get_object_or_404(get_user_model(), pk=submitting_user_id)
+            qs = qs.filter(submitting_user_id=submitting_user_id)
+            self.filter_descrs.append(_('Application submitted by “{name}”').format(name=user.get_full_name()))
+        elif submitted_by:
+            qs = qs.filter(submitting_user_full_name=submitted_by)
+            self.filter_descrs.append(_('Application submitted by “{name}”').format(name=submitted_by))
+
+        return qs
 
 
 class CreditApplicationDetailView(generic.DetailView):

@@ -1,0 +1,11 @@
+{% if record.APP_TYPE_CODE == 'us-individual' %}
+    US Individual
+{% elif record.APP_TYPE_CODE == 'us-joint' %}
+    US Joint
+{% elif record.APP_TYPE_CODE == 'ca-individual' %}
+    CA Individual
+{% elif record.APP_TYPE_CODE == 'us-joint' %}
+    CA Joint
+{% else %}
+    -
+{% endif %}
