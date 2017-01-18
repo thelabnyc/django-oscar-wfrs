@@ -22,14 +22,7 @@
             <table class="table table-striped table-bordered table-hover">
                 <caption>{% trans "United States Individual Credit Applications" %}</caption>
                 {% if customer.us_individual_credit_apps.count %}
-                    <tr>
-                        <th>{% trans "Applicant Name 1" %}</th>
-                        <th>{% trans "Applicant Name 2" %}</th>
-                        <th>{% trans "Account" %}</th>
-                        <th>{% trans "Created Date" %}</th>
-                        <th>{% trans "Modified Date" %}</th>
-                        <th></th>
-                    </tr>
+                    {% include 'wfrs/dashboard/_application_summary_header.html' %}
                     {% for app in customer.us_individual_credit_apps.all %}
                         {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
                     {% endfor %}
@@ -43,14 +36,7 @@
             <table class="table table-striped table-bordered table-hover">
                 <caption>{% trans "United States Joint Credit Applications" %}</caption>
                 {% if customer.us_joint_credit_apps.count %}
-                    <tr>
-                        <th>{% trans "Applicant Name 1" %}</th>
-                        <th>{% trans "Applicant Name 2" %}</th>
-                        <th>{% trans "Account" %}</th>
-                        <th>{% trans "Created Date" %}</th>
-                        <th>{% trans "Modified Date" %}</th>
-                        <th></th>
-                    </tr>
+                    {% include 'wfrs/dashboard/_application_summary_header.html' %}
                     {% for app in customer.us_joint_credit_apps.all %}
                         {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
                     {% endfor %}
@@ -64,14 +50,7 @@
             <table class="table table-striped table-bordered table-hover">
                 <caption>{% trans "Canada Individual Credit Applications" %}</caption>
                 {% if customer.ca_individual_credit_apps.count %}
-                    <tr>
-                        <th>{% trans "Applicant Name 1" %}</th>
-                        <th>{% trans "Applicant Name 2" %}</th>
-                        <th>{% trans "Account" %}</th>
-                        <th>{% trans "Created Date" %}</th>
-                        <th>{% trans "Modified Date" %}</th>
-                        <th></th>
-                    </tr>
+                    {% include 'wfrs/dashboard/_application_summary_header.html' %}
                     {% for app in customer.ca_individual_credit_apps.all %}
                         {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
                     {% endfor %}
@@ -85,14 +64,7 @@
             <table class="table table-striped table-bordered table-hover">
                 <caption>{% trans "Canada Joint Credit Applications" %}</caption>
                 {% if customer.ca_joint_credit_apps.count %}
-                    <tr>
-                        <th>{% trans "Applicant Name 1" %}</th>
-                        <th>{% trans "Applicant Name 2" %}</th>
-                        <th>{% trans "Account" %}</th>
-                        <th>{% trans "Created Date" %}</th>
-                        <th>{% trans "Modified Date" %}</th>
-                        <th></th>
-                    </tr>
+                    {% include 'wfrs/dashboard/_application_summary_header.html' %}
                     {% for app in customer.ca_joint_credit_apps.all %}
                         {% include 'wfrs/dashboard/_application_summary_row.html' with app=app %}
                     {% endfor %}

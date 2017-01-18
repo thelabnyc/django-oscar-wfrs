@@ -186,12 +186,7 @@ class FinancingPlanBenefitForm(forms.ModelForm):
 
 
 class ApplicationSearchForm(forms.Form):
-    app_type = forms.ChoiceField(required=False, label="Application Type", choices=(
-        (USCreditApp.APP_TYPE_CODE, _('United States Individual Applications')),
-        (USJointCreditApp.APP_TYPE_CODE, _('United States Joint Applications')),
-        (CACreditApp.APP_TYPE_CODE, _('Canada Individual Applications')),
-        (CAJointCreditApp.APP_TYPE_CODE, _('Canada Joint Applications')),
-    ))
+    search_text = forms.CharField(required=False, label="Search")
 
 
 def get_application_form_class(region, app_type):

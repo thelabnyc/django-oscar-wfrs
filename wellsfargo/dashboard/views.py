@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.views import generic
+from haystack.query import SearchQuerySet
+from haystack.inputs import AutoQuery
 from oscar.core.loading import get_model
 from oscar_accounts.core import redemptions_account
 from ..connector import actions
@@ -248,8 +250,13 @@ class CreditApplicationListView(generic.ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        app_type = self.form.cleaned_data['app_type']
-        return APPLICATION_MODELS.get(app_type, DEFAULT_APPLICATION).objects.order_by('-created_datetime').all()
+        qs = SearchQuerySet().models(*APPLICATION_MODELS.values())
+
+        search_text = self.form.cleaned_data.get('search_text', '')
+        if search_text:
+            qs = qs.filter(text=AutoQuery(search_text))
+
+        return qs.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

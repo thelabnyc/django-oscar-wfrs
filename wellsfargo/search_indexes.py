@@ -1,6 +1,12 @@
 from django.db.models import Q
 from haystack import indexes
-from .models import AccountOwner
+from .models import (
+    AccountOwner,
+    USCreditApp,
+    USJointCreditApp,
+    CACreditApp,
+    CAJointCreditApp,
+)
 
 
 class AccountOwnerAutocompleteIndex(indexes.SearchIndex, indexes.Indexable):
@@ -24,3 +30,68 @@ class AccountOwnerAutocompleteIndex(indexes.SearchIndex, indexes.Indexable):
         # If we don't have at least a name or an email, don't include them in the search index
         qs = self.get_model().objects.exclude(blank_first_name & blank_last_name & blank_email)
         return qs.all()
+
+
+class BaseCreditAppIndex(indexes.SearchIndex):
+    APP_TYPE_CODE = indexes.CharField(model_attr='APP_TYPE_CODE')
+    created_datetime = indexes.DateTimeField(model_attr='created_datetime')
+
+    main_first_name = indexes.CharField(model_attr='main_first_name')
+    main_last_name = indexes.CharField(model_attr='main_last_name')
+    email = indexes.CharField(model_attr='email')
+
+    user_full_name = indexes.CharField()
+    user_username = indexes.CharField(model_attr='user__username')
+    user_id = indexes.IntegerField(model_attr='user_id')
+
+    submitting_user_full_name = indexes.CharField(null=True)
+    submitting_user_username = indexes.CharField(model_attr='submitting_user__username', null=True)
+    submitting_user_id = indexes.IntegerField(model_attr='submitting_user_id', null=True)
+
+    account_id = indexes.IntegerField(null=True)
+    account_name = indexes.CharField(null=True)
+
+    text = indexes.EdgeNgramField(
+        document=True,
+        use_template=True,
+        template_name='search/indexes/wellsfargo/application_text.txt')
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.all()
+
+    def prepare_owner_full_name(self, obj):
+        return obj.get_full_name()
+
+    def prepare_submitting_user_full_name(self, obj):
+        return obj.submitting_user.get_full_name() if obj.submitting_user else None
+
+    def prepare_account_id(self, obj):
+        return obj.account.id if obj.account else None
+
+    def prepare_account_name(self, obj):
+        return obj.account.name if obj.account else None
+
+
+class BaseJointCreditAppIndex(BaseCreditAppIndex):
+    joint_first_name = indexes.CharField(model_attr='joint_first_name')
+    joint_last_name = indexes.CharField(model_attr='joint_last_name')
+
+
+class USCreditAppIndex(BaseCreditAppIndex, indexes.Indexable):
+    def get_model(self):
+        return USCreditApp
+
+
+class USJointCreditAppIndex(BaseJointCreditAppIndex, indexes.Indexable):
+    def get_model(self):
+        return USJointCreditApp
+
+
+class CACreditAppIndex(BaseCreditAppIndex, indexes.Indexable):
+    def get_model(self):
+        return CACreditApp
+
+
+class CAJointCreditAppIndex(BaseJointCreditAppIndex, indexes.Indexable):
+    def get_model(self):
+        return CAJointCreditApp
