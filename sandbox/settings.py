@@ -184,7 +184,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 
 # Appends accounts to the dashboard navigation
-OSCAR_DASHBOARD_NAVIGATION.append({
+OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     'label': 'Accounts',
     'icon': 'icon-globe',
     'children': [
@@ -208,7 +208,7 @@ OSCAR_DASHBOARD_NAVIGATION.append({
 })
 
 
-OSCAR_DASHBOARD_NAVIGATION.append({
+OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     'label': 'Wells Fargo',
     'icon': 'icon-globe',
     'children': [

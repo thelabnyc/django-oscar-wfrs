@@ -14,7 +14,7 @@ class BaseTest(SoapTest, APITestCase):
 
     def setUp(self):
         create_default_accounts()
-        self.joe = User.objects.create_user(username='joe', password='schmoe')
+        self.joe = User.objects.create_user(username='joe', password='schmoe', email='joe@example.com')
         return super().setUp()
 
 

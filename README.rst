@@ -31,6 +31,10 @@ We suggest running this a few times a day to fetch the latest account statuses.
 Changelog
 =========
 
+0.4.1
+------------------
+- Upgrade dependencies.
+
 0.4.0
 ------------------
 - Add improved credit application search functionality to dashboard.

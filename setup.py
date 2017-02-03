@@ -1,31 +1,38 @@
 #!/usr/bin/env python
+from setuptools import setup, find_packages, Distribution
 import codecs
 import os.path
-from setuptools import setup, find_packages
-from versiontag import get_version, cache_git_tag
+
+# Make sure versiontag exists before going any further
+Distribution().fetch_build_eggs('versiontag>=1.2.0')
+
+from versiontag import get_version, cache_git_tag  # NOQA
 
 
 packages = find_packages()
 
-setup_requires = [
-    'versiontag>=1.1.0',
-]
-
-requires = [
-    'Django>=1.9.6',
-    'djangorestframework>=3.3.2',
-    'django-haystack>=2.5.0',
-    'django-oscar>=1.2.1',
+install_requires = [
+    'django-oscar>=1.3.0',
     'django-oscar-accounts>=0.4rc1',
-    'django-oscar-api>=1.0.4',
-    'django-oscar-api-checkout>=0.1.4',
-    'django-oscar-bluelight>=0.5.0',
-    'django-localflavor>=1.3',
+    'django-oscar-api>=1.0.10post1',
+    'django-oscar-api-checkout>=0.2.4',
+    'django-oscar-bluelight>=0.5.2',
+    'django-haystack>=2.5.0',
+    'django-localflavor>=1.4.1',
+    'djangorestframework>=3.1.0,<3.5.0',
     'instrumented-soap>=1.1.0',
 ]
 
 extras_require = {
-    'celery': ['celery>=3.1.23'],
+    'celery': [
+        'celery>=3.1.23'
+    ],
+    'development': [
+        'elasticsearch>=1.9.0,<2.0.0',
+        'flake8>=3.2.1',
+        'psycopg2>=2.6.2',
+        'PyYAML>=3.12',
+    ],
 }
 
 
@@ -65,6 +72,6 @@ setup(
     license='ISC',
     packages=packages,
     include_package_data=True,
-    install_requires=requires,
-    setup_requires=setup_requires
+    install_requires=install_requires,
+    extras_require=extras_require,
 )
