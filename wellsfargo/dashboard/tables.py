@@ -1,8 +1,15 @@
 from django.utils.translation import ugettext_lazy as _
-from django_tables2 import Column, TemplateColumn
+from django_tables2 import TemplateColumn, DateTimeColumn
 from oscar.core.loading import get_class
+import pytz
 
 DashboardTable = get_class('dashboard.tables', 'DashboardTable')
+
+
+class TZAwareDateTimeColumn(DateTimeColumn):
+    def render(self, record, table, value, bound_column, **kwargs):
+        value = pytz.utc.localize(value)
+        return super().render(record, table, value, bound_column, **kwargs)
 
 
 class CreditApplicationIndexTable(DashboardTable):
@@ -30,12 +37,14 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Resulting Account'),
         template_name='wfrs/dashboard/_application_row_account.html',
         order_by='account_name')
-    created_datetime = Column(
+    created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
-        order_by='created_datetime')
-    modified_datetime = Column(
+        order_by='created_datetime',
+        format='D, N j Y, P')
+    modified_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Last Modified On'),
-        order_by='modified_datetime')
+        order_by='modified_datetime',
+        format='D, N j Y, P')
     actions = TemplateColumn(
         verbose_name=_('Actions'),
         template_name='wfrs/dashboard/_application_row_actions.html',

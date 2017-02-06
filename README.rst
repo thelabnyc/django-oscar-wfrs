@@ -31,6 +31,10 @@ We suggest running this a few times a day to fetch the latest account statuses.
 Changelog
 =========
 
+0.4.2
+------------------
+- Make application date times display in localized timezone in the dashboard search-results table.
+
 0.4.1
 ------------------
 - Upgrade dependencies.

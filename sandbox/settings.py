@@ -13,6 +13,12 @@ SECRET_KEY = 'li0$-gnv)76g$yf7p@(cg-^_q7j6df5cx$o-gsef5hd68phj!4'
 SITE_ID = 1
 
 ROOT_URLCONF = 'urls'
+ALLOWED_HOSTS = ['*']
+
+USE_TZ = True
+TIME_ZONE = 'America/New_York'
+USE_I18N = True
+USE_L10N = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
