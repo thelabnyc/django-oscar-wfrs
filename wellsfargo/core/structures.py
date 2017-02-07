@@ -23,6 +23,10 @@ class AccountInquiryResult(object):
 
     @transaction.atomic()
     def reconcile(self, user=None):
+        # Adjust the credit limit to match WF. Should be equal to the sum of `balance` and `open_to_buy`
+        self.account.credit_limit = (self.balance + self.open_to_buy)
+        self.account.save()
+
         # Perform a transfer to make the account balance match WF. This will overtime
         # mirror customer payments into Wells Fargo (that we don't have notifications of)
         balance_wf = -(self.balance)
@@ -34,10 +38,6 @@ class AccountInquiryResult(object):
             logger.info('Reconciliation not needed. Recorded balance matches WFRS records for account #%s' % (self.account.pk))
 
         assert self.account.balance == balance_wf
-
-        # Adjust the credit limit to match WF. Should be equal to the sum of `balance` and `open_to_buy`
-        self.account.credit_limit = (self.balance + self.open_to_buy)
-        self.account.save()
 
     def _create_compensating_transaction(self, balance_change, user):
         logger.info('Reconciling balance offset of %s on account #%s' % (balance_change, self.account.pk))
