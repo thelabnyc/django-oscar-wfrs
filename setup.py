@@ -13,7 +13,7 @@ packages = find_packages()
 
 install_requires = [
     'django-oscar>=1.3.0',
-    'django-oscar-accounts>=0.4rc1',
+    'django-oscar-accounts2>=0.1.0',
     'django-oscar-api>=1.0.10post1',
     'django-oscar-api-checkout>=0.2.4',
     'django-oscar-bluelight>=0.5.2',
