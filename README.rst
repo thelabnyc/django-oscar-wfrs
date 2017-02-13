@@ -31,6 +31,11 @@ We suggest running this a few times a day to fetch the latest account statuses.
 Changelog
 =========
 
+0.5.0
+------------------
+- Add support for Django 1.10, Python 3.6.
+- Drop support for Django 1.8, Python 3.4.
+
 0.4.3
 ------------------
 - During reconciliation with WFRS, adjust credit limit before doing compensating transaction.
