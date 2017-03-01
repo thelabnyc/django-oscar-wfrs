@@ -10,7 +10,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0007_alter_validators_add_error_messages'),
+        ('auth', '0006_require_contenttypes_0002'),
         ('order', '0004_auto_20160111_1108'),
         ('wellsfargo', '0003_financingplan_is_default_plan'),
     ]

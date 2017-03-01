@@ -13,8 +13,6 @@ import wellsfargo.core.fields
 
 class Migration(migrations.Migration):
 
-    replaces = [('wellsfargo', '0001_initial'), ('wellsfargo', '0002_auto_20160523_2127'), ('wellsfargo', '0003_auto_20160524_1127'), ('wellsfargo', '0004_auto_20160627_2142'), ('wellsfargo', '0005_auto_20160701_1727'), ('wellsfargo', '0006_auto_20160701_1732'), ('wellsfargo', '0007_auto_20160701_1853'), ('wellsfargo', '0008_auto_20160701_1855'), ('wellsfargo', '0009_auto_20160729_1432')]  # NOQA
-
     initial = True
 
     dependencies = [

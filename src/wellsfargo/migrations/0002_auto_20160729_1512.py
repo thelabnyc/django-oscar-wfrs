@@ -10,7 +10,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0009_auto_20160729_1432'),
+        ('wellsfargo', '0001_squashed_0009_auto_20160729_1432'),
     ]
 
     operations = [

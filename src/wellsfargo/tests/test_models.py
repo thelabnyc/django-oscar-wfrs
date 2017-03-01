@@ -1,9 +1,6 @@
 from django.contrib.auth.models import User, Group
-from oscar.core.loading import get_model
 from .base import BaseTest
 from ..models import APICredentials
-
-Account = get_model('oscar_accounts', 'Account')
 
 
 class APICredentialsTest(BaseTest):

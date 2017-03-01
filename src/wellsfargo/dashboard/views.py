@@ -9,7 +9,6 @@ from django.views import generic
 from django_tables2 import SingleTableView
 from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
-from oscar.core.loading import get_model
 from ..connector import actions
 from ..core.exceptions import CreditApplicationDenied
 from ..models import (
@@ -29,9 +28,6 @@ from .forms import (
     get_application_form_class,
 )
 from .tables import CreditApplicationIndexTable, TransferMetadataIndexTable
-
-
-Account = get_model('oscar_accounts', 'Account')
 
 
 DEFAULT_APPLICATION = USCreditApp
