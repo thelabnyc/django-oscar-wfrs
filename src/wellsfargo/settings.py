@@ -16,10 +16,6 @@ WFRS_TRANSACTION_WSDL = overridable('WFRS_TRANSACTION_WSDL', 'https://retailserv
 WFRS_INQUIRY_WSDL = overridable('WFRS_INQUIRY_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitInquiryService?WSDL')
 WFRS_CREDIT_APP_WSDL = overridable('WFRS_CREDIT_APP_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitCreditAppService?WSDL')
 
-WFRS_INITIAL_ORDER_STATUS = overridable('WFRS_INITIAL_ORDER_STATUS', 'new')
-WFRS_PAYMENT_SOURCE = overridable('WFRS_PAYMENT_SOURCE', 'Credit Line (Wells Fargo)')
-WFRS_TRANSACTION_STATUS = 'Complete'
-
 WFRS_SECURITY = {
     'encryptor': 'wellsfargo.security.FernetEncryption',
     'encryptor_kwargs': {},

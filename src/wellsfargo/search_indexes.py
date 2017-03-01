@@ -93,7 +93,7 @@ class TransferMetadataIndex(indexes.SearchIndex, indexes.Indexable):
     type_code = indexes.CharField(model_attr='type_code')
     type_code_name = indexes.CharField(model_attr='type_name')
     ticket_number = indexes.CharField(model_attr='ticket_number', null=True)
-    financing_plan_number = indexes.CharField(model_attr='financing_plan__plan_number', null=True)
+    financing_plan_number = indexes.IntegerField(model_attr='financing_plan__plan_number', null=True)
     auth_number = indexes.CharField(model_attr='auth_number', null=True)
     status = indexes.CharField(model_attr='status')
     status_name = indexes.CharField(model_attr='status_name')

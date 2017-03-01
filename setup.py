@@ -33,6 +33,8 @@ extras_require = {
         'psycopg2>=2.6.2',
         'PyYAML>=3.12',
         'tox>=2.6.0',
+        'sphinx>=1.5.2',
+        'versiontag>=1.2.0',
     ],
 }
 
