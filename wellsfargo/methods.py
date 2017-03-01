@@ -1,39 +1,29 @@
 from rest_framework import serializers
-from oscar.core.loading import get_model
 from oscarapi.basket import operations
 from oscarapicheckout.methods import PaymentMethod, PaymentMethodSerializer
 from oscarapicheckout.states import Complete, Declined
-from .api.permissions import IsAccountOwner
 from .connector import actions
+from .core.structures import TransactionRequest
 from .core import exceptions
-from .settings import WFRS_ACCOUNT_TYPE
 from .utils import list_plans_for_basket
-from .models import FinancingPlan, TransactionRequest
-
-Account = get_model('oscar_accounts', 'Account')
+from .models import FinancingPlan
 
 
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
-    _base_account_queryset = Account.active.filter(account_type__name=WFRS_ACCOUNT_TYPE)
-    account = serializers.PrimaryKeyRelatedField(queryset=_base_account_queryset)
+    account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16)
     financing_plan = serializers.PrimaryKeyRelatedField(queryset=FinancingPlan.objects.get_queryset())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # We require a request because we need to know what accounts are valid for the
-        # user to be drafting from. This is tied to the currently authenticated user.
+        # We require a request because we need to know what plans are valid for the
+        # user to be drafting from. This is tied to the current basket.
         request = self.context.get('request', None)
         assert request is not None, (
             "`%s` requires the request in the serializer"
             " context. Add `context={'request': request}` when instantiating "
             "the serializer." % self.__class__.__name__
         )
-
-        # Limit account to only those owned by the user
-        valid_account_ids = IsAccountOwner.list_valid_account_ids(request)
-        valid_accounts = self._base_account_queryset.filter(pk__in=valid_account_ids)
-        self.fields['account'].queryset = valid_accounts
 
         # Limit plans by the user's basket (plan availability is driven by offer/voucher conditions)
         basket = operations.get_basket(self.context['request'])
@@ -46,20 +36,25 @@ class WellsFargo(PaymentMethod):
     code = 'wells-fargo'
     serializer_class = WellsFargoPaymentMethodSerializer
 
-    def _record_payment(self, request, order, amount, reference, account, financing_plan, **kwargs):
+    def _record_payment(self, request, order, amount, reference, account_number, financing_plan, **kwargs):
         # Figure out how much to authorize
         source = self.get_source(order, reference)
         amount_to_allocate = amount - source.amount_allocated
 
         # Perform an authorization with WFRS
-        transaction_request = TransactionRequest.build_auth_request(
-            user=order.user,
-            source_account=account,
-            financing_plan=financing_plan,
-            amount=amount_to_allocate,
-            ticket_number=order.number)
+        trans_request = TransactionRequest()
+        trans_request.user = order.user
+        trans_request.account_number = account_number
+        trans_request.plan_number = financing_plan.plan_number
+        trans_request.amount = amount_to_allocate
+        trans_request.ticket_number = order.number
+
+        request_user = None
+        if request.user and request.user.is_authenticated():
+            request_user = request.user
+
         try:
-            transfer = actions.submit_transaction(transaction_request, current_user=request.user)
+            transfer = actions.submit_transaction(trans_request, current_user=request_user)
         except exceptions.TransactionDenied:
             return Declined(amount)
 

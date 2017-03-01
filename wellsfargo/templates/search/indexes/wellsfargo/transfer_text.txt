@@ -1,0 +1,13 @@
+{{ object.user.get_full_name }}
+{{ object.user.username }}
+{{ object.merchant_reference }}
+{{ object.amount }}
+{{ object.type_code }}
+{{ object.type_name }}
+{{ object.ticket_number }}
+{{ object.financing_plan }}
+{{ object.auth_number }}
+{{ object.status }}
+{{ object.status_name }}
+{{ object.message }}
+{{ object.disclosure }}

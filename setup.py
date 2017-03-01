@@ -12,8 +12,8 @@ from versiontag import get_version, cache_git_tag  # NOQA
 packages = find_packages()
 
 install_requires = [
+    'cryptography>=1.6',
     'django-oscar>=1.3.0',
-    'django-oscar-accounts2>=0.1.0',
     'django-oscar-api>=1.0.10post1',
     'django-oscar-api-checkout>=0.2.4',
     'django-oscar-bluelight>=0.5.2',
@@ -21,6 +21,9 @@ install_requires = [
     'django-localflavor>=1.4.1',
     'djangorestframework>=3.1.0,<3.5.0',
     'instrumented-soap>=1.1.0',
+
+    # Legacy. Needed to make migrations run.
+    'django-oscar-accounts2>=0.1.0',
 ]
 
 extras_require = {
@@ -48,7 +51,7 @@ cache_git_tag()
 
 setup(
     name='django-oscar-wfrs',
-    description="An extension on-top of django-oscar-accounts to allow interfacing with Wells Fargo Retail Services.",
+    description="An extension on-top of django-oscar-api-checkout to allow interfacing with Wells Fargo Retail Services.",
     version=get_version(pypi=True),
     long_description=open('README.rst').read(),
     classifiers=[

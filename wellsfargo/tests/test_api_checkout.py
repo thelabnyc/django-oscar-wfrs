@@ -1,17 +1,15 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from decimal import Decimal as D
-from django.contrib.auth.models import User
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
 from oscar.core.loading import get_model
 from oscar.test import factories
-import mock
-
+from ..models import FinancingPlan, FinancingPlanBenefit
 from .base import BaseTest
 from . import responses
-from ..models import FinancingPlan, FinancingPlanBenefit
+import mock
 
-Account = get_model('oscar_accounts', 'Account')
 ConditionalOffer = get_model('offer', 'ConditionalOffer')
 Condition = get_model('offer', 'Condition')
 Range = get_model('offer', 'Range')
@@ -41,8 +39,8 @@ class CheckoutTest(BaseTest):
             condition=condition,
             benefit=benefit,
             offer_type=ConditionalOffer.SITE,
-            start_datetime=datetime.now() - timedelta(days=1),
-            end_datetime=datetime.now() + timedelta(days=1))
+            start_datetime=timezone.now() - timedelta(days=1),
+            end_datetime=timezone.now() + timedelta(days=1))
 
 
     @mock.patch('soap.get_transport')
@@ -50,16 +48,12 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        account = self._build_account('9999999999999999')
-        account.primary_user = self.joe
-        account.save()
-
         self.client.login(username='joe', password='schmoe')
 
         # Should be successful
         basket_id = self._prepare_basket()
         self._check_available_plans()
-        resp = self._checkout(basket_id, account)
+        resp = self._checkout(basket_id, '9999999999999999')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         resp = self._fetch_payment_states()
         self.assertEqual(resp.data['order_status'], 'Authorized')
@@ -72,16 +66,12 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_denied)
 
-        account = self._build_account('9999999999999999')
-        account.primary_user = self.joe
-        account.save()
-
         self.client.login(username='joe', password='schmoe')
 
         # Should be successful
         basket_id = self._prepare_basket()
         self._check_available_plans()
-        resp = self._checkout(basket_id, account)
+        resp = self._checkout(basket_id, '9999999999999999')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         resp = self._fetch_payment_states()
         self.assertEqual(resp.data['order_status'], 'Payment Declined')
@@ -90,41 +80,19 @@ class CheckoutTest(BaseTest):
 
 
     @mock.patch('soap.get_transport')
-    def test_checkout_unauthorized_account1(self, get_transport):
+    def test_checkout_anon(self, get_transport):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        User.objects.create_user(username='smitty', password='schmoe')
-
-        account = self._build_account('9999999999999999')
-        account.primary_user = self.joe
-        account.save()
-
-        # Client is not the user who owns the account
-        self.client.login(username='smitty', password='schmoe')
+        # Should be successful
         basket_id = self._prepare_basket()
         self._check_available_plans()
-        resp = self._checkout(basket_id, account)
-        self.assertEqual(resp.status_code, status.HTTP_406_NOT_ACCEPTABLE)
-
-
-    @mock.patch('soap.get_transport')
-    def test_checkout_unauthorized_account2(self, get_transport):
-        """Full checkout process using minimal api calls"""
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
-
-        account = self._build_account('9999999999999999')
-        account.primary_user = self.joe
-        account.save()
-
-        basket_id = self._prepare_basket()
-
-        # Client is anonymous
-        url = reverse('wfrs-api-plan-list')
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN)
-        resp = self._checkout(basket_id, account)
-        self.assertEqual(resp.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        resp = self._checkout(basket_id, '9999999999999999')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self._fetch_payment_states()
+        self.assertEqual(resp.data['order_status'], 'Authorized')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
 
     @mock.patch('soap.get_transport')
@@ -132,16 +100,12 @@ class CheckoutTest(BaseTest):
         """Full checkout process using minimal api calls"""
         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        account = self._build_account('9999999999999999')
-        account.primary_user = self.joe
-        account.save()
-
         self.client.login(username='joe', password='schmoe')
 
         # Should be successful
         basket_id = self._prepare_basket()
         self._check_available_plans()
-        resp = self._checkout(basket_id, account, plan_id=self.plan.id + 1)
+        resp = self._checkout(basket_id, '9999999999999999', plan_id=self.plan.id + 1)
         self.assertEqual(resp.status_code, status.HTTP_406_NOT_ACCEPTABLE)
 
 
@@ -196,7 +160,7 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.data[0]['plan_number'], 9999)
 
 
-    def _checkout(self, basket_id, account, plan_id=None):
+    def _checkout(self, basket_id, account_number, plan_id=None):
         if not plan_id:
             plan_id = self.plan.id
 
@@ -226,7 +190,7 @@ class CheckoutTest(BaseTest):
             "payment": {
                 "wells-fargo": {
                     "enabled": True,
-                    "account": account.id,
+                    "account_number": account_number,
                     "financing_plan": plan_id,
                 }
             }

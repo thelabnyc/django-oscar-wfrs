@@ -2,7 +2,6 @@ from oscar.defaults import *  # noqa
 from oscarbluelight.defaults import *  # NOQA
 from oscar import OSCAR_MAIN_TEMPLATE_DIR, get_core_apps
 from oscarbluelight import BLUELIGHT_TEMPLATE_DIR
-from oscar_accounts import TEMPLATE_DIR as ACCOUNTS_TEMPLATE_DIR
 from wellsfargo import WFRS_TEMPLATE_DIR
 import os
 
@@ -31,8 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
     'widget_tweaks',
-    'oscar_accounts',
     'rest_framework',
+    'oscar_accounts',
     'oscarapi',
     'oscarapicheckout',
     'wellsfargo',
@@ -87,7 +86,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             WFRS_TEMPLATE_DIR,
-            ACCOUNTS_TEMPLATE_DIR,
             BLUELIGHT_TEMPLATE_DIR,
             OSCAR_MAIN_TEMPLATE_DIR,
         ],
@@ -189,31 +187,6 @@ OSCAR_DEFAULT_CURRENCY = 'USD'
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 
-# Appends accounts to the dashboard navigation
-OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
-    'label': 'Accounts',
-    'icon': 'icon-globe',
-    'children': [
-        {
-            'label': 'Accounts',
-            'url_name': 'accounts-list',
-        },
-        {
-            'label': 'Transfers',
-            'url_name': 'transfers-list',
-        },
-        {
-            'label': 'Deferred income report',
-            'url_name': 'report-deferred-income',
-        },
-        {
-            'label': 'Profit/loss report',
-            'url_name': 'report-profit-loss',
-        },
-    ]
-})
-
-
 OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     'label': 'Wells Fargo',
     'icon': 'icon-globe',
@@ -239,6 +212,10 @@ OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
             'label': 'Credit Applications',
             'url_name': 'wfrs-application-list',
         },
+        {
+            'label': 'Transfers',
+            'url_name': 'wfrs-transfer-list',
+        },
     ]
 })
 
@@ -251,7 +228,7 @@ API_ENABLED_PAYMENT_METHODS = [
     },
     {
         'method': 'wellsfargo.methods.WellsFargo',
-        'permission': 'wellsfargo.permissions.IsAuthenticated',
+        'permission': 'oscarapicheckout.permissions.Public',
     },
 ]
 
@@ -259,3 +236,11 @@ API_ENABLED_PAYMENT_METHODS = [
 BLUELIGHT_BENEFIT_CLASSES += [  # NOQA
     ('wellsfargo.models.FinancingPlanBenefit', 'Activate Wells Fargo Plan Number Group'),
 ]
+
+
+# WFRS
+WFRS_SECURITY = {
+    'encryptor_kwargs': {
+        'key': b'U3Nyi57e55H2weKVmEPzrGdv18b0bGt3e542rg1J1N8=',
+    },
+}

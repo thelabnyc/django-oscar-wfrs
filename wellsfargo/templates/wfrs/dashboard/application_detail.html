@@ -33,16 +33,6 @@
             </div>
             <table class="table table-bordered">
                 <tr>
-                    <td>{% trans "Account" %}</td>
-                    <td>
-                        {% if object.account %}
-                            <a href="{% url 'accounts-detail' pk=object.account.pk %}">{{ object.account.name }}</a>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
                     <td>{% trans "Email Address" %}</td>
                     <td>{{ object.email | default:"-" }}</td>
                 </tr>

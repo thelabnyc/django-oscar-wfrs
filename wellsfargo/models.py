@@ -1,13 +1,12 @@
 from decimal import Decimal
 from django.conf import settings
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.core import exceptions
-from django.core.validators import MinValueValidator, MinLengthValidator, MaxValueValidator, RegexValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model, get_class
-from oscar_accounts.core import redemptions_account
-from .core.constants import LOCALE_CHOICES, TRANS_TYPES, TRANS_STATUSES, TRANS_TYPE_AUTH
+from .core.constants import TRANS_TYPES, TRANS_STATUSES
 from .core.applications import (
     USCreditAppMixin,
     BaseCreditAppMixin,
@@ -16,18 +15,11 @@ from .core.applications import (
     CACreditAppMixin,
     CAJointCreditAppMixin
 )
+from .security import encrypt_account_number, decrypt_account_number
 
-Account = get_model('oscar_accounts', 'Account')
-Transfer = get_model('oscar_accounts', 'Transfer')
 Benefit = get_model('offer', 'Benefit')
-
+Transaction = get_model('payment', 'Transaction')
 PostOrderAction = get_class('offer.results', 'PostOrderAction')
-
-
-class AccountOwner(User):
-    """Only exists so that our haystack search index doesn't conflict with any other haystack indexes on auth.User"""
-    class Meta:
-        proxy = True
 
 
 class APICredentials(models.Model):
@@ -126,55 +118,38 @@ class FinancingPlanBenefit(Benefit):
             )))
 
 
-class AccountMetadata(models.Model):
-    """
-    Store WFRS specific metadata about an account
-    """
-    account = models.OneToOneField(Account,
-        verbose_name=_("Account"),
-        on_delete=models.CASCADE,
-        primary_key=True,
-        related_name='wfrs_metadata')
-    locale = models.CharField(_('Locale'), choices=LOCALE_CHOICES, max_length=5)
-    account_number = models.CharField(_("Wells Fargo Account Number"), max_length=16, validators=[
-        MinLengthValidator(16),
-        MinLengthValidator(16),
-    ])
-    billing_address = models.OneToOneField('order.BillingAddress',
-        null=True, blank=True,
-        verbose_name=_("Billing Address"),
-        on_delete=models.SET_NULL,
-        related_name='+')
-
-
 class TransferMetadata(models.Model):
     """
     Store WFRS specific metadata about a transfer
     """
-    transfer = models.OneToOneField(Transfer,
-        verbose_name=_("Transfer"),
-        on_delete=models.CASCADE,
-        related_name='wfrs_metadata')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        verbose_name=_("Requesting User"),
+        related_name='wfrs_transfers',
+        null=True, blank=True,
+        on_delete=models.CASCADE)
+    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
+    encrypted_account_number = models.BinaryField(null=True)
+    merchant_reference = models.CharField(max_length=128, null=True)
+    amount = models.DecimalField(decimal_places=2, max_digits=12)
     type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, max_length=2)
-
     ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
     financing_plan = models.ForeignKey(FinancingPlan,
         verbose_name=_("Plan Number"),
         null=True, blank=False,
         on_delete=models.SET_NULL)
-
     auth_number = models.CharField(_("Authorization Number"), null=True, blank=True, max_length=6, default='000000')
     status = models.CharField(_("Status"), choices=TRANS_STATUSES, max_length=2)
     message = models.TextField(_("Message"))
     disclosure = models.TextField(_("Disclosure"))
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
 
     @classmethod
-    def build_auth_request(cls, financing_plan, ticket_number, amount):
-        request = cls()
-        request.financing_plan = financing_plan
-        request.ticket_number = ticket_number
-        request.amount = amount
-        return request
+    def get_by_oscar_transaction(cls, transaction):
+        try:
+            return cls.objects.get(merchant_reference=transaction.reference)
+        except TransferMetadata.DoesNotExist:
+            return None
 
     @property
     def type_name(self):
@@ -184,69 +159,43 @@ class TransferMetadata(models.Model):
     def status_name(self):
         return dict(TRANS_STATUSES).get(self.status)
 
+    @property
+    def masked_account_number(self):
+        return 'xxxxxxxxxxxx{}'.format(self.last4_account_number or 'xxxx')
 
-class TransactionRequest(models.Model):
-    """
-    A log of a request for a WFRS transaction
-    """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        verbose_name=_("Requesting User"),
-        related_name='transaction_requests',
-        on_delete=models.CASCADE)
-    type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, default=TRANS_TYPE_AUTH, max_length=2)
-    source_account = models.ForeignKey(Account,
-        verbose_name=_("Source Account"),
-        related_name='source_requests',
-        on_delete=models.CASCADE)
-    dest_account = models.ForeignKey(Account,
-        verbose_name=_("Destination Account"),
-        related_name='dest_requests',
-        on_delete=models.CASCADE)
-    ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
-    financing_plan = models.ForeignKey(FinancingPlan,
-        verbose_name=_("Plan Number"),
-        null=True, blank=False,
-        on_delete=models.SET_NULL)
-    amount = models.DecimalField(decimal_places=2, max_digits=12)
-    auth_number = models.CharField(_("Authorization Number"), max_length=6, default='000000', validators=[
-        MinLengthValidator(6),
-        MinLengthValidator(6),
-        RegexValidator(r'^[0-9]{6}$'),
-    ])
-    transfer = models.OneToOneField(Transfer,
-        null=True, editable=False,
-        verbose_name=_("Transfer"),
-        on_delete=models.SET_NULL,
-        related_name='transfer_request')
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    modified_datetime = models.DateTimeField(auto_now=True)
+    @property
+    def account_number(self):
+        acct_num = None
+        if self.encrypted_account_number:
+            acct_num = decrypt_account_number(self.encrypted_account_number)
+        if not acct_num:
+            acct_num = self.masked_account_number
+        return acct_num
 
-    @classmethod
-    def build_auth_request(cls, user, source_account, financing_plan, amount, dest_account=None, ticket_number=None):
-        if not dest_account:
-            dest_account = redemptions_account()
-        request = cls()
-        request.user = user
-        request.type_code = TRANS_TYPE_AUTH
-        request.source_account = source_account
-        request.dest_account = dest_account
-        request.ticket_number = ticket_number
-        request.financing_plan = financing_plan
-        request.amount = amount
-        request.auth_number = '000000'
-        request.save()
-        return request
+    @account_number.setter
+    def account_number(self, value):
+        if len(value) != 16:
+            raise ValueError('Account number must be 16 digits long')
+        self.last4_account_number = value[-4:]
+        self.encrypted_account_number = encrypt_account_number(value)
+
+    def get_oscar_transaction(self):
+        try:
+            return Transaction.objects.get(reference=self.merchant_reference)
+        except Transaction.DoesNotExist:
+            return None
+
+    def get_order(self):
+        transaction = self.get_oscar_transaction()
+        if not transaction:
+            return None
+        return transaction.source.order
 
 
 class USCreditApp(USCreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'us-individual'
-    account = models.OneToOneField(Account,
-        null=True, editable=False,
-        verbose_name=_("Account"),
-        on_delete=models.SET_NULL,
-        related_name='us_individual_credit_app')
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=False, blank=False,
+        null=True, blank=True,
         verbose_name=_("Owner"),
         help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='us_individual_credit_apps',
@@ -262,13 +211,8 @@ class USCreditApp(USCreditAppMixin, BaseCreditAppMixin):
 
 class USJointCreditApp(USJointCreditAppMixin, BaseJointCreditAppMixin):
     APP_TYPE_CODE = 'us-joint'
-    account = models.OneToOneField(Account,
-        null=True, editable=False,
-        verbose_name=_("Account"),
-        on_delete=models.SET_NULL,
-        related_name='us_joint_credit_app')
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=False, blank=False,
+        null=True, blank=True,
         verbose_name=_("Owner"),
         help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='us_joint_credit_apps',
@@ -283,13 +227,8 @@ class USJointCreditApp(USJointCreditAppMixin, BaseJointCreditAppMixin):
 
 class CACreditApp(CACreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'ca-individual'
-    account = models.OneToOneField(Account,
-        null=True, editable=False,
-        verbose_name=_("Account"),
-        on_delete=models.SET_NULL,
-        related_name='ca_individual_credit_app')
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=False, blank=False,
+        null=True, blank=True,
         verbose_name=_("Owner"),
         help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='ca_individual_credit_apps',
@@ -304,13 +243,8 @@ class CACreditApp(CACreditAppMixin, BaseCreditAppMixin):
 
 class CAJointCreditApp(CAJointCreditAppMixin, BaseJointCreditAppMixin):
     APP_TYPE_CODE = 'ca-joint'
-    account = models.OneToOneField(Account,
-        null=True, editable=False,
-        verbose_name=_("Account"),
-        on_delete=models.SET_NULL,
-        related_name='ca_joint_credit_app')
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=False, blank=False,
+        null=True, blank=True,
         verbose_name=_("Owner"),
         help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='ca_joint_credit_apps',

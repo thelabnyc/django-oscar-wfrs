@@ -1,11 +1,7 @@
 from datetime import date
-from decimal import Decimal
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from oscar_accounts.setup import create_default_accounts
 from soap.tests import SoapTest
-from ..core.constants import CREDIT_APP_APPROVED
-from ..core.structures import CreditApplicationResult
 from ..models import USCreditApp, USJointCreditApp
 
 
@@ -13,7 +9,6 @@ class BaseTest(SoapTest, APITestCase):
     fixtures = ['wfrs-test']
 
     def setUp(self):
-        create_default_accounts()
         self.joe = User.objects.create_user(username='joe', password='schmoe', email='joe@example.com')
         return super().setUp()
 
@@ -72,14 +67,3 @@ class BaseTest(SoapTest, APITestCase):
         app.joint_address_postcode = '10001'
         app.joint_employer_phone = '5555555555'
         return app
-
-    def _build_account(self, account_number):
-        # Make a fake credit line
-        app = self._build_us_single_credit_app('999-99-9991')
-        result = CreditApplicationResult()
-        result.application = app
-        result.transaction_status = CREDIT_APP_APPROVED
-        result.account_number = account_number
-        result.credit_limit = Decimal('7500.00')
-        account = result.save()
-        return account

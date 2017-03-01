@@ -1,0 +1,36 @@
+{% extends 'dashboard/layout.html' %}
+{% load i18n %}
+{% load currency_filters %}
+{% load widget_tweaks %}
+{% load render_table from django_tables2 %}
+
+
+{% block title %}
+    {% trans "Transfers" %} | {% trans "Wells Fargo" %} | {{ block.super }}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+        </li>
+        <li class="active">{% trans "Transfers" %}</li>
+    </ul>
+{% endblock %}
+
+
+{% block header %}
+    <div class="page-header">
+        <h1>{% trans "Transfers" %}</h1>
+    </div>
+{% endblock header %}
+
+
+{% block dashboard_content %}
+    {% if transfers and transfers.data|length > 0 %}
+        {% render_table transfers %}
+    {% else %}
+        <p>{% trans "No transfers found." %}</p>
+    {% endif %}
+{% endblock %}

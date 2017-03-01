@@ -1,11 +1,8 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.forms.models import fields_for_model
 from django.utils.translation import ugettext_lazy as _
-from oscar.core.loading import get_model
 from oscar.forms.widgets import DatePickerInput, DateTimePickerInput
-from .widgets import FuzzyDurationWidget, BooleanSelect, TypeAheadModelSelect
+from .widgets import FuzzyDurationWidget, BooleanSelect
 from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT,
@@ -13,23 +10,15 @@ from ..core.constants import (
     APP_TYPES, LANGUAGES, REGIONS
 )
 from ..models import (
-    AccountMetadata,
     FinancingPlan,
     FinancingPlanBenefit,
-    TransactionRequest,
     USCreditApp,
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp
 )
 
-Account = get_model('oscar_accounts', 'Account')
-BillingAddress = get_model('order', 'BillingAddress')
-
 WIDGETS = {
-    'user': TypeAheadModelSelect(view='wfrs-api-user-autocomplete', model=User, attrs={
-        'placeholder': _('Start typing to search for a user')
-    }),
     'main_date_of_birth': DatePickerInput(),
     'joint_date_of_birth': DatePickerInput(),
     'main_photo_id_expiration': DatePickerInput(),
@@ -39,19 +28,6 @@ WIDGETS = {
     'joint_time_at_employer': FuzzyDurationWidget(),
     'insurance': BooleanSelect(),
 }
-
-
-class SubmitTransactionForm(forms.ModelForm):
-    class Meta:
-        model = TransactionRequest
-        exclude = ('transfer', )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['user'].disabled = True
-        self.fields['source_account'].disabled = True
-        self.fields['dest_account'].disabled = True
-
 
 
 class ApplicationSelectionForm(forms.Form):
@@ -111,57 +87,6 @@ class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
         model = CAJointCreditApp
         widgets = WIDGETS
         fields = '__all__'
-
-
-class ManualAddAccountForm(forms.Form):
-    _account_fields = fields_for_model(Account, fields=[
-        'name', 'primary_user', 'status', 'credit_limit'])
-    _meta_fields = fields_for_model(AccountMetadata, fields=[
-        'account_number', 'locale'])
-    _address_fields = fields_for_model(BillingAddress, fields=[
-        'title', 'first_name', 'last_name', 'line1', 'line2', 'line3', 'line4', 'state', 'postcode', 'country'])
-
-    name = _account_fields['name']
-    primary_user = _account_fields['primary_user']
-    status = forms.ChoiceField(choices=(
-        (Account.OPEN, Account.OPEN),
-        (Account.FROZEN, Account.FROZEN),
-        (Account.CLOSED, Account.CLOSED),
-    ))
-    credit_limit = _account_fields['credit_limit']
-
-    account_number = _meta_fields['account_number']
-    locale = _meta_fields['locale']
-
-    title = _address_fields['title']
-    first_name = _address_fields['first_name']
-    last_name = _address_fields['last_name']
-    line1 = _address_fields['line1']
-    line2 = _address_fields['line2']
-    line3 = _address_fields['line3']
-    line4 = _address_fields['line4']
-    state = _address_fields['state']
-    postcode = _address_fields['postcode']
-    country = _address_fields['country']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        required_fields = (
-            'name', 'primary_user', 'status', 'credit_limit', 'account_number', 'locale',
-            'first_name', 'last_name', 'line1', 'line4', 'state', 'postcode', 'country',
-        )
-        for name in required_fields:
-            self.fields[name].required = True
-        self.fields['primary_user'].widget = TypeAheadModelSelect(view='wfrs-api-user-autocomplete', model=User, attrs={
-            'placeholder': _('Start typing to search for a user')
-        })
-
-
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        if Account.objects.filter(name=name).count() > 0:
-            raise forms.ValidationError("Account name must be unique.")
-        return name
 
 
 class FinancingPlanForm(forms.ModelForm):

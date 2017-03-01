@@ -22,5 +22,3 @@
 {{ object.joint_occupation }}
 {{ object.user.get_full_name }}
 {{ object.submitting_user.get_full_name }}
-{{ object.account.name }}
-{{ object.account.code }}

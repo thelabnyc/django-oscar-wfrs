@@ -1,33 +1,11 @@
-from django.db.models import Q
 from haystack import indexes
 from .models import (
-    AccountOwner,
+    TransferMetadata,
     USCreditApp,
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp,
 )
-
-
-class AccountOwnerAutocompleteIndex(indexes.SearchIndex, indexes.Indexable):
-    user_id = indexes.IntegerField(model_attr='pk', indexed=False, stored=True)
-    username = indexes.CharField(model_attr='username', indexed=False, stored=True)
-    first_name = indexes.CharField(model_attr='first_name', indexed=False, stored=True)
-    last_name = indexes.CharField(model_attr='last_name', indexed=False, stored=True)
-    email = indexes.CharField(model_attr='email', indexed=False, stored=True)
-
-    text = indexes.EdgeNgramField(document=True, use_template=True, template_name='search/indexes/wellsfargo/accountowner_text.txt')
-
-    def get_model(self):
-        return AccountOwner
-
-    def index_queryset(self, using=None):
-        blank_first_name = Q(first_name=None) | Q(first_name='')
-        blank_last_name = Q(last_name=None) | Q(last_name='')
-        blank_email = Q(email=None) | Q(email='')
-        # If we don't have at least a name or an email, don't include them in the search index
-        qs = self.get_model().objects.exclude(blank_first_name & blank_last_name & blank_email)
-        return qs.all()
 
 
 class BaseCreditAppIndex(indexes.SearchIndex):
@@ -39,16 +17,13 @@ class BaseCreditAppIndex(indexes.SearchIndex):
     main_last_name = indexes.CharField(model_attr='main_last_name')
     email = indexes.CharField(model_attr='email')
 
-    user_full_name = indexes.CharField()
-    user_username = indexes.CharField()
-    user_id = indexes.IntegerField()
+    user_full_name = indexes.CharField(null=True)
+    user_username = indexes.CharField(null=True)
+    user_id = indexes.IntegerField(null=True)
 
     submitting_user_full_name = indexes.CharField(null=True)
     submitting_user_username = indexes.CharField(null=True)
     submitting_user_id = indexes.IntegerField(null=True)
-
-    account_id = indexes.IntegerField(null=True)
-    account_name = indexes.CharField(null=True)
 
     name = indexes.EdgeNgramField(use_template=True, template_name='search/indexes/wellsfargo/application_name.txt')
     address = indexes.EdgeNgramField(use_template=True, template_name='search/indexes/wellsfargo/application_address.txt')
@@ -60,13 +35,13 @@ class BaseCreditAppIndex(indexes.SearchIndex):
         return self.get_model().objects.all()
 
     def prepare_user_full_name(self, obj):
-        return obj.user.get_full_name()
+        return obj.user.get_full_name() if obj.user else None
 
     def prepare_user_username(self, obj):
-        return obj.user.username
+        return obj.user.username if obj.user else None
 
     def prepare_user_id(self, obj):
-        return obj.user.pk
+        return obj.user.pk if obj.user else None
 
     def prepare_submitting_user_full_name(self, obj):
         return obj.submitting_user.get_full_name() if obj.submitting_user else None
@@ -76,12 +51,6 @@ class BaseCreditAppIndex(indexes.SearchIndex):
 
     def prepare_submitting_user_id(self, obj):
         return obj.submitting_user.pk if obj.submitting_user else None
-
-    def prepare_account_id(self, obj):
-        return obj.account.id if obj.account else None
-
-    def prepare_account_name(self, obj):
-        return obj.account.name if obj.account else None
 
 
 class BaseJointCreditAppIndex(BaseCreditAppIndex):
@@ -107,3 +76,47 @@ class CACreditAppIndex(BaseCreditAppIndex, indexes.Indexable):
 class CAJointCreditAppIndex(BaseJointCreditAppIndex, indexes.Indexable):
     def get_model(self):
         return CAJointCreditApp
+
+
+class TransferMetadataIndex(indexes.SearchIndex, indexes.Indexable):
+    modified_datetime = indexes.DateTimeField(model_attr='modified_datetime')
+    created_datetime = indexes.DateTimeField(model_attr='created_datetime')
+
+    user_full_name = indexes.CharField(null=True)
+    user_username = indexes.CharField(null=True)
+    user_id = indexes.IntegerField(null=True)
+
+    merchant_reference = indexes.CharField(model_attr='merchant_reference', null=True)
+    masked_account_number = indexes.CharField(model_attr='masked_account_number')
+    order_number = indexes.CharField(null=True)
+    amount = indexes.DecimalField(model_attr='amount')
+    type_code = indexes.CharField(model_attr='type_code')
+    type_code_name = indexes.CharField(model_attr='type_name')
+    ticket_number = indexes.CharField(model_attr='ticket_number', null=True)
+    financing_plan_number = indexes.CharField(model_attr='financing_plan__plan_number', null=True)
+    auth_number = indexes.CharField(model_attr='auth_number', null=True)
+    status = indexes.CharField(model_attr='status')
+    status_name = indexes.CharField(model_attr='status_name')
+    message = indexes.CharField(model_attr='message')
+    disclosure = indexes.CharField(model_attr='disclosure')
+
+    text = indexes.EdgeNgramField(document=True, use_template=True, template_name='search/indexes/wellsfargo/transfer_text.txt')
+
+    def get_model(self):
+        return TransferMetadata
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.all()
+
+    def prepare_order_number(self, obj):
+        order = obj.get_order()
+        return order.number if order else None
+
+    def prepare_user_full_name(self, obj):
+        return obj.user.get_full_name() if obj.user else None
+
+    def prepare_user_username(self, obj):
+        return obj.user.username if obj.user else None
+
+    def prepare_user_id(self, obj):
+        return obj.user.pk if obj.user else None

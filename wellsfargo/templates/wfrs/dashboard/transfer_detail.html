@@ -1,0 +1,107 @@
+{% extends 'dashboard/layout.html' %}
+{% load i18n %}
+{% load currency_filters %}
+{% load wfrs_filters %}
+
+{% block title %}
+    {% trans "Transfer Details" %} | {% trans "Wells Fargo" %} | {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'wfrs-transfer-list' %}">{% trans "Transfers" %}</a>
+        </li>
+        <li class="active">{% trans "Transfer Details" %}</li>
+    </ul>
+{% endblock %}
+
+{% block headertext %}
+    {% trans "Transfer Details" %}
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-header">
+                <h2>{% trans "Details" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <td>{% trans "Merchant Reference" %}</td>
+                    <td>{{ object.merchant_reference | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Account Number" %}</td>
+                    <td>{{ object.masked_account_number }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Order" %}</td>
+                    <td>
+                        {% with object.get_order as order %}
+                            {% if order %}
+                                <a href="{% url 'dashboard:order-detail' number=order.number %}">{{ order.number }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        {% endwith %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "User" %}</td>
+                    <td>
+                        {% if object.user %}
+                            <a href="{% url 'dashboard:user-detail' pk=object.user.pk %}">{{ object.user.get_full_name | default:object.user.username }}</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Amount" %}</td>
+                    <td>{{ object.amount | currency }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Type" %}</td>
+                    <td>{{ object.type_name }} ({{ object.type_code }})</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Ticket Number" %}</td>
+                    <td>{{ object.ticket_number | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Financing Plan" %}</td>
+                    <td>{{ object.financing_plan | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Authorization Number" %}</td>
+                    <td>{{ object.auth_number | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Status" %}</td>
+                    <td>{{ object.status_name }} ({{ object.status_code }})</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Message" %}</td>
+                    <td>{{ object.message | default:"-" }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Legal Disclosure" %}</td>
+                    <td>{{ object.disclosure | default:"-" }}</td>
+                </tr>
+
+                <tr>
+                    <td>{% trans "Created Date" %}</td>
+                    <td>{{ object.created_datetime }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Modified Date" %}</td>
+                    <td>{{ object.modified_datetime }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}

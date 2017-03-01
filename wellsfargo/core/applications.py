@@ -8,7 +8,6 @@ from django.core.validators import (
 )
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from oscar.core.loading import get_model
 from .constants import (
     US, CA,
     ENGLISH,
@@ -31,8 +30,6 @@ from .fields import (
     CAPostalCodeField,
     CAPhoneNumberField
 )
-
-Account = get_model('oscar_accounts', 'Account')
 
 
 class BaseCreditAppMixin(models.Model):

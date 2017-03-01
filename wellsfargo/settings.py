@@ -16,8 +16,19 @@ WFRS_TRANSACTION_WSDL = overridable('WFRS_TRANSACTION_WSDL', 'https://retailserv
 WFRS_INQUIRY_WSDL = overridable('WFRS_INQUIRY_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitInquiryService?WSDL')
 WFRS_CREDIT_APP_WSDL = overridable('WFRS_CREDIT_APP_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitCreditAppService?WSDL')
 
-WFRS_ACCOUNT_TYPE = overridable('WFRS_ACCOUNT_TYPE', 'Credit Line (Wells Fargo)')
-
 WFRS_INITIAL_ORDER_STATUS = overridable('WFRS_INITIAL_ORDER_STATUS', 'new')
 WFRS_PAYMENT_SOURCE = overridable('WFRS_PAYMENT_SOURCE', 'Credit Line (Wells Fargo)')
 WFRS_TRANSACTION_STATUS = 'Complete'
+
+WFRS_SECURITY = {
+    'encryptor': 'wellsfargo.security.FernetEncryption',
+    'encryptor_kwargs': {},
+}
+WFRS_SECURITY.update( overridable('WFRS_SECURITY', {}) )
+
+if WFRS_SECURITY['encryptor'] == 'wellsfargo.security.FernetEncryption':
+    if WFRS_SECURITY['encryptor_kwargs'].get('key') is None:
+        raise ImproperlyConfigured((
+            "You must supply a value for WFRS_SECURITY['encryptor_kwargs']['key'] in settings. "
+            "See https://cryptography.io/en/latest/fernet/ for details."
+        ))

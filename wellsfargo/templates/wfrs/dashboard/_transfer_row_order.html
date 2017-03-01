@@ -1,0 +1,5 @@
+{% if record.order_number %}
+    <a href="{% url 'dashboard:order-detail' number=record.order_number %}">{{ record.order_number }}</a>
+{% else %}
+    -
+{% endif %}

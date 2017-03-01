@@ -1,10 +1,6 @@
-from django.forms.widgets import Widget, Select, Input
-from django.core.urlresolvers import reverse
+from django.forms.widgets import Widget, Select
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import force_text
-from django.utils.html import format_html
-from django.forms.utils import flatatt
 
 
 class FuzzyDurationWidget(Widget):
@@ -76,7 +72,7 @@ class BooleanSelect(Select):
         )
         super().__init__(attrs, choices)
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None):
         try:
             mapping = {
                 False: '0',
@@ -87,7 +83,7 @@ class BooleanSelect(Select):
             value = mapping[value]
         except KeyError:
             value = '0'
-        return super().render(name, value, attrs, choices)
+        return super().render(name, value, attrs)
 
     def value_from_datadict(self, data, files, name):
         value = data.get(name)
@@ -100,125 +96,3 @@ class BooleanSelect(Select):
             True: True,
         }
         return mapping.get(value)
-
-
-
-class TypeAheadModelSelect(Input):
-    def __init__(self, view, model, attrs=None):
-        self.view = view
-        self.model = model
-        super().__init__(attrs)
-
-
-    def render(self, name, value, attrs=None):
-        url = '%s?term=' % reverse(self.view)
-        wildcard = '%Q'
-
-        if value is None:
-            value = ''
-
-        attrs_auto = self.build_attrs(attrs, type='text', name=name)
-        attrs_hidden = self.build_attrs(attrs, type='hidden', name=name)
-        if value != '':
-            attrs_hidden['value'] = force_text(value)
-        if attrs_hidden.get('value'):
-            attrs_auto['value'] = force_text(self.model.objects.filter(pk=attrs_hidden['value']).first() or '')
-        attrs_auto['autocomplete'] = 'none'
-        attrs_auto['id'] += '_auto'
-
-        html = format_html('<input{} />', flatatt(attrs_auto))
-        html += format_html('<input{} />', flatatt(attrs_hidden))
-        html += """
-            <style type="text/css">
-                .twitter-typeahead {
-                    width: 100%;
-                }
-                .typeahead,
-                .tt-query,
-                .tt-hint {
-                    width: 100%;
-                    height: 34px;
-                    padding: 8px 12px;
-                    font-size: 24px;
-                    line-height: 30px;
-                    border: 2px solid #ccc;
-                    outline: none;
-                }
-
-                .typeahead {
-                    background-color: #fff;
-                }
-
-                .typeahead:focus {
-                    border: 2px solid #0097cf;
-                }
-
-                .tt-query {
-                    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-                       -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-                            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-                }
-
-                .tt-hint {
-                    color: #999
-                }
-
-                .tt-menu {
-                    width: 100%;
-                    margin: 12px 0;
-                    padding: 8px 0;
-                    background-color: #fff;
-                    border: 1px solid #CCC;
-                    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-                       -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-                            box-shadow: 0 5px 10px rgba(0,0,0,.2);
-                }
-
-                .tt-suggestion {
-                    padding: 3px 20px;
-                    font-size: 18px;
-                    line-height: 24px;
-                }
-
-                .tt-suggestion:hover {
-                    cursor: pointer;
-                    color: #fff;
-                    background-color: #0097cf;
-                }
-
-                .tt-suggestion.tt-cursor {
-                    color: #fff;
-                    background-color: #0097cf;
-                }
-
-                .tt-suggestion p {
-                    margin: 0;
-                }
-            </style>
-            <script type="text/javascript">
-                document.addEventListener('DOMContentLoaded', function() {
-                    var source = new Bloodhound({
-                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('label'),
-                        queryTokenizer: Bloodhound.tokenizers.whitespace,
-                        remote: {
-                            url: '""" + url + wildcard + """',
-                            wildcard: '""" + wildcard + """'
-                        }
-                    });
-
-                    var auto = $('#""" + attrs_auto['id'] + """');
-                    var hidden = $('#""" + attrs_hidden['id'] + """');
-
-                    auto.typeahead(null, {
-                        name: '""" + name + """',
-                        display: 'label',
-                        source: source
-                    });
-
-                    auto.bind('typeahead:select', function(event, selected) {
-                        hidden.val(selected.id);
-                    });
-                }, false);
-            </script>
-        """
-        return mark_safe(html)

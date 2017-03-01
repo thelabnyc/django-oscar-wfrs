@@ -2,10 +2,8 @@ from django.conf.urls import url
 from oscar.core.application import Application
 
 from .views import (
-    SubmitTransactionView,
     ApplicationSelectionView,
     CreditApplicationView,
-    AddExistingAccountView,
     FinancingPlanListView,
     FinancingPlanCreateView,
     FinancingPlanUpdateView,
@@ -16,6 +14,8 @@ from .views import (
     FinancingPlanBenefitDeleteView,
     CreditApplicationListView,
     CreditApplicationDetailView,
+    TransferMetadataListView,
+    TransferMetadataDetailView,
 )
 
 
@@ -25,8 +25,6 @@ class WFRSDashboardApplication(Application):
 
     apply_step1 = ApplicationSelectionView
     apply_step2 = CreditApplicationView
-    submit_transaction = SubmitTransactionView
-    add_existing = AddExistingAccountView
     plan_list = FinancingPlanListView
     plan_create = FinancingPlanCreateView
     plan_update = FinancingPlanUpdateView
@@ -37,6 +35,8 @@ class WFRSDashboardApplication(Application):
     benefit_delete = FinancingPlanBenefitDeleteView
     application_list = CreditApplicationListView
     application_detail = CreditApplicationDetailView
+    transfer_list = TransferMetadataListView
+    transfer_detail = TransferMetadataDetailView
 
     def get_urls(self):
         urlpatterns = [
@@ -46,12 +46,6 @@ class WFRSDashboardApplication(Application):
             url(r'^apply/(?P<region>\w+)/(?P<language>\w+)/(?P<app_type>\w+)/$',
                 self.apply_step2.as_view(),
                 name='wfrs-apply-step2'),
-            url(r'^transaction/new/(?P<source_id>\d+)/$',
-                self.submit_transaction.as_view(),
-                name='wfrs-submit-transaction'),
-            url(r'^add-existing/$',
-                self.add_existing.as_view(),
-                name='wfrs-add-account'),
 
             url(r'^plans/$',
                 self.plan_list.as_view(),
@@ -85,6 +79,14 @@ class WFRSDashboardApplication(Application):
             url(r'^applications/(?P<app_type>[a-z\-]+)/(?P<pk>[0-9]+)/$',
                 self.application_detail.as_view(),
                 name='wfrs-application-detail'),
+
+
+            url(r'^transfers/$',
+                self.transfer_list.as_view(),
+                name='wfrs-transfer-list'),
+            url(r'^transfers/(?P<merchant_reference>[A-Za-z0-9\-]+)/$',
+                self.transfer_detail.as_view(),
+                name='wfrs-transfer-detail'),
         ]
         return self.post_process_urls(urlpatterns)
 

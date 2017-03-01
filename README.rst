@@ -2,10 +2,10 @@
 django-oscar-wfrs
 =================
 
-An extension on-top of django-oscar-accounts to allow interfacing with Wells Fargo Retail Services.
+An extension on-top of django-oscar-api-checkout to allow interfacing with Wells Fargo Retail Services.
 
 django-oscar-wfrs is built on top of django-oscar-api and django-oscar-api-checkout.
-It will not work with the build-in django-oscar non-ajax checkout.
+Out of the box, it will not work with the build-in django-oscar non-ajax checkout.
 
 .. image:: wfrs.png
 
@@ -13,23 +13,23 @@ It will not work with the build-in django-oscar non-ajax checkout.
 Installation
 ============
 
-1. Follow install instructions for django-oscar-bluelight if not done already
-2. Install `django-haystack` and ensure a search engine is setup.
-3. `pip install django-oscar-wfrs`
-4. Add `wellsfargo` to INSTALLED_APPS
+1. Follow install instructions for ``django-oscar-bluelight`` if not done already
+2. Install ``django-haystack`` and ensure a search engine is setup.
+3. ``pip install django-oscar-wfrs``
+4. Add ``wellsfargo`` to INSTALLED_APPS
 
 You may wish to add wells fargo to OSCAR_DASHBOARD_NAVIGATION. See sandbox/settings.py for an example.
 
 
-Management Commands
-===================
-
-reconcile_wfrs_accounts - can be run as a manage.py command or as a celery task.
-We suggest running this a few times a day to fetch the latest account statuses.
-
-
 Changelog
 =========
+
+0.6.0
+------------------
+- **Major Release. Breaking Changes.**
+- Drop dependency on django-oscar-accounts.
+- Stop tracking accounts in database.
+- Account numbers are now encrypted at rest.
 
 0.5.0
 ------------------

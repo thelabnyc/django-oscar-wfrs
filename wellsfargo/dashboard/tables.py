@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
-from django_tables2 import TemplateColumn, DateTimeColumn
+from django_tables2 import Column, TemplateColumn, DateTimeColumn, LinkColumn, A
 from oscar.core.loading import get_class
 import pytz
 
@@ -33,10 +33,6 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Submitted By'),
         template_name='wfrs/dashboard/_application_row_submitting_user.html',
         order_by=('submitting_user_full_name', 'submitting_user_username'))
-    account = TemplateColumn(
-        verbose_name=_('Resulting Account'),
-        template_name='wfrs/dashboard/_application_row_account.html',
-        order_by='account_name')
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
         order_by='created_datetime',
@@ -57,8 +53,44 @@ class CreditApplicationIndexTable(DashboardTable):
             'application_type',
             'user',
             'submitting_user',
-            'account',
             'created_datetime',
             'modified_datetime',
             'actions'
+        )
+
+
+
+class TransferMetadataIndexTable(DashboardTable):
+    merchant_reference = LinkColumn('wfrs-transfer-detail', args=[A('merchant_reference')])
+    masked_account_number = Column(verbose_name=_('Account Number'))
+    order = TemplateColumn(
+        verbose_name=_('Order'),
+        template_name='wfrs/dashboard/_transfer_row_order.html',
+        order_by='order_number')
+    user = TemplateColumn(
+        verbose_name=_('User'),
+        template_name='wfrs/dashboard/_transfer_row_user.html',
+        order_by=('user_full_name', 'user_username'))
+    amount = Column(verbose_name=_('Amount'))
+    type_code_name = Column(verbose_name=_('Type'))
+    ticket_number = Column(verbose_name=_('Ticket Number'))
+    financing_plan_number = Column(verbose_name=_('Plan Number'))
+    auth_number = Column(verbose_name=_('Authorization Number'))
+    created_datetime = TZAwareDateTimeColumn(
+        verbose_name=_('Created On'),
+        order_by='created_datetime',
+        format='D, N j Y, P')
+
+    class Meta(DashboardTable.Meta):
+        sequence = (
+            'merchant_reference',
+            'masked_account_number',
+            'order',
+            'user',
+            'amount',
+            'type_code_name',
+            'ticket_number',
+            'financing_plan_number',
+            'auth_number',
+            'created_datetime',
         )

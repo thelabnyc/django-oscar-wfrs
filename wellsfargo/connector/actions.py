@@ -1,13 +1,6 @@
 from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ValidationError
-from django.db import transaction
-from oscar_accounts import facade
-import soap
-import uuid
-import re
-import logging
-
-from ..core.constants import CREDIT_APP_APPROVED, TRANS_APPROVED, TRANS_TYPE_INQUIRY, TRANS_TYPE_APPLY
+from ..core.constants import CREDIT_APP_APPROVED, TRANS_APPROVED, TRANS_TYPE_INQUIRY, TRANS_TYPE_APPLY, EN_US
 from ..core.exceptions import TransactionDenied, CreditApplicationDenied
 from ..core.structures import CreditApplicationResult, AccountInquiryResult
 from ..models import APICredentials, TransferMetadata, FinancingPlan
@@ -16,6 +9,10 @@ from ..settings import (
     WFRS_INQUIRY_WSDL,
     WFRS_CREDIT_APP_WSDL
 )
+import soap
+import uuid
+import re
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -23,22 +20,18 @@ logger = logging.getLogger(__name__)
 def submit_transaction(trans_request, current_user=None):
     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
 
-    trans_request.source_account.primary_user = trans_request.user
-    trans_request.source_account.save()
-    if not trans_request.source_account.can_be_authorised_by(trans_request.user):
-        raise TransactionDenied('%s can not authorize transfer from %s' % (trans_request.user, trans_request.source_account))
+    request = client.factory.create('ns2:Transaction')
+    request.uuid = uuid.uuid1()
 
     creds = APICredentials.get_credentials(current_user)
-
-    request = client.factory.create('ns2:Transaction')
     request.userName = creds.username
     request.setupPassword = creds.password
     request.merchantNumber = creds.merchant_num
-    request.uuid = uuid.uuid1()
+
     request.transactionCode = trans_request.type_code
-    request.localeString = trans_request.source_account.wfrs_metadata.locale
-    request.accountNumber = trans_request.source_account.wfrs_metadata.account_number
-    request.planNumber = trans_request.financing_plan.plan_number
+    request.localeString = trans_request.locale
+    request.accountNumber = trans_request.account_number
+    request.planNumber = trans_request.plan_number
     request.amount = _as_decimal(trans_request.amount)
     request.authorizationNumber = trans_request.auth_number
     request.ticketNumber = trans_request.ticket_number
@@ -57,40 +50,36 @@ def submit_transaction(trans_request, current_user=None):
         raise TransactionDenied('%s: %s' % (resp.transactionStatus, resp.transactionMessage))
 
     # Persist transaction data and WF specific metadata
-    with transaction.atomic():
-        transfer = facade.transfer(
-            source=trans_request.source_account,
-            destination=trans_request.dest_account,
-            amount=_as_decimal(resp.amount),
-            user=trans_request.user,
-            merchant_reference=resp.uuid)
-        TransferMetadata.objects.create(
-            transfer=transfer,
-            type_code=resp.transactionCode,
-            ticket_number=resp.ticketNumber,
-            financing_plan=FinancingPlan.objects.filter(plan_number=resp.planNumber).first(),
-            auth_number=resp.authorizationNumber,
-            status=resp.transactionStatus,
-            message=resp.transactionMessage,
-            disclosure=resp.disclosure)
-        trans_request.transfer = transfer
-        trans_request.save()
+    transfer = TransferMetadata()
+    transfer.user = trans_request.user
+    transfer.account_number = resp.accountNumber
+    transfer.merchant_reference = resp.uuid
+    transfer.amount = _as_decimal(resp.amount)
+    transfer.type_code = resp.transactionCode
+    transfer.ticket_number = resp.ticketNumber
+    transfer.financing_plan = FinancingPlan.objects.filter(plan_number=resp.planNumber).first()
+    transfer.auth_number = resp.authorizationNumber
+    transfer.status = resp.transactionStatus
+    transfer.message = resp.transactionMessage
+    transfer.disclosure = resp.disclosure
+    transfer.save()
     return transfer
 
 
-def submit_inquiry(account, current_user=None):
+def submit_inquiry(account_number, current_user=None, locale=EN_US):
     client = soap.get_client(WFRS_INQUIRY_WSDL, 'WFRS')
 
-    creds = APICredentials.get_credentials(current_user)
-
     request = client.factory.create('ns2:Inquiry')
+    request.uuid = uuid.uuid1()
+    request.transactionCode = TRANS_TYPE_INQUIRY
+
+    creds = APICredentials.get_credentials(current_user)
     request.userName = creds.username
     request.setupPassword = creds.password
     request.merchantNumber = creds.merchant_num
-    request.uuid = uuid.uuid1()
-    request.transactionCode = TRANS_TYPE_INQUIRY
-    request.localeString = account.wfrs_metadata.locale
-    request.accountNumber = account.wfrs_metadata.account_number
+
+    request.localeString = locale
+    request.accountNumber = account_number
 
     # Submit
     resp = client.service.submitInquiry(request)
@@ -108,9 +97,11 @@ def submit_inquiry(account, current_user=None):
 
     # Build response
     result = AccountInquiryResult()
-    result.account = account
+    result.transaction_status = resp.transactionStatus
+    result.account_number = resp.wfAccountNumber
     result.balance = _as_decimal(resp.accountBalance)
     result.open_to_buy = _as_decimal(resp.openToBuy)
+    result.credit_limit = _as_decimal(resp.accountBalance + resp.openToBuy)
     return result
 
 
@@ -210,6 +201,8 @@ def submit_credit_application(app, current_user=None):
     result.transaction_status = resp.transactionStatus
     result.account_number = resp.wfAccountNumber
     result.credit_limit = _as_decimal(resp.creditLimit)
+    result.balance = Decimal('0.00')
+    result.open_to_buy = result.credit_limit
     return result
 
 

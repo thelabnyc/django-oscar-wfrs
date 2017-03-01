@@ -1,14 +1,13 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from oscar.core.loading import get_model
-from oscarapi.serializers import InlineBillingAddressSerializer
 from ..connector import actions
 from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT,
     ENGLISH, FRENCH,
-    LOCALE_CHOICES, EN_US
 )
+from ..core import exceptions as core_exceptions
 from ..models import (
     FinancingPlan,
     USCreditApp,
@@ -16,6 +15,7 @@ from ..models import (
     CACreditApp,
     CAJointCreditApp,
 )
+from . import exceptions as api_exceptions
 
 Basket = get_model('basket', 'Basket')
 BillingAddress = get_model('order', 'BillingAddress')
@@ -26,7 +26,6 @@ ShippingAddress = get_model('order', 'ShippingAddress')
 Source = get_model('payment', 'Source')
 SourceType = get_model('payment', 'SourceType')
 Transaction = get_model('payment', 'Transaction')
-Account = get_model('oscar_accounts', 'Account')
 
 
 class AppSelectionSerializer(serializers.ModelSerializer):
@@ -39,19 +38,24 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
     def save(self):
         request = self.context['request']
 
+        request_user = None
+        if request.user and request.user.is_authenticated():
+            request_user = request.user
+
         # Build application class and save record to DB to record the attempt
         Application = self.Meta.model
         app = Application(**self.validated_data)
-        app.user = request.user
-        app.submitting_user = request.user
+        app.user = request_user
+        app.submitting_user = request_user
         app.save()
 
         # Submit application to to Wells
-        resp = actions.submit_credit_application(app, current_user=request.user)
+        try:
+            result = actions.submit_credit_application(app, current_user=request_user)
+        except core_exceptions.CreditApplicationDenied:
+            raise api_exceptions.CreditApplicationDenied()
 
-        # Use the Wells response to create a new account in the DB (if the application was approved)
-        account = resp.save(owner=request.user)
-        return account
+        return result
 
 
 class USCreditAppSerializer(BaseCreditAppSerializer):
@@ -120,37 +124,6 @@ class CAJointCreditAppSerializer(BaseCreditAppSerializer):
         exclude = ('user', )
 
 
-class AccountSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='wfrs-api-account-detail')
-    locale = serializers.ChoiceField(source='wfrs_metadata.locale', choices=LOCALE_CHOICES, default=EN_US)
-    account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16, source='wfrs_metadata.account_number')
-    billing_address = InlineBillingAddressSerializer(source='wfrs_metadata.billing_address', required=False)
-
-    class Meta:
-        model = Account
-        fields = (
-            'id',
-            'url',
-            'name',
-            'description',
-            'code',
-            'status',
-            'credit_limit',
-            'balance',
-            'locale',
-            'account_number',
-            'billing_address',
-        )
-        extra_kwargs = {
-            'name': { 'read_only': True },
-            'description': { 'read_only': True },
-            'code': { 'read_only': True },
-            'status': { 'read_only': True },
-            'credit_limit': { 'read_only': True },
-            'balance': { 'read_only': True },
-        }
-
-
 class FinancingPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinancingPlan
@@ -162,3 +135,10 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
             'term_months',
             'allow_credit_application',
         )
+
+
+class AccountSerializer(serializers.Serializer):
+    account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16)
+    credit_limit = serializers.DecimalField(decimal_places=2, max_digits=12)
+    balance = serializers.DecimalField(decimal_places=2, max_digits=12)
+    open_to_buy = serializers.DecimalField(decimal_places=2, max_digits=12)

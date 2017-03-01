@@ -1,12 +1,8 @@
 from rest_framework import status
 from rest_framework.reverse import reverse
-from oscar.core.loading import get_model
-import mock
-
 from .base import BaseTest
 from . import responses
-
-Account = get_model('oscar_accounts', 'Account')
+import mock
 
 
 class CreditApplicationSelectorTest(BaseTest):
@@ -71,7 +67,8 @@ class CreditApplicationSelectorTest(BaseTest):
             'app_type': 'I'
         }
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['url'].endswith('/apply/us-individual/'))
 
 
 class USIndivCreditApplicationTest(BaseTest):
@@ -123,8 +120,11 @@ class USIndivCreditApplicationTest(BaseTest):
         url = reverse(self.view_name)
         data = self.build_valid_request()
         response = self.client.post(url, data, format='json')
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['account_number'], '9999999999999999')
+        self.assertEqual(response.data['credit_limit'], '7500.00')
+        self.assertEqual(response.data['balance'], '0.00')
+        self.assertEqual(response.data['open_to_buy'], '7500.00')
 
     @mock.patch('soap.get_transport')
     def test_submit_authd(self, get_transport):
@@ -137,16 +137,10 @@ class USIndivCreditApplicationTest(BaseTest):
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsNotNone(response.data['id'])
-        self.assertIsNotNone(response.data['url'])
-        self.assertEqual(response.data['name'], 'Joe Schmoe – xxxxxxxxxxxx9999')
-        self.assertIsNone(response.data['description'])
-        self.assertEqual(response.data['code'], '9999999999999999')
-        self.assertEqual(response.data['status'], 'Open')
+        self.assertEqual(response.data['account_number'], '9999999999999999')
         self.assertEqual(response.data['credit_limit'], '7500.00')
         self.assertEqual(response.data['balance'], '0.00')
-        self.assertEqual(response.data['locale'], 'en_US')
-        self.assertEqual(response.data['account_number'], '9999999999999999')
+        self.assertEqual(response.data['open_to_buy'], '7500.00')
 
     def test_submit_invalid(self):
         self.client.login(username='joe', password='schmoe')
@@ -169,63 +163,3 @@ class USIndivCreditApplicationTest(BaseTest):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['detail'], 'Credit Application was denied by Wells Fargo')
-
-    def test_manual_add(self):
-        self.client.login(username='joe', password='schmoe')
-
-        url = reverse('wfrs-api-account-list')
-        data = {
-            'account_number': '1111111111111111',
-            'billing_address': {
-                'title': 'Ms',
-                'first_name': 'Jill',
-                'last_name': 'Schmoe',
-                'line1': '111 Wall St',
-                'line4': 'New York',
-                'state': 'NY',
-                'postcode': '10001',
-                'country': '/api/countries/US/',
-            }
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsNotNone(response.data['id'])
-        self.assertIsNotNone(response.data['url'])
-        self.assertEqual(response.data['name'], 'Ms Jill Schmoe – xxxxxxxxxxxx1111')
-        self.assertIsNone(response.data['description'])
-        self.assertEqual(response.data['code'], '1111111111111111')
-        self.assertEqual(response.data['status'], 'Open')
-        self.assertIsNone(response.data['credit_limit'])
-        self.assertEqual(response.data['balance'], '0.00')
-        self.assertEqual(response.data['locale'], 'en_US')
-        self.assertEqual(response.data['account_number'], '1111111111111111')
-        self.assertEqual(response.data['billing_address']['title'], 'Ms')
-        self.assertEqual(response.data['billing_address']['first_name'], 'Jill')
-        self.assertEqual(response.data['billing_address']['last_name'], 'Schmoe')
-        self.assertEqual(response.data['billing_address']['line1'], '111 Wall St')
-        self.assertEqual(response.data['billing_address']['line2'], '')
-        self.assertEqual(response.data['billing_address']['line4'], 'New York')
-        self.assertEqual(response.data['billing_address']['state'], 'NY')
-        self.assertEqual(response.data['billing_address']['postcode'], '10001')
-        self.assertEqual(response.data['billing_address']['country'], 'http://testserver/api/countries/US/')
-
-    def test_manual_add_without_billing_address(self):
-        self.client.login(username='joe', password='schmoe')
-
-        url = reverse('wfrs-api-account-list')
-        data = {
-            "account_number": "1111111111111111",
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsNotNone(response.data['id'])
-        self.assertIsNotNone(response.data['url'])
-        self.assertEqual(response.data['name'], 'xxxxxxxxxxxx1111')
-        self.assertIsNone(response.data['description'])
-        self.assertEqual(response.data['code'], '1111111111111111')
-        self.assertEqual(response.data['status'], 'Open')
-        self.assertIsNone(response.data['credit_limit'])
-        self.assertEqual(response.data['balance'], '0.00')
-        self.assertEqual(response.data['locale'], 'en_US')
-        self.assertEqual(response.data['account_number'], '1111111111111111')
-        self.assertIsNone(response.data['billing_address'])

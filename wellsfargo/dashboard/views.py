@@ -10,11 +10,8 @@ from django_tables2 import SingleTableView
 from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 from oscar.core.loading import get_model
-from oscar_accounts.core import redemptions_account
 from ..connector import actions
-from ..core.constants import CREDIT_APP_APPROVED
-from ..core.exceptions import CreditApplicationDenied, TransactionDenied
-from ..core.structures import CreditApplicationResult
+from ..core.exceptions import CreditApplicationDenied
 from ..models import (
     FinancingPlan,
     FinancingPlanBenefit,
@@ -22,17 +19,16 @@ from ..models import (
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp,
+    TransferMetadata,
 )
 from .forms import (
-    SubmitTransactionForm,
     ApplicationSelectionForm,
-    ManualAddAccountForm,
     FinancingPlanForm,
     FinancingPlanBenefitForm,
     ApplicationSearchForm,
     get_application_form_class,
 )
-from .tables import CreditApplicationIndexTable
+from .tables import CreditApplicationIndexTable, TransferMetadataIndexTable
 
 
 Account = get_model('oscar_accounts', 'Account')
@@ -45,49 +41,6 @@ APPLICATION_MODELS = {
     CACreditApp.APP_TYPE_CODE: CACreditApp,
     CAJointCreditApp.APP_TYPE_CODE: CAJointCreditApp,
 }
-
-
-
-class SubmitTransactionView(generic.FormView):
-    template_name = 'wfrs/dashboard/submit_transaction.html'
-    form_class = SubmitTransactionForm
-
-    def get(self, request, source_id):
-        self._init_form(source_id)
-        return super().get(request, source_id)
-
-    def post(self, request, source_id):
-        self._init_form(source_id)
-        form = self.get_form()
-        if form.is_valid():
-            try:
-                actions.submit_transaction(form.save(), current_user=request.user)
-                return self.form_valid(form)
-            except TransactionDenied as e:
-                messages.add_message(request, messages.ERROR, _('Transaction was denied by Wells Fargo'))
-            except ValidationError as e:
-                messages.add_message(request, messages.ERROR, e.message)
-        return self.form_invalid(form)
-
-    def form_valid(self, form):
-        url = reverse('accounts-detail', args=(self.account.id, ))
-        return HttpResponseRedirect(url)
-
-    def get_initial(self):
-        return {
-            'source_account': self.account.id,
-            'dest_account': redemptions_account().id,
-            'user': self.account.primary_user.id,
-        }
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _('Submit New Transaction (Wells Fargo)')
-        context['account'] = self.account
-        return context
-
-    def _init_form(self, source_id):
-        self.account = get_object_or_404(Account, pk=source_id)
 
 
 
@@ -147,43 +100,6 @@ class CreditApplicationView(generic.FormView):
         }
         self.form_class = get_application_form_class(region, app_type)
         self.template_name = self.form_class.dashboard_template
-
-
-
-class AddExistingAccountView(generic.FormView):
-    form_class = ManualAddAccountForm
-    template_name = 'wfrs/dashboard/add_account.html'
-
-    def form_valid(self, form):
-        struct = CreditApplicationResult()
-        struct.transaction_status = CREDIT_APP_APPROVED
-        struct.account_number = form.cleaned_data['account_number']
-        struct.credit_limit = form.cleaned_data['credit_limit']
-        account = struct.save(
-            owner=form.cleaned_data['primary_user'],
-            status=form.cleaned_data['status'],
-            name=form.cleaned_data['name'],
-            locale=form.cleaned_data['locale'],
-            billing_address={
-                'title': form.cleaned_data['title'],
-                'first_name': form.cleaned_data['first_name'],
-                'last_name': form.cleaned_data['last_name'],
-                'line1': form.cleaned_data['line1'],
-                'line2': form.cleaned_data['line2'],
-                'line3': form.cleaned_data['line3'],
-                'line4': form.cleaned_data['line4'],
-                'state': form.cleaned_data['state'],
-                'postcode': form.cleaned_data['postcode'],
-                'country': form.cleaned_data['country'],
-            })
-
-        url = reverse('accounts-detail', kwargs={'pk': account.pk})
-        return HttpResponseRedirect(url)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _('Add Existing Wells Fargo Account')
-        return context
 
 
 class FinancingPlanListView(generic.ListView):
@@ -347,3 +263,31 @@ class CreditApplicationDetailView(generic.DetailView):
     def get_queryset(self):
         app_type = self.kwargs.get('app_type')
         return APPLICATION_MODELS.get(app_type, DEFAULT_APPLICATION).objects.all()
+
+
+
+class TransferMetadataListView(SingleTableView):
+    template_name = "wfrs/dashboard/transfer_list.html"
+    table_class = TransferMetadataIndexTable
+    context_table_name = 'transfers'
+
+    def get_table(self, **kwargs):
+        table = super().get_table(**kwargs)
+        table.caption = _('Transfers')
+        return table
+
+    def get_queryset(self):
+        qs = SearchQuerySet().models(TransferMetadata)
+        # Default ordering
+        if not self.request.GET.get('sort'):
+            qs = qs.order_by('-created_datetime')
+        return qs
+
+
+class TransferMetadataDetailView(generic.DetailView):
+    template_name = "wfrs/dashboard/transfer_detail.html"
+    slug_field = 'merchant_reference'
+    slug_url_kwarg = 'merchant_reference'
+
+    def get_queryset(self):
+        return TransferMetadata.objects.all()
