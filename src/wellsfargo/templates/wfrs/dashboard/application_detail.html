@@ -37,6 +37,10 @@
                     <td>{{ object.email | default:"-" }}</td>
                 </tr>
                 <tr>
+                    <td>{% trans "Resulting Account Number" %}</td>
+                    <td>{{ object.account_number | default:"-" }}</td>
+                </tr>
+                <tr>
                     <td>{% trans "Created Date" %}</td>
                     <td>{{ object.created_datetime | default:"-" }}</td>
                 </tr>

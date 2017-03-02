@@ -54,4 +54,24 @@ class Migration(migrations.Migration):
             name='modified_datetime',
             field=models.DateTimeField(auto_now=True),
         ),
+        migrations.AddField(
+            model_name='cacreditapp',
+            name='last4_account_number',
+            field=models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account'),
+        ),
+        migrations.AddField(
+            model_name='cajointcreditapp',
+            name='last4_account_number',
+            field=models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account'),
+        ),
+        migrations.AddField(
+            model_name='uscreditapp',
+            name='last4_account_number',
+            field=models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account'),
+        ),
+        migrations.AddField(
+            model_name='usjointcreditapp',
+            name='last4_account_number',
+            field=models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account'),
+        ),
     ]

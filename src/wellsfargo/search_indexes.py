@@ -13,6 +13,8 @@ class BaseCreditAppIndex(indexes.SearchIndex):
     modified_datetime = indexes.DateTimeField(model_attr='modified_datetime')
     created_datetime = indexes.DateTimeField(model_attr='created_datetime')
 
+    account_number = indexes.CharField(model_attr='account_number', null=True)
+
     main_first_name = indexes.CharField(model_attr='main_first_name')
     main_last_name = indexes.CharField(model_attr='main_last_name')
     email = indexes.CharField(model_attr='email')

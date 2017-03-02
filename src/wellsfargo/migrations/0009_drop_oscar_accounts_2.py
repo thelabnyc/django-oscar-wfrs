@@ -16,6 +16,17 @@ def migrate_from_oscar_accounts(apps, schema_editor):
         meta.modified_datetime = meta.transfer.date_created
         meta.save()
 
+    USCreditApp = apps.get_model("wellsfargo", "USCreditApp")
+    USJointCreditApp = apps.get_model("wellsfargo", "USJointCreditApp")
+    CACreditApp = apps.get_model("wellsfargo", "CACreditApp")
+    CAJointCreditApp = apps.get_model("wellsfargo", "CAJointCreditApp")
+    for AppType in (USCreditApp, USJointCreditApp, CACreditApp, CAJointCreditApp):
+        for app in AppType.objects.all():
+            account_number = None
+            if app.account:
+                app.account_number = app.account.wfrs_metadata.account_number
+                app.save()
+
 
 class Migration(migrations.Migration):
 

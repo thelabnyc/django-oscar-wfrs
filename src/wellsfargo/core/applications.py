@@ -70,6 +70,8 @@ class BaseCreditAppMixin(models.Model):
     new_sales_person = models.CharField(_("New Sales Person Name"), null=True, blank=True, max_length=10)
     email = models.EmailField(_("Email"), null=False, blank=False, max_length=80)
 
+    last4_account_number = models.CharField(_("Resulting Account"), max_length=4, null=True, blank=True)
+
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)
 
@@ -90,6 +92,20 @@ class BaseCreditAppMixin(models.Model):
     @property
     def full_name(self):
         return "%s %s" % (self.main_first_name, self.main_last_name)
+
+    @property
+    def masked_account_number(self):
+        if self.last4_account_number:
+            return 'xxxxxxxxxxxx{}'.format(self.last4_account_number)
+        return None
+
+    @property
+    def account_number(self):
+        return self.masked_account_number
+
+    @account_number.setter
+    def account_number(self, value):
+        self.last4_account_number = value[-4:]
 
 
 class BaseJointCreditAppMixin(BaseCreditAppMixin):

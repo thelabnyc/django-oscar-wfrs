@@ -33,6 +33,10 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Submitted By'),
         template_name='wfrs/dashboard/_application_row_submitting_user.html',
         order_by=('submitting_user_full_name', 'submitting_user_username'))
+    account_number = TemplateColumn(
+        verbose_name=_('Resulting Account Number'),
+        template_name='wfrs/dashboard/_application_row_account_number.html',
+        order_by='account_number')
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
         order_by='created_datetime',
@@ -53,6 +57,7 @@ class CreditApplicationIndexTable(DashboardTable):
             'application_type',
             'user',
             'submitting_user',
+            'account_number',
             'created_datetime',
             'modified_datetime',
             'actions'
