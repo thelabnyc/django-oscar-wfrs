@@ -93,6 +93,7 @@ class Migration(migrations.Migration):
                 ('main_photo_id_expiration', models.DateField(verbose_name='Photo ID Expiration Date')),
                 ('submitting_user', models.ForeignKey(blank=True, help_text='Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit).', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Submitting User')),
                 ('user', models.ForeignKey(blank=True, help_text='Select the user user who is applying and who will own (be the primary user of) this account.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='ca_individual_credit_apps', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),
+                ('last4_account_number', models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account')),
             ],
             options={
                 'verbose_name': 'CA Individual Credit Application',
@@ -161,6 +162,7 @@ class Migration(migrations.Migration):
                 ('joint_photo_id_expiration', models.DateField(verbose_name='Photo ID Expiration Date')),
                 ('submitting_user', models.ForeignKey(blank=True, help_text='Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit).', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Submitting User')),
                 ('user', models.ForeignKey(blank=True, help_text='Select the user user who is applying and who will own (be the primary user of) this account.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='ca_joint_credit_apps', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),
+                ('last4_account_number', models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account')),
             ],
             options={
                 'verbose_name': 'CA Joint Credit Application',
@@ -254,6 +256,7 @@ class Migration(migrations.Migration):
                 ('main_occupation', models.CharField(blank=True, max_length=24, null=True, verbose_name='Occupation')),
                 ('submitting_user', models.ForeignKey(blank=True, help_text='Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit).', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Submitting User')),
                 ('user', models.ForeignKey(blank=True, help_text='Select the user user who is applying and who will own (be the primary user of) this account.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='us_individual_credit_apps', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),
+                ('last4_account_number', models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account')),
             ],
             options={
                 'verbose_name': 'US Individual Credit Application',
@@ -314,6 +317,7 @@ class Migration(migrations.Migration):
                 ('joint_occupation', models.CharField(blank=True, max_length=24, null=True, verbose_name='Occupation')),
                 ('submitting_user', models.ForeignKey(blank=True, help_text='Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit).', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL, verbose_name='Submitting User')),
                 ('user', models.ForeignKey(blank=True, help_text='Select the user user who is applying and who will own (be the primary user of) this account.', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='us_joint_credit_apps', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),
+                ('last4_account_number', models.CharField(blank=True, max_length=4, null=True, verbose_name='Resulting Account')),
             ],
             options={
                 'verbose_name': 'US Joint Credit Application',

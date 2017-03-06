@@ -13,7 +13,6 @@ django-oscar-accounts2==0.1.0
 django-oscar-api==1.0.10.post1
 django-oscar-api-checkout==0.2.4
 django-oscar-bluelight==0.5.2
--e git+git@gitlab.com:thelabnyc/django-oscar-wfrs.git@d1c5ce25152ba704690c340a4ffa83ec0992cc15#egg=django_oscar_wfrs
 django-statsd-mozilla==0.3.16
 django-tables2==1.4.1
 django-treebeard==4.1.0
