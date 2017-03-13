@@ -3,6 +3,11 @@
 Changelog
 =========
 
+0.6.1
+------------------
+- Moved Fernet encryption class from ``wellsfargo.security.FernetEncryption`` to ``wellsfargo.security.fernet.FernetEncryption``.
+- Added alternative `AWS KMS <https://aws.amazon.com/kms/>`_ encryption class as ``wellsfargo.security.kms.KMSEncryption``.
+
 0.6.0
 ------------------
 - **Major Release. Breaking Changes.**
