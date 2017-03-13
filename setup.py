@@ -27,13 +27,16 @@ install_requires = [
 ]
 
 extras_require = {
+    'kms': [
+        'boto3>=1.4.4',
+    ],
     'development': [
         'elasticsearch>=1.9.0,<2.0.0',
         'flake8>=3.2.1',
         'psycopg2>=2.6.2',
         'PyYAML>=3.12',
-        'tox>=2.6.0',
         'sphinx>=1.5.2',
+        'tox>=2.6.0',
         'versiontag>=1.2.0',
     ],
 }

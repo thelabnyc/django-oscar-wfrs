@@ -156,7 +156,7 @@ Configure an encryption key to use when encrypting Wells Fargo Account Numbers. 
 
     # Key should be something like b'U3Nyi57e55H2weKVmEPzrGdv18b0bGt3e542rg1J1N8='
     WFRS_SECURITY = {
-        'encryptor': 'wellsfargo.security.FernetEncryption',
+        'encryptor': 'wellsfargo.security.fernet.FernetEncryption',
         'encryptor_kwargs': {
             'key': os.environ.get('WFRS_ENCRYPTION_KEY', '').encode(),
         },

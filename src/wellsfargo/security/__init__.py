@@ -1,30 +1,5 @@
-from cryptography.fernet import Fernet, InvalidToken
-from django.utils.encoding import force_bytes, force_text
 from ..settings import WFRS_SECURITY
 import importlib
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-class FernetEncryption(object):
-    def __init__(self, key):
-        self.fernet = Fernet(key=key)
-
-    def encrypt(self, value):
-        """Accept a string and return binary data"""
-        value = force_bytes(value)
-        return self.fernet.encrypt(value)
-
-    def decrypt(self, blob):
-        """Accept binary data and return a string"""
-        blob = force_bytes(blob)
-        try:
-            value = self.fernet.decrypt(blob)
-        except InvalidToken as e:
-            logger.exception('Unable to decrypt account number blob.')
-            return None
-        return force_text(value)
 
 
 def encrypt_account_number(account_number):
