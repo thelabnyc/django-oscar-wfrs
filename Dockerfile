@@ -8,7 +8,7 @@ ADD requirements.txt /code/
 RUN pip install -r requirements.txt
 
 ADD . /code/
-RUN pip install -e .[development]
+RUN pip install -e .[development,kms]
 
 RUN mkdir /tox
 ENV TOX_WORK_DIR='/tox'
