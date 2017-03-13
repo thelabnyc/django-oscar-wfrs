@@ -6,12 +6,14 @@ from django.db import migrations
 
 
 def migrate_from_oscar_accounts(apps, schema_editor):
+    from ..security import encrypt_account_number
     TransferMetadata = apps.get_model("wellsfargo", "TransferMetadata")
     for meta in TransferMetadata.objects.all():
         meta.amount = meta.transfer.amount
         meta.merchant_reference = meta.transfer.merchant_reference
         meta.user = meta.transfer.user
-        meta.account_number = meta.transfer.source.wfrs_metadata.account_number
+        meta.last4_account_number = meta.transfer.source.wfrs_metadata.account_number[-4:]
+        meta.encrypted_account_number = encrypt_account_number(meta.transfer.source.wfrs_metadata.account_number)
         meta.created_datetime = meta.transfer.date_created
         meta.modified_datetime = meta.transfer.date_created
         meta.save()
@@ -24,7 +26,7 @@ def migrate_from_oscar_accounts(apps, schema_editor):
         for app in AppType.objects.all():
             account_number = None
             if app.account:
-                app.account_number = app.account.wfrs_metadata.account_number
+                app.last4_account_number = app.account.wfrs_metadata.account_number[-4:]
                 app.save()
 
 

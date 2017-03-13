@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.6.2
+------------------
+- Fix bug when migrating account numbers to new encrypted fields.
+
 0.6.1
 ------------------
 - Moved Fernet encryption class from ``wellsfargo.security.FernetEncryption`` to ``wellsfargo.security.fernet.FernetEncryption``.
