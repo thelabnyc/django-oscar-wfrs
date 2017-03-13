@@ -17,12 +17,12 @@ WFRS_INQUIRY_WSDL = overridable('WFRS_INQUIRY_WSDL', 'https://retailservices-uat
 WFRS_CREDIT_APP_WSDL = overridable('WFRS_CREDIT_APP_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitCreditAppService?WSDL')
 
 WFRS_SECURITY = {
-    'encryptor': 'wellsfargo.security.FernetEncryption',
+    'encryptor': 'wellsfargo.security.fernet.FernetEncryption',
     'encryptor_kwargs': {},
 }
 WFRS_SECURITY.update( overridable('WFRS_SECURITY', {}) )
 
-if WFRS_SECURITY['encryptor'] == 'wellsfargo.security.FernetEncryption':
+if WFRS_SECURITY['encryptor'] == 'wellsfargo.security.fernet.FernetEncryption':
     if WFRS_SECURITY['encryptor_kwargs'].get('key') is None:
         raise ImproperlyConfigured((
             "You must supply a value for WFRS_SECURITY['encryptor_kwargs']['key'] in settings. "
