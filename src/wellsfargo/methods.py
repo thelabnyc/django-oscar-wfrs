@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from oscarapi.basket import operations
 from oscarapicheckout.methods import PaymentMethod, PaymentMethodSerializer
@@ -55,7 +56,7 @@ class WellsFargo(PaymentMethod):
 
         try:
             transfer = actions.submit_transaction(trans_request, current_user=request_user)
-        except exceptions.TransactionDenied:
+        except (exceptions.TransactionDenied, ValidationError):
             return Declined(amount)
 
         # Record the allocation and payment event
