@@ -61,6 +61,10 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
                 'non_field_errors': [e.message]
             })
 
+        # Update resulting account number
+        app.account_number = result.account_number
+        app.save()
+
         return result
 
 

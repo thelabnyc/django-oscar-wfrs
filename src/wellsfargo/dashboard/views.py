@@ -66,21 +66,27 @@ class CreditApplicationView(generic.FormView):
         self._init_form(region, language, app_type)
         form = self.get_form()
         if form.is_valid():
+            # Save application
+            app = form.save()
+            app.submitting_user = request.user
+            app.save()
+
+            # Submit application
             try:
-                app = form.save()
-                app.submitting_user = request.user
+                result = actions.submit_credit_application(app, current_user=request.user)
+                # Update resulting account number
+                app.account_number = result.account_number
                 app.save()
-                resp = actions.submit_credit_application(app, current_user=request.user)
-                account = resp.save()
-                return self.form_valid(account)
+                return self.form_valid(app)
             except CreditApplicationDenied as e:
                 messages.add_message(request, messages.ERROR, _('Credit Application was denied by Wells Fargo'))
             except ValidationError as e:
                 messages.add_message(request, messages.ERROR, e.message)
+
         return self.form_invalid(form)
 
-    def form_valid(self, account):
-        url = reverse('accounts-detail', args=(account.pk, ))
+    def form_valid(self, application):
+        url = reverse('wfrs-application-detail', args=(application.APP_TYPE_CODE, application.pk))
         return HttpResponseRedirect(url)
 
     def get_context_data(self, **kwargs):
@@ -96,6 +102,7 @@ class CreditApplicationView(generic.FormView):
         }
         self.form_class = get_application_form_class(region, app_type)
         self.template_name = self.form_class.dashboard_template
+
 
 
 class FinancingPlanListView(generic.ListView):

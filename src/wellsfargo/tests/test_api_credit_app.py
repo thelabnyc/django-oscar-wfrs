@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.reverse import reverse
+from ..models import USCreditApp
 from .base import BaseTest
 from . import responses
 import mock
@@ -113,6 +114,39 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.data['balance'], '0.00')
         self.assertEqual(response.data['open_to_buy'], '7500.00')
 
+        app = USCreditApp.objects.first()
+
+        self.assertEqual(app.user, None)
+        self.assertEqual(app.submitting_user, None)
+
+        # Basic Application Data
+        self.assertEqual(app.region, 'US')
+        self.assertEqual(app.app_type, 'I')
+        self.assertEqual(app.language, 'E')
+        self.assertEqual(app.purchase_price, 2000)
+        self.assertEqual(app.main_ssn, 'xxx-xx-9991')  # Model should only contain masked SSN, not full SSN.
+        self.assertEqual(app.main_first_name, 'Joe')
+        self.assertEqual(app.main_last_name, 'Schmoe')
+        self.assertEqual(app.main_date_of_birth, None)  # Model should not store Date of Birth
+        self.assertEqual(app.email, 'foo@example.com')
+        self.assertEqual(app.main_address_line1, '123 Evergreen Terrace')
+        self.assertEqual(app.main_address_city, 'Springfield')
+        self.assertEqual(app.main_address_state, 'NY')
+        self.assertEqual(app.main_address_postcode, '10001')
+        self.assertEqual(app.main_annual_income, 100000)
+        self.assertEqual(app.main_home_phone, '5555555555')
+        self.assertEqual(app.main_employer_phone, '5555555555')
+
+        # Computed properties
+        self.assertEqual(app.locale, 'en_US')
+        self.assertEqual(app.is_joint, False)
+        self.assertEqual(app.full_name, 'Joe Schmoe')
+
+        # Model should store last 4 digits of resulting account number
+        self.assertEqual(app.last4_account_number, '9999')
+        self.assertEqual(app.masked_account_number, 'xxxxxxxxxxxx9999')
+        self.assertEqual(app.account_number, 'xxxxxxxxxxxx9999')
+
 
     @mock.patch('soap.get_transport')
     def test_submit_authd(self, get_transport):
@@ -129,6 +163,39 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.data['credit_limit'], '7500.00')
         self.assertEqual(response.data['balance'], '0.00')
         self.assertEqual(response.data['open_to_buy'], '7500.00')
+
+        app = USCreditApp.objects.first()
+
+        self.assertEqual(app.user, self.joe)
+        self.assertEqual(app.submitting_user, self.joe)
+
+        # Basic Application Data
+        self.assertEqual(app.region, 'US')
+        self.assertEqual(app.app_type, 'I')
+        self.assertEqual(app.language, 'E')
+        self.assertEqual(app.purchase_price, 2000)
+        self.assertEqual(app.main_ssn, 'xxx-xx-9991')  # Model should only contain masked SSN, not full SSN.
+        self.assertEqual(app.main_first_name, 'Joe')
+        self.assertEqual(app.main_last_name, 'Schmoe')
+        self.assertEqual(app.main_date_of_birth, None)  # Model should not store Date of Birth
+        self.assertEqual(app.email, 'foo@example.com')
+        self.assertEqual(app.main_address_line1, '123 Evergreen Terrace')
+        self.assertEqual(app.main_address_city, 'Springfield')
+        self.assertEqual(app.main_address_state, 'NY')
+        self.assertEqual(app.main_address_postcode, '10001')
+        self.assertEqual(app.main_annual_income, 100000)
+        self.assertEqual(app.main_home_phone, '5555555555')
+        self.assertEqual(app.main_employer_phone, '5555555555')
+
+        # Computed properties
+        self.assertEqual(app.locale, 'en_US')
+        self.assertEqual(app.is_joint, False)
+        self.assertEqual(app.full_name, 'Joe Schmoe')
+
+        # Model should store last 4 digits of resulting account number
+        self.assertEqual(app.last4_account_number, '9999')
+        self.assertEqual(app.masked_account_number, 'xxxxxxxxxxxx9999')
+        self.assertEqual(app.account_number, 'xxxxxxxxxxxx9999')
 
 
     def test_submit_invalid_dob(self):
