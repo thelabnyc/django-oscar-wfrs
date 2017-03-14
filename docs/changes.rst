@@ -3,6 +3,14 @@
 Changelog
 =========
 
+0.6.3
+------------------
+- Save last 4 digits of resulting account number to credit application models.
+- Add ``TransferMetadata.purge_encrypted_account_number`` method.
+- Handle ValidationError when submitting a transaction to prevent 500 errors in checkout.
+- Fix 500 error in Credit App API when SOAP API returned a validation issue.
+- Fix install documentation regarding API credentials.
+
 0.6.2
 ------------------
 - Fix bug when migrating account numbers to new encrypted fields.
