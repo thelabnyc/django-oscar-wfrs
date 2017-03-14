@@ -191,6 +191,10 @@ class TransferMetadata(models.Model):
             return None
         return transaction.source.order
 
+    def purge_encrypted_account_number(self):
+        self.encrypted_account_number = None
+        self.save()
+
 
 class USCreditApp(USCreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'us-individual'

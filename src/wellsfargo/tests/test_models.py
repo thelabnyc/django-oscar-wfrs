@@ -1,6 +1,9 @@
+from decimal import Decimal
 from django.contrib.auth.models import User, Group
 from .base import BaseTest
-from ..models import APICredentials
+from ..core.constants import TRANS_TYPE_AUTH, TRANS_APPROVED
+from ..models import APICredentials, TransferMetadata
+import uuid
 
 
 class APICredentialsTest(BaseTest):
@@ -56,3 +59,43 @@ class APICredentialsTest(BaseTest):
         self.assertEqual(APICredentials.get_credentials(user).username, 'credsB')
         user.groups.remove(group)
         self.assertEqual(APICredentials.get_credentials(user).username, 'credsA')
+
+
+
+class TransferMetadataTest(BaseTest):
+
+    def test_account_number(self):
+        transfer = TransferMetadata()
+        transfer.merchant_reference = uuid.uuid1()
+        transfer.amount = Decimal('10.00')
+        transfer.type_code = TRANS_TYPE_AUTH
+        transfer.ticket_number = '123'
+        transfer.status = TRANS_APPROVED
+        transfer.message = 'message'
+        transfer.disclosure = 'disclosure'
+        transfer.save()
+
+        # No account number is set
+        transfer = TransferMetadata.objects.get(pk=transfer.pk)
+        self.assertEqual(transfer.last4_account_number, '')
+        self.assertEqual(transfer.masked_account_number, 'xxxxxxxxxxxxxxxx')
+        self.assertEqual(transfer.account_number, 'xxxxxxxxxxxxxxxx')
+
+        # Set an account number
+        transfer.account_number = '9999999999999991'
+        transfer.save()
+
+        # Retrieve account number via decryption
+        transfer = TransferMetadata.objects.get(pk=transfer.pk)
+        self.assertEqual(transfer.last4_account_number, '9991')
+        self.assertEqual(transfer.masked_account_number, 'xxxxxxxxxxxx9991')
+        self.assertEqual(transfer.account_number, '9999999999999991')
+
+        # Purge encrypted copy of account number, leaving on the last 4 digits around
+        transfer.purge_encrypted_account_number()
+
+        # Make sure only the last 4 digits still exist
+        transfer = TransferMetadata.objects.get(pk=transfer.pk)
+        self.assertEqual(transfer.last4_account_number, '9991')
+        self.assertEqual(transfer.masked_account_number, 'xxxxxxxxxxxx9991')
+        self.assertEqual(transfer.account_number, 'xxxxxxxxxxxx9991')
