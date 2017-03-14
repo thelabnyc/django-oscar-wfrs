@@ -114,6 +114,14 @@ class CreditApplicationTest(BaseTest):
 
     @mock.patch('soap.get_transport')
     def test_missing_ssn(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_missing_ssn)
+        app = self._build_us_single_credit_app(None)
+        with self.assertRaises(ValidationError):
+            actions.submit_credit_application(app)
+
+
+    @mock.patch('soap.get_transport')
+    def test_invalid_ssn(self, get_transport):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_invalid_ssn)
         app = self._build_us_single_credit_app(None)
         with self.assertRaises(ValidationError):

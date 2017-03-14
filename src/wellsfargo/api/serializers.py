@@ -1,5 +1,7 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from oscar.core.loading import get_model
 from ..connector import actions
 from ..core.constants import (
@@ -54,6 +56,10 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
             result = actions.submit_credit_application(app, current_user=request_user)
         except core_exceptions.CreditApplicationDenied:
             raise api_exceptions.CreditApplicationDenied()
+        except DjangoValidationError as e:
+            raise DRFValidationError({
+                'non_field_errors': [e.message]
+            })
 
         return result
 

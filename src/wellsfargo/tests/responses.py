@@ -22,6 +22,10 @@ with open(os.path.join(_base, 'responses/credit_app_successful.xml'), 'r') as f:
     credit_app_successful = f.read().encode('utf8')
 
 
+with open(os.path.join(_base, 'responses/credit_app_missing_ssn.xml'), 'r') as f:
+    credit_app_missing_ssn = f.read().encode('utf8')
+
+
 with open(os.path.join(_base, 'responses/credit_app_invalid_ssn.xml'), 'r') as f:
     credit_app_invalid_ssn = f.read().encode('utf8')
 
