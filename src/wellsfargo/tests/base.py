@@ -2,14 +2,23 @@ from datetime import date
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from soap.tests import SoapTest
-from wellsfargo.models import USCreditApp, USJointCreditApp
+from wellsfargo.models import USCreditApp, USJointCreditApp, APICredentials
 
 
 class BaseTest(SoapTest, APITestCase):
     fixtures = ['wfrs-test']
 
     def setUp(self):
-        self.joe = User.objects.create_user(username='joe', password='schmoe', email='joe@example.com')
+        self.joe = User.objects.create_user(
+            username='joe',
+            password='schmoe',
+            email='joe@example.com')
+        self.credentials = APICredentials.objects.create(
+            username='WF1111111111111111',
+            password='FOOBAR',
+            merchant_num='1111111111111111',
+            user_group=None,
+            priority=1)
         return super().setUp()
 
 

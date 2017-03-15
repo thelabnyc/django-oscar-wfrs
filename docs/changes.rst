@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.6.5
+------------------
+- Add foreign key from TransferMetadata to APICredentials used to make the transfer.
+
 0.6.4
 ------------------
 - Fix bug which prevented adding new plan groups via the dashboard.

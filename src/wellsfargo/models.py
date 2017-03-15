@@ -16,10 +16,13 @@ from .core.applications import (
     CAJointCreditAppMixin
 )
 from .security import encrypt_account_number, decrypt_account_number
+import logging
 
 Benefit = get_model('offer', 'Benefit')
 Transaction = get_model('payment', 'Transaction')
 PostOrderAction = get_class('offer.results', 'PostOrderAction')
+
+logger = logging.getLogger(__name__)
 
 
 class APICredentials(models.Model):
@@ -44,6 +47,7 @@ class APICredentials(models.Model):
         creds = cls.objects.filter(user_group=None).first()
         if creds:
             return creds
+        logger.error('Application requested WFRS API Credentials for use by user {}, but none exist in the database for them.'.format(user))
         return cls()
 
 
@@ -131,6 +135,11 @@ class TransferMetadata(models.Model):
         related_name='wfrs_transfers',
         null=True, blank=True,
         on_delete=models.CASCADE)
+    credentials = models.ForeignKey(APICredentials,
+        verbose_name=_("API Credentials"),
+        related_name='transfers',
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
     last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
     encrypted_account_number = models.BinaryField(null=True)
     merchant_reference = models.CharField(max_length=128, null=True)
