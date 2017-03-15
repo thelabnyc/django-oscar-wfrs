@@ -3,6 +3,11 @@
 Changelog
 =========
 
+0.6.4
+------------------
+- Fix bug which prevented adding new plan groups via the dashboard.
+- Adds unit tests for financing plan and financing plan group dashboard forms.
+
 0.6.3
 ------------------
 - Save last 4 digits of resulting account number to credit application models.
