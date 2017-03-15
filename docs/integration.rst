@@ -206,7 +206,7 @@ financing_plan  The ID (primary key) of the selected financing
             "postcode": "10001",
             "state": "NY",
             "country": "/api/countries/US/",
-            "phone_number": "+1 (717) 467-1111",
+            "phone_number": "+1 (717) 467-1111"
         },
         "billing_address": {
             "first_name": "Joe",
@@ -216,7 +216,7 @@ financing_plan  The ID (primary key) of the selected financing
             "postcode": "10001",
             "state": "NY",
             "country": "/api/countries/US/",
-            "phone_number": "+1 (717) 467-1111",
+            "phone_number": "+1 (717) 467-1111"
         }
     }
 

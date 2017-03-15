@@ -61,7 +61,7 @@ Financing Plan Benefits allow this to happen. A Financing Plan Benefit is a spec
 3. Create two offer conditions (*Dashboard > Offers > Conditions*) to match the needed conditions.
     1. The first should be a value condition requiring the basket contain more than $0.01.
     2. The second should be a value condition requiring the basket contain more than $500.00.
-4. Tie everything together by creating two offers (*Dashboard > Offers > Conditions*).
+4. Tie everything together by creating two offers (*Dashboard > Offers > Offers*).
     1. The first offer should use the $0.01 condition and the *Default Financing* benefit.
     2. The first offer should use the $500.00 condition and the *Special Rate Financing* benefit.
 
