@@ -5,9 +5,9 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from oscar.core.loading import get_model
 from oscar.test import factories
-from ..models import FinancingPlan, FinancingPlanBenefit
-from .base import BaseTest
-from . import responses
+from wellsfargo.models import FinancingPlan, FinancingPlanBenefit
+from wellsfargo.tests.base import BaseTest
+from wellsfargo.tests import responses
 import mock
 
 ConditionalOffer = get_model('offer', 'ConditionalOffer')
@@ -30,7 +30,6 @@ class CheckoutTest(BaseTest):
             apr='9.95',
             term_months=12)
         benefit = FinancingPlanBenefit.objects.create(
-            proxy_class='wellsfargo.models.FinancingPlanBenefit',
             group_name='Financing is available')
         benefit.plans.add(self.plan)
 

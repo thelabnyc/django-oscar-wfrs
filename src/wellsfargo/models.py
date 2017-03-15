@@ -91,6 +91,10 @@ class FinancingPlanBenefit(Benefit):
     class Meta(Benefit.Meta):
         app_label = 'wellsfargo'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.proxy_class = '%s.%s' % (self.__class__.__module__, self.__class__.__name__)
+
     def __str__(self):
         return self.group_name
 

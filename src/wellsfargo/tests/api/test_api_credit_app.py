@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.reverse import reverse
-from ..models import USCreditApp
-from .base import BaseTest
-from . import responses
+from wellsfargo.models import USCreditApp
+from wellsfargo.tests.base import BaseTest
+from wellsfargo.tests import responses
 import mock
 
 

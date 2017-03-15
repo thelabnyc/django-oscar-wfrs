@@ -2,7 +2,7 @@ from datetime import date
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from soap.tests import SoapTest
-from ..models import USCreditApp, USJointCreditApp
+from wellsfargo.models import USCreditApp, USJointCreditApp
 
 
 class BaseTest(SoapTest, APITestCase):

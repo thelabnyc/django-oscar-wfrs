@@ -1,8 +1,8 @@
 from decimal import Decimal
 from django.contrib.auth.models import User, Group
-from .base import BaseTest
-from ..core.constants import TRANS_TYPE_AUTH, TRANS_APPROVED
-from ..models import APICredentials, TransferMetadata
+from wellsfargo.tests.base import BaseTest
+from wellsfargo.core.constants import TRANS_TYPE_AUTH, TRANS_APPROVED
+from wellsfargo.models import APICredentials, TransferMetadata
 import uuid
 
 

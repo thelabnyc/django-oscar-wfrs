@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.template import Context, Template
-from ..models import FinancingPlan
+from wellsfargo.models import FinancingPlan
 
 
 class TestDefaultPlanTag(TestCase):

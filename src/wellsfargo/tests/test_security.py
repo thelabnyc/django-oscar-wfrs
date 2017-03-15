@@ -1,12 +1,12 @@
 from django.test import TestCase
 from mock import patch
-from ..security import (
+from wellsfargo.security import (
     encrypt_account_number,
     decrypt_account_number,
     WFRS_SECURITY,
 )
-from ..security.fernet import FernetEncryption
-from ..security.kms import KMSEncryption
+from wellsfargo.security.fernet import FernetEncryption
+from wellsfargo.security.kms import KMSEncryption
 import botocore
 import base64
 

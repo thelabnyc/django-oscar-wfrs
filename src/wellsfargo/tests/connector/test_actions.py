@@ -1,12 +1,12 @@
 from decimal import Decimal
 from django.core.exceptions import ValidationError
-from ..connector import actions
-from ..core.constants import CREDIT_APP_APPROVED
-from ..core.exceptions import CreditApplicationDenied, TransactionDenied
-from ..core.structures import TransactionRequest
-from ..models import FinancingPlan
-from .base import BaseTest
-from . import responses
+from wellsfargo.connector import actions
+from wellsfargo.core.constants import CREDIT_APP_APPROVED
+from wellsfargo.core.exceptions import CreditApplicationDenied, TransactionDenied
+from wellsfargo.core.structures import TransactionRequest
+from wellsfargo.models import FinancingPlan
+from wellsfargo.tests.base import BaseTest
+from wellsfargo.tests import responses
 import mock
 
 
