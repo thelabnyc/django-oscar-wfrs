@@ -28,6 +28,7 @@ class SubmitTransactionTest(BaseTest):
 
         # Should return a valid transfer object
         self.assertEqual(transfer.user, self.joe)
+        self.assertEqual(transfer.credentials, self.credentials)
         self.assertEqual(transfer.merchant_reference, '6f9c34ae-2153-11e6-a8c1-0242ac110003')
         self.assertEqual(transfer.amount, Decimal('2159.99'))
         self.assertEqual(transfer.type_code, '5')

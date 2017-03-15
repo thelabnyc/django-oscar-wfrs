@@ -52,6 +52,7 @@ def submit_transaction(trans_request, current_user=None):
     # Persist transaction data and WF specific metadata
     transfer = TransferMetadata()
     transfer.user = trans_request.user
+    transfer.credentials = creds
     transfer.account_number = resp.accountNumber
     transfer.merchant_reference = resp.uuid
     transfer.amount = _as_decimal(resp.amount)

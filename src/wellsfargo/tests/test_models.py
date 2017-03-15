@@ -66,6 +66,8 @@ class TransferMetadataTest(BaseTest):
 
     def test_account_number(self):
         transfer = TransferMetadata()
+        transfer.user = self.joe
+        transfer.credentials = self.credentials
         transfer.merchant_reference = uuid.uuid1()
         transfer.amount = Decimal('10.00')
         transfer.type_code = TRANS_TYPE_AUTH
