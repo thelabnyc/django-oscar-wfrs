@@ -1,5 +1,5 @@
 from decimal import Decimal
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.core.constants import TRANS_TYPE_AUTH, TRANS_APPROVED
 from wellsfargo.models import APICredentials, TransferMetadata
@@ -36,8 +36,7 @@ class APICredentialsTest(BaseTest):
             merchant_num='',
             user_group=None,
             priority=2)
-        user = User.objects.create_user(username='bill')
-        self.assertEqual(APICredentials.get_credentials(user).username, 'credsB')
+        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsB')
 
     def test_selection_user_group(self):
         group = Group.objects.create(name='Special Group')
@@ -53,12 +52,11 @@ class APICredentialsTest(BaseTest):
             merchant_num='',
             user_group=group,
             priority=2)
-        user = User.objects.create_user(username='bill')
-        self.assertEqual(APICredentials.get_credentials(user).username, 'credsA')
-        user.groups.add(group)
-        self.assertEqual(APICredentials.get_credentials(user).username, 'credsB')
-        user.groups.remove(group)
-        self.assertEqual(APICredentials.get_credentials(user).username, 'credsA')
+        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsA')
+        self.joe.groups.add(group)
+        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsB')
+        self.joe.groups.remove(group)
+        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsA')
 
 
 
