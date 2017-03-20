@@ -1,7 +1,16 @@
 from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ValidationError
-from ..core.constants import CREDIT_APP_APPROVED, TRANS_APPROVED, TRANS_TYPE_INQUIRY, TRANS_TYPE_APPLY, EN_US
-from ..core.exceptions import TransactionDenied, CreditApplicationDenied
+from ..core.constants import (
+    CREDIT_APP_APPROVED,
+    CREDIT_APP_DECISION_DELAYED,
+    CREDIT_APP_FORMAT_ERROR,
+    CREDIT_APP_WFF_ERROR,
+    TRANS_APPROVED,
+    TRANS_TYPE_INQUIRY,
+    TRANS_TYPE_APPLY,
+    EN_US,
+)
+from ..core.exceptions import TransactionDenied, CreditApplicationPending, CreditApplicationDenied
 from ..core.structures import CreditApplicationResult, AccountInquiryResult
 from ..models import APICredentials, TransferMetadata, FinancingPlan
 from ..settings import (
@@ -192,11 +201,19 @@ def submit_credit_application(app, current_user=None):
         logger.info(error_msg)
         raise ValidationError(error_msg)
 
+    # Check for any other errors we didn't catch already for any reason
+    if resp.transactionStatus in (CREDIT_APP_FORMAT_ERROR, CREDIT_APP_WFF_ERROR):
+        raise ValidationError('An unknown error occurred.')
+
+    # Check if application approval is pending
+    if resp.transactionStatus == CREDIT_APP_DECISION_DELAYED:
+        raise CreditApplicationPending('Credit Application is approval is pending.')
+
     # Check for approval
     if resp.transactionStatus != CREDIT_APP_APPROVED:
-        raise CreditApplicationDenied(resp.transactionStatus)
+        raise CreditApplicationDenied('Credit Application was denied by Wells Fargo.')
 
-    # Build response
+    # Credit application must be approved. Build response
     result = CreditApplicationResult()
     result.application = app
     result.transaction_status = resp.transactionStatus

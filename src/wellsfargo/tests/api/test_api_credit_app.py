@@ -240,3 +240,17 @@ class USIndivCreditApplicationTest(BaseTest):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['detail'], 'Credit Application was denied by Wells Fargo')
+
+
+    @mock.patch('soap.get_transport')
+    def test_submit_pending(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_pending)
+
+        self.client.login(username='joe', password='schmoe')
+
+        url = reverse(self.view_name)
+        data = self.build_valid_request()
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data['detail'], 'Credit Application approval is pending')

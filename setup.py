@@ -19,7 +19,7 @@ install_requires = [
     'django-oscar-bluelight>=0.5.2',
     'django-haystack>=2.5.0',
     'django-localflavor>=1.4.1',
-    'djangorestframework>=3.1.0,<3.5.0',
+    'djangorestframework>=3.1.0',
     'instrumented-soap>=1.1.0',
 
     # Legacy. Needed to make migrations run.

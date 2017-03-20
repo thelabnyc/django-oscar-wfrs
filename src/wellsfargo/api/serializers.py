@@ -54,6 +54,8 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
         # Submit application to to Wells
         try:
             result = actions.submit_credit_application(app, current_user=request_user)
+        except core_exceptions.CreditApplicationPending:
+            raise api_exceptions.CreditApplicationPending()
         except core_exceptions.CreditApplicationDenied:
             raise api_exceptions.CreditApplicationDenied()
         except DjangoValidationError as e:

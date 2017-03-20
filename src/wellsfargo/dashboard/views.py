@@ -10,7 +10,7 @@ from django_tables2 import SingleTableView
 from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 from ..connector import actions
-from ..core.exceptions import CreditApplicationDenied
+from ..core.exceptions import CreditApplicationPending, CreditApplicationDenied
 from ..models import (
     FinancingPlan,
     FinancingPlanBenefit,
@@ -56,7 +56,7 @@ class ApplicationSelectionView(generic.FormView):
 
 
 class CreditApplicationView(generic.FormView):
-    success_url = reverse_lazy('accounts-list')
+    success_url = reverse_lazy('wfrs-application-list')
 
     def get(self, request, region, language, app_type):
         self._init_form(region, language, app_type)
@@ -78,6 +78,9 @@ class CreditApplicationView(generic.FormView):
                 app.account_number = result.account_number
                 app.save()
                 return self.form_valid(app)
+            except CreditApplicationPending as e:
+                messages.add_message(request, messages.ERROR, _('Credit Application approval is pending'))
+                return self.form_valid()
             except CreditApplicationDenied as e:
                 messages.add_message(request, messages.ERROR, _('Credit Application was denied by Wells Fargo'))
             except ValidationError as e:
@@ -85,8 +88,11 @@ class CreditApplicationView(generic.FormView):
 
         return self.form_invalid(form)
 
-    def form_valid(self, application):
-        url = reverse('wfrs-application-detail', args=(application.APP_TYPE_CODE, application.pk))
+    def form_valid(self, application=None):
+        if application:
+            url = reverse('wfrs-application-detail', args=(application.APP_TYPE_CODE, application.pk))
+        else:
+            url = reverse('wfrs-application-list')
         return HttpResponseRedirect(url)
 
     def get_context_data(self, **kwargs):

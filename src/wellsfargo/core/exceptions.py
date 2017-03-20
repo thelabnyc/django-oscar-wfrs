@@ -8,3 +8,7 @@ class TransactionDenied(WellsFargoException):
 
 class CreditApplicationDenied(WellsFargoException):
     pass
+
+
+class CreditApplicationPending(WellsFargoException):
+    pass

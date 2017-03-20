@@ -2,7 +2,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from wellsfargo.connector import actions
 from wellsfargo.core.constants import CREDIT_APP_APPROVED
-from wellsfargo.core.exceptions import CreditApplicationDenied, TransactionDenied
+from wellsfargo.core.exceptions import CreditApplicationPending, CreditApplicationDenied, TransactionDenied
 from wellsfargo.core.structures import TransactionRequest
 from wellsfargo.models import FinancingPlan
 from wellsfargo.tests.base import BaseTest
@@ -134,4 +134,12 @@ class CreditApplicationTest(BaseTest):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_denied)
         app = self._build_us_single_credit_app('999999994')
         with self.assertRaises(CreditApplicationDenied):
+            actions.submit_credit_application(app)
+
+
+    @mock.patch('soap.get_transport')
+    def test_submit_pending(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_pending)
+        app = self._build_us_single_credit_app('999999991')
+        with self.assertRaises(CreditApplicationPending):
             actions.submit_credit_application(app)
