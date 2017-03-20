@@ -85,7 +85,6 @@ class CreditApplicationView(generic.FormView):
                 messages.add_message(request, messages.ERROR, _('Credit Application was denied by Wells Fargo'))
             except ValidationError as e:
                 messages.add_message(request, messages.ERROR, e.message)
-
         return self.form_invalid(form)
 
     def form_valid(self, application=None):

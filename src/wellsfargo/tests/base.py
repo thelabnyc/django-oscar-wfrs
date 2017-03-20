@@ -13,6 +13,12 @@ class BaseTest(SoapTest, APITestCase):
             username='joe',
             password='schmoe',
             email='joe@example.com')
+        self.bill = User.objects.create_user(
+            username='bill',
+            password='schmoe',
+            is_staff=True,
+            is_superuser=True,
+            email='bill@example.com')
         self.credentials = APICredentials.objects.create(
             username='WF1111111111111111',
             password='FOOBAR',

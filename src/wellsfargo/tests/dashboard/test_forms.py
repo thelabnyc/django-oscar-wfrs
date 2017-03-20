@@ -7,7 +7,7 @@ from wellsfargo.dashboard.forms import (
 )
 
 
-class TestFinancingPlanForm(TestCase):
+class FinancingPlanFormTest(TestCase):
     def test_create(self):
         form = FinancingPlanForm(data={
             'plan_number': 9999,
@@ -59,7 +59,7 @@ class TestFinancingPlanForm(TestCase):
         self.assertEqual(plan2.allow_credit_application, True)
 
 
-class TestFinancingPlanBenefitForm(TestCase):
+class FinancingPlanBenefitFormTest(TestCase):
     def setUp(self):
         self.plan = FinancingPlan.objects.create(
             plan_number=9999,

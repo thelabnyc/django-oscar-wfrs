@@ -36,8 +36,8 @@ class ApplicationSelectionForm(forms.Form):
     app_type = forms.ChoiceField(label=_('Application Type'), required=True, choices=APP_TYPES)
 
     def clean_language(self):
-        region = self.cleaned_data['region']
-        language = self.cleaned_data['language']
+        region = self.cleaned_data.get('region')
+        language = self.cleaned_data.get('language')
         locale = LOCALES.get(region, {}).get(language)
         if not locale:
             msg = _('Selected language is not valid for the selected region.')
