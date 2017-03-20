@@ -3,6 +3,11 @@
 Changelog
 =========
 
+0.6.6
+------------------
+- Handle pending application responses separately from denied responses. They now throw different API exceptions with different error messages and error codes.
+- Add some basic dashboard view tests.
+
 0.6.5
 ------------------
 - Add foreign key from TransferMetadata to APICredentials used to make the transfer.
