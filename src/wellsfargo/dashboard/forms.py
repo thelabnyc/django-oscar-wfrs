@@ -123,6 +123,11 @@ class ApplicationSearchForm(forms.Form):
     submitting_user_id = forms.IntegerField(required=False, widget=forms.HiddenInput())
 
 
+class PreQualSearchForm(forms.Form):
+    # Basic Search
+    search_text = forms.CharField(required=False, label="Search")
+
+
 def get_application_form_class(region, app_type):
     classes = {
         US: {

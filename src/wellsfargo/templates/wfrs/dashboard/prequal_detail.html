@@ -1,0 +1,138 @@
+{% extends 'dashboard/layout.html' %}
+{% load i18n %}
+{% load currency_filters %}
+{% load wfrs_filters %}
+
+{% block title %}
+    {% trans "Pre-Qualification Inquiries" %} | {% trans "Wells Fargo" %} | {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+        </li>
+        <li>
+            <a href="{% url 'wfrs-prequal-list' %}">{% trans "Pre-Qualification Inquiries" %}</a>
+        </li>
+        <li class="active">{% trans "Pre-Qualification Inquiry Details" %}</li>
+    </ul>
+{% endblock %}
+
+{% block headertext %}
+    {% trans "Pre-Qualification Inquiry Details" %}
+{% endblock %}
+
+{% block dashboard_content %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="table-header">
+                <h2>{% trans "Request Details" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>{% trans "UUID" %}</th>
+                    <td>
+                        <a href="{% url 'wfrs-prequal-detail' uuid=object.uuid %}">{{ object.uuid }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{% trans "Locale" %}</th>
+                    <td>{{ object.locale_name }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Entry Point" %}</th>
+                    <td>{{ object.entry_point_name }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "First Name" %}</th>
+                    <td>{{ object.first_name }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Last Name" %}</th>
+                    <td>{{ object.last_name }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Address Line 1" %}</th>
+                    <td>{{ object.line1 }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "City" %}</th>
+                    <td>{{ object.city }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "State" %}</th>
+                    <td>{{ object.state }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Postal Code" %}</th>
+                    <td>{{ object.postcode }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Phone" %}</th>
+                    <td>{{ object.phone.as_international }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Created Date" %}</th>
+                    <td>{{ object.created_datetime }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Modified Date" %}</th>
+                    <td>{{ object.modified_datetime }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <div class="table-header">
+                <h2>{% trans "Response Details" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                {% if object.response %}
+                    <tr>
+                        <th>{% trans "Status" %}</th>
+                        <td>{{ object.response.status_name }} ({{ object.response.status }})</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Message" %}</th>
+                        <td>{{ object.response.message }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Offer Indicator" %}</th>
+                        <td>{{ object.response.offer_indicator }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Credit Limit" %}</th>
+                        <td>{{ object.response.credit_limit | currency }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Unique Response ID" %}</th>
+                        <td>{{ object.response.response_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Customer Response" %}</th>
+                        <td>{{ object.response.customer_response_name | default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Reported Date" %}</th>
+                        <td>{{ object.response.reported_datetime | default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Created Date" %}</th>
+                        <td>{{ object.response.created_datetime }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Modified Date" %}</th>
+                        <td>{{ object.response.modified_datetime }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">
+                            <em>{% trans "Failed to request pre-qualification status from Wells Fargo." %}</em>
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -11,14 +11,17 @@ from ..core.constants import (
     TRANS_TYPE_INQUIRY,
     TRANS_TYPE_APPLY,
     EN_US,
+    PREQUAL_CUSTOMER_RESP_NONE,
 )
 from ..core.exceptions import TransactionDenied, CreditApplicationPending, CreditApplicationDenied
-from ..models import APICredentials, TransferMetadata, AccountInquiryResult, FinancingPlan
+from ..models import APICredentials, TransferMetadata, AccountInquiryResult, FinancingPlan, PreQualificationResponse
 from ..settings import (
     WFRS_TRANSACTION_WSDL,
     WFRS_INQUIRY_WSDL,
-    WFRS_CREDIT_APP_WSDL
+    WFRS_CREDIT_APP_WSDL,
+    WFRS_PRE_QUAL_WSDL,
 )
+import urllib.parse
 import soap
 import uuid
 import re
@@ -259,6 +262,63 @@ def submit_credit_application(app, current_user=None):
     result.save()
 
     return result
+
+
+def check_pre_qualification_status(prequal_request, current_user=None):
+    client = soap.get_client(WFRS_PRE_QUAL_WSDL, 'WFRS')
+    type_name = _find_namespaced_name(client, 'WFRS_InstantPreScreenRequest')
+    data = client.factory.create(type_name)
+
+    data.localeString = prequal_request.locale
+    data.uuid = prequal_request.uuid
+    data.behaviorVersion = "1"
+
+    creds = APICredentials.get_credentials(current_user)
+    data.userName = creds.username
+    data.servicePassword = creds.password
+    data.merchantNumber = creds.merchant_num
+
+    data.transactionCode = 'P1'
+    data.entryPoint = prequal_request.entry_point
+
+    data.firstName = prequal_request.first_name
+    data.lastName = prequal_request.last_name
+    data.address1 = prequal_request.line1
+    data.city = prequal_request.city
+    data.state = prequal_request.state
+    data.postalCode = prequal_request.postcode
+    data.phone = _format_phone(prequal_request.phone)
+
+    # Save the credentials used to make the request
+    prequal_request.credentials = creds
+    prequal_request.save()
+
+    # Submit the pre-qualification request
+    resp = client.service.instantPreScreen(data)
+
+    # Check for faults
+    if resp.faults and resp.faults.item:
+        for fault in resp.faults.item:
+            logger.info(fault.faultDetailString)
+            raise ValidationError(fault.faultDetailString)
+
+    # Sanity check the response
+    if resp.transactionStatus is None or resp.uniqueId is None:
+        logger.info('WFRS pre-qualification request return null data for pre-request[{}]'.format(prequal_request.pk))
+        return None
+
+    # Save the pre-qualification response data
+    response = PreQualificationResponse()
+    response.request = prequal_request
+    response.status = resp.transactionStatus
+    response.message = resp.message or ''
+    response.offer_indicator = resp.offerIndicator or ''
+    response.credit_limit = _as_decimal(resp.upToLimit) or Decimal('0.00')
+    response.response_id = resp.uniqueId
+    response.application_url = urllib.parse.unquote(resp.url or '')
+    response.customer_response = PREQUAL_CUSTOMER_RESP_NONE
+    response.save()
+    return response
 
 
 def _format_date(date):

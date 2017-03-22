@@ -82,6 +82,9 @@ LOCALE_CHOICES = (
     (EN_CA, _('English (CA)')),
     (FR_CA, _('French (CA)')),
 )
+PREQUAL_LOCALE_CHOICES = (
+    (EN_US, _('English (US)')),
+)
 LOCALES = {
     US: {
         ENGLISH: EN_US,
@@ -120,3 +123,33 @@ PHOTO_ID_TYPES = {
 
 
 APPLICATION_FORM_EXCLUDE_FIELDS = ('user', 'submitting_user', 'last4_account_number', 'inquiries', 'credentials')
+
+
+ENTRY_POINT_WEB = 'web'
+ENTRY_POINT_POS = 'pos'
+ENTRY_POINT_CHOICES = (
+    (ENTRY_POINT_WEB, 'Web'),
+    (ENTRY_POINT_POS, 'Point of Sale'),
+)
+
+PREQUAL_TRANS_STATUS_APPROVED = 'A'  # Instant pre-screen approved
+PREQUAL_TRANS_STATUS_REJECTED = 'D'  # Instant pre-screen not approved
+PREQUAL_TRANS_STATUS_ERROR = 'E'  # System Error
+PREQUAL_TRANS_STATUS_DOWN = 'M'  # Down for Maintenance
+PREQUAL_TRANS_STATUS_CHOICES = (
+    (PREQUAL_TRANS_STATUS_APPROVED, _('Pre-screen Approved')),
+    (PREQUAL_TRANS_STATUS_REJECTED, _('Pre-screen Not Approved')),
+    (PREQUAL_TRANS_STATUS_ERROR, _('System Error')),
+    (PREQUAL_TRANS_STATUS_DOWN, _('Down for Maintenance')),
+)
+
+PREQUAL_CUSTOMER_RESP_NONE = ''  # No response from customer
+PREQUAL_CUSTOMER_RESP_CLOSE = 'CLOSE'  # Customer closed offer
+PREQUAL_CUSTOMER_RESP_ACCEPT = 'YES'  # Customer accepted offer
+PREQUAL_CUSTOMER_RESP_REJECT = 'NO'  # Customer rejected offer
+PREQUAL_CUSTOMER_RESP_CHOICES = (
+    (PREQUAL_CUSTOMER_RESP_NONE, _('')),
+    (PREQUAL_CUSTOMER_RESP_CLOSE, _('Offer Closed')),
+    (PREQUAL_CUSTOMER_RESP_ACCEPT, _('Offer Accepted')),
+    (PREQUAL_CUSTOMER_RESP_REJECT, _('Offer Rejected')),
+)

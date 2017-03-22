@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <instantPreScreenResponse xmlns="http://services.webservices.retaildealer.wff.com">
+            <instantPreScreenReturn xmlns:flt="http://faults.webservices.retaildealer.wff.com" xmlns:mod="http://model.webservices.retaildealer.wff.com" xmlns:ser="http://services.webservices.retaildealer.wff.com" xmlns:sub="http://retailservices.wellsfargo.com/services/WFRS_InstantPreScreenService">
+                <mod:faults>
+                    <sub:item>
+                        <flt:faultReason/>
+                        <flt:adviceText/>
+                        <flt:faultDetailString>Phone is blank or invalid.</flt:faultDetailString>
+                        <flt:faultString>RWS_INSTANT_PRESCREEN_PHONE_ERROR</flt:faultString>
+                        <flt:faultActor>WFFServices/RetailResponse</flt:faultActor>
+                        <flt:faultCodeAsString>RWS7524</flt:faultCodeAsString>
+                    </sub:item>
+                </mod:faults>
+                <mod:merchantNumber>111111111111116</mod:merchantNumber>
+                <mod:message/>
+                <mod:offerIndicator/>
+                <mod:outField1/>
+                <mod:outField10/>
+                <mod:outField2/>
+                <mod:outField3/>
+                <mod:outField4/>
+                <mod:outField5/>
+                <mod:outField6/>
+                <mod:outField7/>
+                <mod:outField8/>
+                <mod:outField9>Phone is blank or invalid.</mod:outField9>
+                <mod:transactionCode>P1</mod:transactionCode>
+                <mod:transactionStatus>error</mod:transactionStatus>
+                <mod:uniqueId/>
+                <mod:upToLimit/>
+                <mod:url/>
+                <mod:uuid>31fe2c66-52ed-43be-8fab-a17ca22216ee</mod:uuid>
+            </instantPreScreenReturn>
+        </instantPreScreenResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

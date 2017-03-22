@@ -8,7 +8,8 @@ DashboardTable = get_class('dashboard.tables', 'DashboardTable')
 
 class TZAwareDateTimeColumn(DateTimeColumn):
     def render(self, record, table, value, bound_column, **kwargs):
-        value = pytz.utc.localize(value)
+        if value and not value.tzinfo:
+            value = pytz.utc.localize(value)
         return super().render(record, table, value, bound_column, **kwargs)
 
 
@@ -129,5 +130,41 @@ class TransferMetadataIndexTable(DashboardTable):
             'ticket_number',
             'financing_plan_number',
             'auth_number',
+            'created_datetime',
+        )
+
+
+
+class PreQualificationIndexTable(DashboardTable):
+    uuid = LinkColumn('wfrs-prequal-detail', args=[A('uuid')], verbose_name=_('UUID'), orderable=False)
+    first_name = Column(verbose_name=_('First Name'))
+    last_name = Column(verbose_name=_('Last Name'))
+    address = TemplateColumn(
+        verbose_name=_('Address'),
+        template_name='wfrs/dashboard/_prequal_row_address.html',
+        orderable=False)
+    phone = Column(verbose_name=_('Phone'), orderable=False)
+    response_status = Column(verbose_name=_('Status'), accessor=A('response.status'))
+    response_credit_limit = Column(verbose_name=_('Credit Limit'), accessor=A('response.credit_limit'))
+    response_customer_response = Column(verbose_name=_('Customer Response'), accessor=A('response.customer_response'))
+    created_datetime = TZAwareDateTimeColumn(
+        verbose_name=_('Created On'),
+        order_by='created_datetime',
+        format='D, N j Y, P')
+    reported_datetime = TZAwareDateTimeColumn(
+        verbose_name=_('Reported On'),
+        order_by='reported_datetime',
+        format='D, N j Y, P')
+
+    class Meta(DashboardTable.Meta):
+        sequence = (
+            'uuid',
+            'first_name',
+            'last_name',
+            'address',
+            'phone',
+            'response_status',
+            'response_credit_limit',
+            'response_customer_response',
             'created_datetime',
         )

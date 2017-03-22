@@ -1,11 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
-from rest_framework import views, generics
+from rest_framework import views, generics, status, serializers
 from oscarapi.basket import operations
 from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT
 )
+from ..models import PreQualificationResponse
 from .serializers import (
     AppSelectionSerializer,
     USCreditAppSerializer,
@@ -14,8 +15,12 @@ from .serializers import (
     CAJointCreditAppSerializer,
     FinancingPlanSerializer,
     AccountInquirySerializer,
+    PreQualificationRequestSerializer,
+    PreQualificationResponseSerializer,
 )
 from ..utils import list_plans_for_basket
+
+PREQUAL_SESSION_KEY = 'wfrs-prequal-request-id'
 
 
 class SelectCreditAppView(generics.GenericAPIView):
@@ -84,3 +89,53 @@ class SubmitAccountInquiryView(generics.GenericAPIView):
         result = request_ser.save()
         response_ser = self.get_serializer_class()(instance=result, context={'request': request})
         return Response(response_ser.data)
+
+
+class PreQualificationRequestView(generics.GenericAPIView):
+    serializer_class = PreQualificationRequestSerializer
+
+    def get(self, request):
+        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
+        if not prequal_request_id:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        try:
+            prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
+        except PreQualificationResponse.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        response_ser = PreQualificationResponseSerializer(instance=prequal_response, context={'request': request})
+        return Response(response_ser.data)
+
+
+    def post(self, request):
+        request_ser = self.get_serializer_class()(data=request.data, context={'request': request})
+        request_ser.is_valid(raise_exception=True)
+        prequal_request = request_ser.save()
+        try:
+            prequal_response = prequal_request.response
+        except PreQualificationResponse.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        request.session[PREQUAL_SESSION_KEY] = prequal_request.pk
+        response_ser = PreQualificationResponseSerializer(instance=prequal_response, context={'request': request})
+        return Response(response_ser.data)
+
+
+class PreQualificationCustomerResponseView(views.APIView):
+    serializer_class = PreQualificationResponseSerializer
+
+    def post(self, request):
+        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
+        if not prequal_request_id:
+            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+        try:
+            prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
+        except PreQualificationResponse.DoesNotExist:
+            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+        serializer = self.get_serializer_class()(
+            instance=prequal_response,
+            data=request.data,
+            context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

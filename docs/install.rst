@@ -110,6 +110,10 @@ Add the Wells Fargo views to the OSCAR_DASHBOARD_NAVIGATION setting in ``setting
                 'label': 'Transfers',
                 'url_name': 'wfrs-transfer-list',
             },
+            {
+                'label': 'Pre-Qualification Requests',
+                'url_name': 'wfrs-prequal-list',
+            },
         ]
     })
 

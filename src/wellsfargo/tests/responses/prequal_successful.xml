@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <instantPreScreenResponse xmlns="http://services.webservices.retaildealer.wff.com">
+            <instantPreScreenReturn xmlns:flt="http://faults.webservices.retaildealer.wff.com" xmlns:mod="http://model.webservices.retaildealer.wff.com" xmlns:ser="http://services.webservices.retaildealer.wff.com" xmlns:sub="http://retailservices.wellsfargo.com/services/WFRS_InstantPreScreenService">
+                <mod:faults/>
+                <mod:merchantNumber>111111111111116</mod:merchantNumber>
+                <mod:message>approved</mod:message>
+                <mod:offerIndicator>F1</mod:offerIndicator>
+                <mod:outField1/>
+                <mod:outField10/>
+                <mod:outField2/>
+                <mod:outField3/>
+                <mod:outField4/>
+                <mod:outField5/>
+                <mod:outField6/>
+                <mod:outField7/>
+                <mod:outField8/>
+                <mod:outField9/>
+                <mod:transactionCode>P1</mod:transactionCode>
+                <mod:transactionStatus>A</mod:transactionStatus>
+                <mod:uniqueId>000005EP</mod:uniqueId>
+                <mod:upToLimit>8500</mod:upToLimit>
+                <mod:url>https%3A%2F%2Flocalhost%2Fipscr.do%3Fid%3Du64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.</mod:url>
+                <mod:uuid>41c044f4-8b57-4a22-8f8d-091999683233</mod:uuid>
+            </instantPreScreenReturn>
+        </instantPreScreenResponse>
+    </soapenv:Body>
+</soapenv:Envelope>
