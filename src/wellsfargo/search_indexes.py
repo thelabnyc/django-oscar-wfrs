@@ -25,6 +25,7 @@ class BaseCreditAppIndex(indexes.SearchIndex):
     credit_limit = indexes.CharField(null=True)
     order_total = indexes.CharField(null=True)
     order_merchant_name = indexes.CharField(null=True)
+    order_placed = indexes.DateTimeField(null=True)
 
     main_first_name = indexes.CharField(model_attr='main_first_name')
     main_last_name = indexes.CharField(model_attr='main_last_name')
@@ -54,13 +55,13 @@ class BaseCreditAppIndex(indexes.SearchIndex):
         return obj.get_credit_limit()
 
     def prepare_order_total(self, obj):
-        order = obj.get_orders().first()
+        order = obj.get_first_order()
         if not order:
             return None
         return order.total_incl_tax
 
     def prepare_order_merchant_name(self, obj):
-        order = obj.get_orders().first()
+        order = obj.get_first_order()
         if not order:
             return None
         transfers = []
@@ -73,6 +74,12 @@ class BaseCreditAppIndex(indexes.SearchIndex):
             return None
         credentials = transfers[0].credentials
         return credentials.name if credentials else None
+
+    def prepare_order_placed(self, obj):
+        order = obj.get_first_order()
+        if not order:
+            return None
+        return order.date_placed
 
     def prepare_user_full_name(self, obj):
         return obj.user.get_full_name() if obj.user else None

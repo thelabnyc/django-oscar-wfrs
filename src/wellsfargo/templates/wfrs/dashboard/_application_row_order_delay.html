@@ -1,0 +1,10 @@
+{% spaceless %}
+    {% load wfrs_filters %}
+    {% if record.order_placed %}
+        <span title="Order placed on {{ record.order_placed | localizedatetime }}, {{ record.created_datetime | timesince:record.order_placed }} after initial credit application.">
+            {{ record.order_placed | timesinceminutes:record.created_datetime }}
+        </span>
+    {% else %}
+        —
+    {% endif %}
+{% endspaceless %}

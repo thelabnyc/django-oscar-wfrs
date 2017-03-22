@@ -34,8 +34,10 @@ INSTALLED_APPS = [
     'oscar_accounts',
     'oscarapi',
     'oscarapicheckout',
+    'oscarbluelight',
     'wellsfargo',
 ] + get_core_apps([
+    'basket',
     'oscarbluelight.dashboard.offers',
     'oscarbluelight.dashboard.vouchers',
     'oscarbluelight.offer',

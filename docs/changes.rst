@@ -3,6 +3,21 @@
 Changelog
 =========
 
+0.7.0
+------------------
+- Fix 404ing JS in Oscar Dashboard
+- Add several new columns to the Credit Application dashboard:
+    - Merchant Name used for application
+    - Application Source
+    - Requested Credit Amount
+    - Resulting Credit Limit
+    - Order total of first related order
+    - Merchant name used for order
+- Fixes exception thrown when trying to decrypt invalid data using KMS backend
+- Add button to export a CSV of credit applications from the dashboard
+- Make Wells Fargo Benefits use offer conditions to consume basket lines
+    - Use oscar-bluelight's offer groups feature to allow stacking other discounts with financing benefits. The recommended set-up is to place all Wells Fargo related offers into an offer group of their own, configured with a lower priority than any other group.
+
 0.6.7
 ------------------
 - Add new multi-encryptor class that combines multiple other encryptors together. This allows key rotation and graceful migration between different encryption methods.

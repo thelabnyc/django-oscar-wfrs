@@ -1,5 +1,7 @@
 from django.utils.translation import ugettext as _
 from django import template
+import pytz
+
 
 register = template.Library()
 
@@ -10,3 +12,17 @@ def timeat(value):
         return _('%s years, %s months') % (int(value[2:]), int(value[:2]))
     except:
         return ""
+
+
+@register.filter(name='timesinceminutes')
+def timesinceminutes(dt_to, dt_from):
+    if not dt_to or not dt_from:
+        return ''
+    return round((dt_to - dt_from).total_seconds() / 60)
+
+
+@register.filter(name='localizedatetime')
+def localizedatetime(value):
+    if not value:
+        return ''
+    return pytz.utc.localize(value)

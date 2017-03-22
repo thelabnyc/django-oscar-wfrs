@@ -108,6 +108,7 @@ class FinancingPlanBenefit(Benefit):
         return self.group_name
 
     def apply(self, basket, condition, offer):
+        condition.consume_items(offer, basket, [])
         return PostOrderAction("Financing is available for your order")
 
     def apply_deferred(self, basket, order, application):
@@ -293,6 +294,9 @@ class CreditAppCommonMixin(models.Model):
         verbose_name=_("Account Inquiries"),
         related_name='+')
 
+    _orders_cache = None
+    _first_order_cache = None
+
     class Meta:
         abstract = True
 
@@ -309,17 +313,24 @@ class CreditAppCommonMixin(models.Model):
         Find orders that were probably placed using the account that resulted from this application. It's
         not foolproof since we don't store the full account number.
         """
-        Order = get_model('order', 'Order')
-        reference_uuids = set(TransferMetadata.objects.filter(last4_account_number=self.last4_account_number)
-                                                      .values_list('merchant_reference', flat=True)
-                                                      .distinct()
-                                                      .all())
-        orders = Order.objects.filter(Q(guest_email=self.email) | Q(user__email=self.email))\
-                              .filter(sources__transactions__reference__in=reference_uuids)\
-                              .order_by('date_placed')\
-                              .all()
-        return orders
+        if not self._orders_cache:
+            Order = get_model('order', 'Order')
+            reference_uuids = set(TransferMetadata.objects.filter(last4_account_number=self.last4_account_number)
+                                                          .values_list('merchant_reference', flat=True)
+                                                          .distinct()
+                                                          .all())
+            orders = Order.objects.filter(Q(guest_email=self.email) | Q(user__email=self.email))\
+                                  .filter(sources__transactions__reference__in=reference_uuids)\
+                                  .order_by('date_placed')\
+                                  .all()
+            self._orders_cache = orders
+        return self._orders_cache
 
+
+    def get_first_order(self):
+        if not self._first_order_cache:
+            self._first_order_cache = self.get_orders().first()
+        return self._first_order_cache
 
 
 
