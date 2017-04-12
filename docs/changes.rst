@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.6.7
+------------------
+- Add new multi-encryptor class that combines multiple other encryptors together. This allows key rotation and graceful migration between different encryption methods.
+
 0.6.6
 ------------------
 - Handle pending application responses separately from denied responses. They now throw different API exceptions with different error messages and error codes.
