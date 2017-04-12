@@ -1,6 +1,7 @@
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
 import boto3
 import base64
+import binascii
 
 
 class KMSEncryption(object):
@@ -39,21 +40,33 @@ class KMSEncryption(object):
     def encrypt(self, value):
         """Accept a string and return binary data"""
         value = force_bytes(value)
+
         response = self.client.encrypt(
             KeyId=self.key_id,
             Plaintext=value,
             EncryptionContext=self.encryption_context)
+
         blob = response['CiphertextBlob']
-        return base64.b64encode(blob)
+        blob = base64.b64encode(blob)
+        return blob
 
 
     def decrypt(self, blob):
         """Accept binary data and return a string"""
         blob = force_bytes(blob)
-        blob = base64.b64decode(blob)
+        try:
+            blob = base64.b64decode(blob)
+        except binascii.Error:
+            return None
+
         response = self.client.decrypt(
             CiphertextBlob=blob,
             EncryptionContext=self.encryption_context)
-        if 'Plaintext' not in response:
-            return None
-        return force_text(response['Plaintext'])
+
+        plain_text = None
+        if 'Plaintext' in response:
+            try:
+                plain_text = force_text(response['Plaintext'])
+            except DjangoUnicodeDecodeError:
+                pass
+        return plain_text

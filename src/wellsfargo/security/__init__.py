@@ -1,23 +1,30 @@
+from django.core.exceptions import ImproperlyConfigured
 from ..settings import WFRS_SECURITY
 import importlib
 
 
 def encrypt_account_number(account_number):
-    return _get_encryptor().encrypt(account_number)
+    klass = WFRS_SECURITY['encryptor']
+    kwargs = WFRS_SECURITY.get('encryptor_kwargs', {})
+    return _get_encryptor(klass, kwargs).encrypt(account_number)
 
 
 def decrypt_account_number(encrypted):
-    return _get_encryptor().decrypt(encrypted)
-
-
-def _get_encryptor():
-    Encryptor = _load_cls_from_abs_path(WFRS_SECURITY['encryptor'])
+    klass = WFRS_SECURITY['encryptor']
     kwargs = WFRS_SECURITY.get('encryptor_kwargs', {})
+    return _get_encryptor(klass, kwargs).decrypt(encrypted)
+
+
+def _get_encryptor(klass, kwargs):
+    Encryptor = _load_cls_from_abs_path(klass)
     encryptor = Encryptor(**kwargs)
     return encryptor
 
 
 def _load_cls_from_abs_path(path):
     pkgname, fnname = path.rsplit('.', 1)
-    pkg = importlib.import_module(pkgname)
-    return getattr(pkg, fnname)
+    try:
+        pkg = importlib.import_module(pkgname)
+        return getattr(pkg, fnname)
+    except (ModuleNotFoundError, AttributeError):
+        raise ImproperlyConfigured('Could not import class at path {}'.format(path))
