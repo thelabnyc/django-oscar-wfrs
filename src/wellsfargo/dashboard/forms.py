@@ -59,7 +59,7 @@ class USCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = USCreditApp
         widgets = WIDGETS
-        fields = '__all__'
+        exclude = ['user', 'submitting_user']
 
 
 class USJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
@@ -68,7 +68,7 @@ class USJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = USJointCreditApp
         widgets = WIDGETS
-        fields = '__all__'
+        exclude = ['user', 'submitting_user']
 
 
 class CACreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
@@ -77,7 +77,7 @@ class CACreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = CACreditApp
         widgets = WIDGETS
-        fields = '__all__'
+        exclude = ['user', 'submitting_user']
 
 
 class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
@@ -86,7 +86,7 @@ class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = CAJointCreditApp
         widgets = WIDGETS
-        fields = '__all__'
+        exclude = ['user', 'submitting_user']
 
 
 class FinancingPlanForm(forms.ModelForm):
