@@ -8,6 +8,7 @@ from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT,
     ENGLISH, FRENCH,
+    APPLICATION_FORM_EXCLUDE_FIELDS,
 )
 from ..core import exceptions as core_exceptions
 from ..models import (
@@ -16,6 +17,7 @@ from ..models import (
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp,
+    AccountInquiryResult,
 )
 from . import exceptions as api_exceptions
 
@@ -65,6 +67,7 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
 
         # Update resulting account number
         app.account_number = result.account_number
+        app.inquiries.add(result)
         app.save()
 
         return result
@@ -83,7 +86,7 @@ class USCreditAppSerializer(BaseCreditAppSerializer):
 
     class Meta:
         model = USCreditApp
-        exclude = ('user', )
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class USJointCreditAppSerializer(BaseCreditAppSerializer):
@@ -99,7 +102,7 @@ class USJointCreditAppSerializer(BaseCreditAppSerializer):
 
     class Meta:
         model = USJointCreditApp
-        exclude = ('user', )
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class CACreditAppSerializer(BaseCreditAppSerializer):
@@ -116,7 +119,7 @@ class CACreditAppSerializer(BaseCreditAppSerializer):
 
     class Meta:
         model = CACreditApp
-        exclude = ('user', )
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class CAJointCreditAppSerializer(BaseCreditAppSerializer):
@@ -133,7 +136,7 @@ class CAJointCreditAppSerializer(BaseCreditAppSerializer):
 
     class Meta:
         model = CAJointCreditApp
-        exclude = ('user', )
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class FinancingPlanSerializer(serializers.ModelSerializer):
@@ -149,8 +152,45 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
         )
 
 
-class AccountSerializer(serializers.Serializer):
+class AccountInquirySerializer(serializers.ModelSerializer):
     account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16)
-    credit_limit = serializers.DecimalField(decimal_places=2, max_digits=12)
-    balance = serializers.DecimalField(decimal_places=2, max_digits=12)
-    open_to_buy = serializers.DecimalField(decimal_places=2, max_digits=12)
+
+    class Meta:
+        model = AccountInquiryResult
+        read_only_fields = (
+            'status',
+            'first_name',
+            'middle_initial',
+            'last_name',
+            'phone_number',
+            'address',
+            'credit_limit',
+            'balance',
+            'open_to_buy',
+            'last_payment_date',
+            'last_payment_amount',
+            'payment_due_date',
+            'payment_due_amount',
+            'created_datetime',
+            'modified_datetime',
+        )
+        fields = read_only_fields + ('account_number', )
+
+
+    def save(self):
+        request = self.context['request']
+
+        request_user = None
+        if request.user and request.user.is_authenticated():
+            request_user = request.user
+
+        # Submit inquiry to Wells
+        account_number = self.validated_data['account_number']
+        try:
+            result = actions.submit_inquiry(account_number, current_user=request_user)
+        except DjangoValidationError as e:
+            raise DRFValidationError({
+                'account_number': [e.message]
+            })
+
+        return result

@@ -7,7 +7,6 @@ CREDIT_APP_FORMAT_ERROR = 'E2'
 CREDIT_APP_WFF_ERROR = 'E3'
 CREDIT_APP_DENIED = 'E4'
 
-
 TRANS_DECLINED = 'A0'
 TRANS_APPROVED = 'A1'
 TRANS_VOID_NO_MATCH_FOUND = 'A2'
@@ -17,6 +16,15 @@ TRANS_STATUSES = (
     (TRANS_APPROVED, _("Approved. For time-out reversal and void transactions, match was found and processed.")),
     (TRANS_VOID_NO_MATCH_FOUND, _("Time-out reversal or void approved, but no matching transaction was found.")),
     (TRANS_VOID_MATCH_DUPLICATE, _("Time-out reversal or void approved, but matched duplicate transactions.")),
+)
+
+INQUIRY_SUCCESS = 'I0'
+INQUIRY_ACCT_NOT_FOUND = 'I1'
+INQUIRY_SYS_ERROR = 'I2'
+INQUIRY_STATUSES = (
+    (INQUIRY_SUCCESS, _("Account Inquiry Succeeded")),
+    (INQUIRY_ACCT_NOT_FOUND, _("Could Not Find Requested Account")),
+    (INQUIRY_SYS_ERROR, _("Wells Fargo System Error")),
 )
 
 
@@ -109,3 +117,6 @@ PHOTO_ID_TYPES = {
         ('CC', _('Canadian Citizen Form 1000 or 1442')),
     ),
 }
+
+
+APPLICATION_FORM_EXCLUDE_FIELDS = ('user', 'submitting_user', 'last4_account_number', 'inquiries', 'credentials')

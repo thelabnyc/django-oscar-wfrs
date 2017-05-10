@@ -25,6 +25,12 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Application Type'),
         template_name='wfrs/dashboard/_application_row_type.html',
         orderable=False)
+    merchant_name = Column(
+        verbose_name=_('Merchant Name'),
+        orderable=False)
+    application_source = Column(
+        verbose_name=_('Application Source'),
+        orderable=False)
     user = TemplateColumn(
         verbose_name=_('Owner'),
         template_name='wfrs/dashboard/_application_row_user.html',
@@ -37,6 +43,21 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Resulting Account Number'),
         template_name='wfrs/dashboard/_application_row_account_number.html',
         order_by='account_number')
+    purchase_price = TemplateColumn(
+        verbose_name=_('Requested Value'),
+        template_name='wfrs/dashboard/_application_row_purchase_price.html',
+        orderable=False)
+    credit_limit = TemplateColumn(
+        verbose_name=_('Credit Limit'),
+        template_name='wfrs/dashboard/_application_row_credit_limit.html',
+        orderable=False)
+    order_total = TemplateColumn(
+        verbose_name=_('Order Total'),
+        template_name='wfrs/dashboard/_application_row_order_total.html',
+        orderable=False)
+    order_merchant_name = Column(
+        verbose_name=_('Order Merchant Name'),
+        orderable=False)
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
         order_by='created_datetime',
@@ -55,9 +76,15 @@ class CreditApplicationIndexTable(DashboardTable):
             'main_applicant_name',
             'secondary_applicant_name',
             'application_type',
+            'merchant_name',
+            'application_source',
             'user',
             'submitting_user',
             'account_number',
+            'purchase_price',
+            'credit_limit',
+            'order_total',
+            'order_merchant_name',
             'created_datetime',
             'modified_datetime',
             'actions'

@@ -7,7 +7,8 @@ from ..core.constants import (
     US, CA,
     INDIVIDUAL, JOINT,
     LOCALES,
-    APP_TYPES, LANGUAGES, REGIONS
+    APP_TYPES, LANGUAGES, REGIONS,
+    APPLICATION_FORM_EXCLUDE_FIELDS,
 )
 from ..models import (
     FinancingPlan,
@@ -59,7 +60,7 @@ class USCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = USCreditApp
         widgets = WIDGETS
-        exclude = ['user', 'submitting_user']
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class USJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
@@ -68,7 +69,7 @@ class USJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = USJointCreditApp
         widgets = WIDGETS
-        exclude = ['user', 'submitting_user']
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class CACreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
@@ -77,7 +78,7 @@ class CACreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = CACreditApp
         widgets = WIDGETS
-        exclude = ['user', 'submitting_user']
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
@@ -86,7 +87,7 @@ class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
     class Meta:
         model = CAJointCreditApp
         widgets = WIDGETS
-        exclude = ['user', 'submitting_user']
+        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class FinancingPlanForm(forms.ModelForm):

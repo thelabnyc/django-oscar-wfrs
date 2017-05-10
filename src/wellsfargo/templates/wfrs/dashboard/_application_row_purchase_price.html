@@ -1,0 +1,2 @@
+{% load currency_filters %}
+{{ record.purchase_price | currency | default:'—' }}

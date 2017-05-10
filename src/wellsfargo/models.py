@@ -4,9 +4,11 @@ from django.contrib.auth.models import Group
 from django.core import exceptions
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model, get_class
-from .core.constants import TRANS_TYPES, TRANS_STATUSES
+from oscar.models.fields import PhoneNumberField
+from .core.constants import TRANS_TYPES, TRANS_STATUSES, INQUIRY_STATUSES
 from .core.applications import (
     USCreditAppMixin,
     BaseCreditAppMixin,
@@ -20,12 +22,15 @@ import logging
 
 Benefit = get_model('offer', 'Benefit')
 Transaction = get_model('payment', 'Transaction')
+Order = get_model('order', 'Order')
 PostOrderAction = get_class('offer.results', 'PostOrderAction')
 
 logger = logging.getLogger(__name__)
 
 
+
 class APICredentials(models.Model):
+    name = models.CharField(_('Merchant Name'), max_length=200, default='Default')
     username = models.CharField(_('WFRS API Username'), max_length=200)
     password = models.CharField(_('WFRS API Password'), max_length=200)
     merchant_num = models.CharField(_('WFRS API Merchant Number'), max_length=200)
@@ -55,6 +60,7 @@ class APICredentials(models.Model):
         return "%s:xxxx@wfrs/%s" % (self.username, self.merchant_num)
 
 
+
 class FinancingPlan(models.Model):
     """
     An individual WFRS plan number and related metadata about it
@@ -82,6 +88,7 @@ class FinancingPlan(models.Model):
         if self.is_default_plan:
             self.__class__._default_manager.filter(is_default_plan=True).update(is_default_plan=False)
         super().save(*args, **kwargs)
+
 
 
 class FinancingPlanBenefit(Benefit):
@@ -124,6 +131,58 @@ class FinancingPlanBenefit(Benefit):
                 "Wells Fargo Financing Plan Benefit must have a group name. "
                 "Use the Financing > Wells Fargo Plan Group dashboard to create this type of benefit."
             )))
+
+
+
+class AccountInquiryResult(models.Model):
+    status = models.CharField(_("Status"), choices=INQUIRY_STATUSES, max_length=2)
+
+    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
+    _full_account_number = None
+
+    first_name = models.CharField(_("First Name"), max_length=50)
+    middle_initial = models.CharField(_("Middle Initial"), max_length=1)
+    last_name = models.CharField(_("Last Name"), max_length=50)
+    phone_number = PhoneNumberField(_("Phone Number"))
+    address = models.CharField(_("Last 4 digits of account number"), max_length=100)
+
+    credit_limit = models.DecimalField(_("Account Credit Limit"), decimal_places=2, max_digits=12)
+    balance = models.DecimalField(_("Current Account Balance"), decimal_places=2, max_digits=12)
+    open_to_buy = models.DecimalField(_("Current Available Credit"), decimal_places=2, max_digits=12)
+
+    last_payment_date = models.DateField(_("Last Payment Date"), null=True)
+    last_payment_amount = models.DecimalField(_("Last Payment Amount"), decimal_places=2, max_digits=12, null=True)
+
+    payment_due_date = models.DateField(_("Payment Due Date"), null=True)
+    payment_due_amount = models.DecimalField(_("Payment Due on Account"), decimal_places=2, max_digits=12, null=True)
+
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_datetime', '-id')
+
+    @property
+    def full_name(self):
+        return '{} {} {}'.format(self.first_name, self.middle_initial, self.last_name)
+
+    @property
+    def masked_account_number(self):
+        return 'xxxxxxxxxxxx{}'.format(self.last4_account_number)
+
+    @property
+    def account_number(self):
+        if self._full_account_number:
+            return self._full_account_number
+        return self.masked_account_number
+
+    @account_number.setter
+    def account_number(self, value):
+        if len(value) != 16:
+            raise ValueError('Account number must be 16 digits long')
+        self.last4_account_number = value[-4:]
+        self._full_account_number = value
+
 
 
 class TransferMetadata(models.Model):
@@ -209,66 +268,75 @@ class TransferMetadata(models.Model):
         self.save()
 
 
-class USCreditApp(USCreditAppMixin, BaseCreditAppMixin):
+
+class CreditAppCommonMixin(models.Model):
+    credentials = models.ForeignKey(APICredentials,
+        null=True, blank=True,
+        verbose_name=_("Merchant"),
+        help_text=_("Which merchant account submitted this application?"),
+        related_name='+',
+        on_delete=models.SET_NULL)
+    application_source = models.CharField(_("Application Source"), default='Website', max_length=25,
+        help_text=_("Where/how is user applying? E.g. Website, Call Center, In-Store, etc."))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        verbose_name=_("Owner"),
+        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
+        related_name='+',
+        on_delete=models.SET_NULL)
+    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        verbose_name=_("Submitting User"),
+        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
+        related_name='+',
+        on_delete=models.SET_NULL)
+    inquiries = models.ManyToManyField(AccountInquiryResult,
+        verbose_name=_("Account Inquiries"),
+        related_name='+')
+
+    class Meta:
+        abstract = True
+
+
+    def get_credit_limit(self):
+        inquiry = self.inquiries.order_by('-created_datetime').first()
+        if not inquiry:
+            return None
+        return inquiry.credit_limit
+
+
+    def get_orders(self):
+        """
+        Find orders that were probably placed using the account that resulted from this application. It's
+        not foolproof since we don't store the full account number.
+        """
+        reference_uuids = set(TransferMetadata.objects.filter(last4_account_number=self.last4_account_number)
+                                                      .values_list('merchant_reference', flat=True)
+                                                      .distinct()
+                                                      .all())
+        orders = Order.objects.filter(Q(guest_email=self.email) | Q(user__email=self.email))\
+                              .filter(sources__transactions__reference__in=reference_uuids)\
+                              .order_by('date_placed')\
+                              .all()
+        return orders
+
+
+
+
+class USCreditApp(CreditAppCommonMixin, USCreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'us-individual'
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Owner"),
-        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
-        related_name='us_individual_credit_apps',
-        on_delete=models.CASCADE)
-    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Submitting User"),
-        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
-        related_name='+',
-        on_delete=models.SET_NULL)
 
 
 
-class USJointCreditApp(USJointCreditAppMixin, BaseJointCreditAppMixin):
+class USJointCreditApp(CreditAppCommonMixin, USJointCreditAppMixin, BaseJointCreditAppMixin):
     APP_TYPE_CODE = 'us-joint'
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Owner"),
-        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
-        related_name='us_joint_credit_apps',
-        on_delete=models.CASCADE)
-    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Submitting User"),
-        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
-        related_name='+',
-        on_delete=models.SET_NULL)
 
 
-class CACreditApp(CACreditAppMixin, BaseCreditAppMixin):
+
+class CACreditApp(CreditAppCommonMixin, CACreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'ca-individual'
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Owner"),
-        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
-        related_name='ca_individual_credit_apps',
-        on_delete=models.CASCADE)
-    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Submitting User"),
-        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
-        related_name='+',
-        on_delete=models.SET_NULL)
 
 
-class CAJointCreditApp(CAJointCreditAppMixin, BaseJointCreditAppMixin):
+
+class CAJointCreditApp(CreditAppCommonMixin, CAJointCreditAppMixin, BaseJointCreditAppMixin):
     APP_TYPE_CODE = 'ca-joint'
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Owner"),
-        help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
-        related_name='ca_joint_credit_apps',
-        on_delete=models.CASCADE)
-    submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
-        verbose_name=_("Submitting User"),
-        help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
-        related_name='+',
-        on_delete=models.SET_NULL)

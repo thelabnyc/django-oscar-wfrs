@@ -12,8 +12,8 @@ from .serializers import (
     USJointCreditAppSerializer,
     CACreditAppSerializer,
     CAJointCreditAppSerializer,
-    AccountSerializer,
     FinancingPlanSerializer,
+    AccountInquirySerializer,
 )
 from ..utils import list_plans_for_basket
 
@@ -44,11 +44,11 @@ class SelectCreditAppView(generics.GenericAPIView):
 
 class BaseCreditAppView(generics.GenericAPIView):
     def post(self, request):
-        serializer = self.get_serializer_class()(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        app_result = serializer.save()
-        serializer = AccountSerializer(app_result)
-        return Response(serializer.data)
+        request_ser = self.get_serializer_class()(data=request.data, context={'request': request})
+        request_ser.is_valid(raise_exception=True)
+        result = request_ser.save()
+        response_ser = AccountInquirySerializer(instance=result, context={'request': request})
+        return Response(response_ser.data)
 
 
 class USCreditAppView(BaseCreditAppView):
@@ -73,3 +73,14 @@ class FinancingPlanView(views.APIView):
         plans = list_plans_for_basket(basket)
         ser = FinancingPlanSerializer(plans, many=True)
         return Response(ser.data)
+
+
+class SubmitAccountInquiryView(generics.GenericAPIView):
+    serializer_class = AccountInquirySerializer
+
+    def post(self, request):
+        request_ser = self.get_serializer_class()(data=request.data, context={'request': request})
+        request_ser.is_valid(raise_exception=True)
+        result = request_ser.save()
+        response_ser = self.get_serializer_class()(instance=result, context={'request': request})
+        return Response(response_ser.data)

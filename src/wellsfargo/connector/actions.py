@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ValidationError
 from ..core.constants import (
@@ -5,14 +6,14 @@ from ..core.constants import (
     CREDIT_APP_DECISION_DELAYED,
     CREDIT_APP_FORMAT_ERROR,
     CREDIT_APP_WFF_ERROR,
+    INQUIRY_SUCCESS,
     TRANS_APPROVED,
     TRANS_TYPE_INQUIRY,
     TRANS_TYPE_APPLY,
     EN_US,
 )
 from ..core.exceptions import TransactionDenied, CreditApplicationPending, CreditApplicationDenied
-from ..core.structures import CreditApplicationResult, AccountInquiryResult
-from ..models import APICredentials, TransferMetadata, FinancingPlan
+from ..models import APICredentials, TransferMetadata, AccountInquiryResult, FinancingPlan
 from ..settings import (
     WFRS_TRANSACTION_WSDL,
     WFRS_INQUIRY_WSDL,
@@ -107,11 +108,33 @@ def submit_inquiry(account_number, current_user=None, locale=EN_US):
 
     # Build response
     result = AccountInquiryResult()
-    result.transaction_status = resp.transactionStatus
+
+    result.status = resp.transactionStatus
+
     result.account_number = resp.wfAccountNumber
+
+    result.first_name = resp.firstName
+    result.middle_initial = resp.middleInitial
+    result.last_name = resp.lastName
+
+    # This is kind of awful, but WFRS only uses national phone number (with an implied +1 country code). So, we
+    # add back the country code to make it valid to store in the DB.
+    # E.g. Take "5559998888" and convert it to "+15559998888"
+    result.phone_number = '+1{}'.format(resp.phone)
+
+    result.address = resp.address
+
+    result.credit_limit = _as_decimal(resp.accountBalance + resp.openToBuy)
     result.balance = _as_decimal(resp.accountBalance)
     result.open_to_buy = _as_decimal(resp.openToBuy)
-    result.credit_limit = _as_decimal(resp.accountBalance + resp.openToBuy)
+
+    result.last_payment_date = _as_date(resp.lastPaymentDate)
+    result.last_payment_amount = _as_decimal(resp.lastPayment)
+
+    result.payment_due_date = _as_date(resp.lastPaymentDate)
+    result.payment_due_amount = _as_decimal(resp.paymentDue)
+
+    result.save()
     return result
 
 
@@ -213,14 +236,24 @@ def submit_credit_application(app, current_user=None):
     if resp.transactionStatus != CREDIT_APP_APPROVED:
         raise CreditApplicationDenied('Credit Application was denied by Wells Fargo.')
 
+    # Save the credentials used to apply
+    app.credentials = creds
+    app.save()
+
     # Credit application must be approved. Build response
-    result = CreditApplicationResult()
-    result.application = app
-    result.transaction_status = resp.transactionStatus
+    result = AccountInquiryResult()
+    result.status = INQUIRY_SUCCESS
     result.account_number = resp.wfAccountNumber
+    result.first_name = app.main_first_name
+    result.middle_initial = app.main_middle_initial
+    result.last_name = app.main_last_name
+    result.phone_number = '+1{}'.format(data.mainHomePhone)
+    result.address = app.main_address_line1
     result.credit_limit = _as_decimal(resp.creditLimit)
     result.balance = Decimal('0.00')
     result.open_to_buy = result.credit_limit
+    result.save()
+
     return result
 
 
@@ -234,6 +267,13 @@ def _format_phone(number):
 
 def _format_ssn(number):
     return re.sub(r'[^0-9]+', '', number) if number else None
+
+
+def _as_date(string, fstring='%m%d%y'):
+    try:
+        return datetime.strptime(string, fstring)
+    except ValueError:
+        return None
 
 
 def _as_decimal(string):

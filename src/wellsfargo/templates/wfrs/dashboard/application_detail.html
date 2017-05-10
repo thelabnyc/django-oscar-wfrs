@@ -41,6 +41,10 @@
                     <td>{{ object.account_number | default:"-" }}</td>
                 </tr>
                 <tr>
+                    <td>{% trans "Requested Value" %}</td>
+                    <td>{{ object.purchase_price | currency | default:"-" }}</td>
+                </tr>
+                <tr>
                     <td>{% trans "Created Date" %}</td>
                     <td>{{ object.created_datetime | default:"-" }}</td>
                 </tr>

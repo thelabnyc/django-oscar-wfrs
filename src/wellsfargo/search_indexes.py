@@ -1,4 +1,6 @@
 from haystack import indexes
+from oscar.core.loading import get_model
+from .methods import WellsFargo
 from .models import (
     TransferMetadata,
     USCreditApp,
@@ -8,12 +10,21 @@ from .models import (
 )
 
 
+Transaction = get_model('payment', 'Transaction')
+
+
 class BaseCreditAppIndex(indexes.SearchIndex):
     APP_TYPE_CODE = indexes.CharField(model_attr='APP_TYPE_CODE')
+    merchant_name = indexes.CharField()
+    application_source = indexes.CharField(model_attr='application_source')
     modified_datetime = indexes.DateTimeField(model_attr='modified_datetime')
     created_datetime = indexes.DateTimeField(model_attr='created_datetime')
 
     account_number = indexes.CharField(model_attr='account_number', null=True)
+    purchase_price = indexes.CharField(model_attr='purchase_price', null=True)
+    credit_limit = indexes.CharField(null=True)
+    order_total = indexes.CharField(null=True)
+    order_merchant_name = indexes.CharField(null=True)
 
     main_first_name = indexes.CharField(model_attr='main_first_name')
     main_last_name = indexes.CharField(model_attr='main_last_name')
@@ -35,6 +46,33 @@ class BaseCreditAppIndex(indexes.SearchIndex):
 
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
+
+    def prepare_merchant_name(self, obj):
+        return obj.credentials.name if obj.credentials else None
+
+    def prepare_credit_limit(self, obj):
+        return obj.get_credit_limit()
+
+    def prepare_order_total(self, obj):
+        order = obj.get_orders().first()
+        if not order:
+            return None
+        return order.total_incl_tax
+
+    def prepare_order_merchant_name(self, obj):
+        order = obj.get_orders().first()
+        if not order:
+            return None
+        transfers = []
+        for source in order.sources.filter(source_type__name=WellsFargo.name).all():
+            for transaction in source.transactions.filter(txn_type=Transaction.AUTHORISE).all():
+                transfer = TransferMetadata.get_by_oscar_transaction(transaction)
+                if transfer:
+                    transfers.append(transfer)
+        if len(transfers) <= 0:
+            return None
+        credentials = transfers[0].credentials
+        return credentials.name if credentials else None
 
     def prepare_user_full_name(self, obj):
         return obj.user.get_full_name() if obj.user else None
