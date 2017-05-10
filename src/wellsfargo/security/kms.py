@@ -1,4 +1,5 @@
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from botocore.exceptions import ClientError
 import boto3
 import base64
 import binascii
@@ -59,9 +60,14 @@ class KMSEncryption(object):
         except binascii.Error:
             return None
 
-        response = self.client.decrypt(
-            CiphertextBlob=blob,
-            EncryptionContext=self.encryption_context)
+        try:
+            response = self.client.decrypt(
+                CiphertextBlob=blob,
+                EncryptionContext=self.encryption_context)
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'InvalidCiphertextException':
+                return None
+            raise e
 
         plain_text = None
         if 'Plaintext' in response:
