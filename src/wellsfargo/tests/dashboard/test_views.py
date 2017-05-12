@@ -71,6 +71,7 @@ class CreditApplicationViewTest(BaseTest):
             'main_annual_income': '100000',
             'main_home_phone': '5555555555',
             'main_employer_phone': '5555555555',
+            'application_source': 'Unit Test',
         }
 
     def test_unauthorized(self):

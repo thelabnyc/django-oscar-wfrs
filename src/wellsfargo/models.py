@@ -141,7 +141,7 @@ class AccountInquiryResult(models.Model):
     _full_account_number = None
 
     first_name = models.CharField(_("First Name"), max_length=50)
-    middle_initial = models.CharField(_("Middle Initial"), max_length=1)
+    middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
     last_name = models.CharField(_("Last Name"), max_length=50)
     phone_number = PhoneNumberField(_("Phone Number"))
     address = models.CharField(_("Last 4 digits of account number"), max_length=100)

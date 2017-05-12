@@ -13,9 +13,10 @@ packages = find_packages('src')
 
 install_requires = [
     'cryptography>=1.6',
+    'djangorestframework>=3.5.0',
     'django-oscar>=1.3.0',
-    'django-oscar-api>=1.0.10post1',
-    'django-oscar-api-checkout>=0.2.4',
+    'django-oscar-api>=1.1.0',
+    'django-oscar-api-checkout>=0.2.5',
     'django-oscar-bluelight>=0.5.2',
     'django-haystack>=2.5.0',
     'django-localflavor>=1.4.1',

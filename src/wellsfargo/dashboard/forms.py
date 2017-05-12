@@ -52,6 +52,7 @@ class BaseCreditAppFormMixin(object):
         self.fields['region'].disabled = True
         self.fields['language'].disabled = True
         self.fields['app_type'].disabled = True
+        self.fields['application_source'].initial = 'Dashboard'
 
 
 class USCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
