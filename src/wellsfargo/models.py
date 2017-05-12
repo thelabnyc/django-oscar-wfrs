@@ -21,8 +21,6 @@ from .security import encrypt_account_number, decrypt_account_number
 import logging
 
 Benefit = get_model('offer', 'Benefit')
-Transaction = get_model('payment', 'Transaction')
-Order = get_model('order', 'Order')
 PostOrderAction = get_class('offer.results', 'PostOrderAction')
 
 logger = logging.getLogger(__name__)
@@ -252,6 +250,7 @@ class TransferMetadata(models.Model):
         self.encrypted_account_number = encrypt_account_number(value)
 
     def get_oscar_transaction(self):
+        Transaction = get_model('payment', 'Transaction')
         try:
             return Transaction.objects.get(reference=self.merchant_reference)
         except Transaction.DoesNotExist:
@@ -310,6 +309,7 @@ class CreditAppCommonMixin(models.Model):
         Find orders that were probably placed using the account that resulted from this application. It's
         not foolproof since we don't store the full account number.
         """
+        Order = get_model('order', 'Order')
         reference_uuids = set(TransferMetadata.objects.filter(last4_account_number=self.last4_account_number)
                                                       .values_list('merchant_reference', flat=True)
                                                       .distinct()
