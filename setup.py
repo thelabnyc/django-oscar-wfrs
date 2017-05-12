@@ -32,6 +32,7 @@ extras_require = {
         'boto3>=1.4.4',
     ],
     'development': [
+        'coverage>=4.4',
         'elasticsearch>=1.9.0,<2.0.0',
         'flake8>=3.2.1',
         'psycopg2>=2.6.2',

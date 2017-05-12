@@ -8,6 +8,7 @@ boto3==1.4.4
 botocore==1.5.24
 celery==4.0.2
 cffi==1.9.1
+coverage==4.4
 cryptography==1.8.1
 Django==1.10.6
 django-extra-views==0.6.4
