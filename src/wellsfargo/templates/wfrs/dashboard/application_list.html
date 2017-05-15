@@ -21,11 +21,19 @@
 
 
 {% block header %}
-    <div class="page-header">
-        <a href="{% url 'wfrs-apply-step1' %}" class="btn btn-primary btn-lg pull-right">
-            <i class="icon-plus"></i> {% trans "Apply for Credit Line" %}
-        </a>
-        <h1>{% trans "Credit Applications" %}</h1>
+    <div class="page-header clearfix">
+        <div class="pull-left">
+            <h1>{% trans "Credit Applications" %}</h1>
+        </div>
+        <div class="pull-right">
+            <a href="{% url 'wfrs-apply-step1' %}" class="btn btn-primary btn-lg">
+                <i class="icon-plus"></i> {% trans "Apply for Credit Line" %}
+            </a>
+
+            <a href="{% url 'wfrs-application-list' %}?{{ download_querystring | safe }}" class="btn btn-primary btn-lg">
+                <i class="icon-download-alt"></i> Export Applications
+            </a>
+        </div>
     </div>
 {% endblock header %}
 

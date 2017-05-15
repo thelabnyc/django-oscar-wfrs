@@ -1,2 +1,4 @@
-{% load currency_filters %}
-{{ record.purchase_price | currency | default:'—' }}
+{% spaceless %}
+    {% load currency_filters %}
+    {{ record.purchase_price | currency | default:'—' }}
+{% endspaceless %}

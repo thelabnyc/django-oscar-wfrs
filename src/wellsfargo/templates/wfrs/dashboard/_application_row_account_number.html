@@ -1,1 +1,3 @@
-{{ record.account_number | default:'-' }}
+{% spaceless %}
+    {{ record.account_number | default:'-' }}
+{% endspaceless %}
