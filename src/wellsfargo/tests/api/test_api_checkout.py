@@ -35,6 +35,7 @@ class CheckoutTest(BaseTest):
 
         ConditionalOffer.objects.create(
             name='Financing is available',
+            short_name='Financing',
             condition=condition,
             benefit=benefit,
             offer_type=ConditionalOffer.SITE,

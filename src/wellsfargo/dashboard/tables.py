@@ -55,6 +55,10 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Order Total'),
         template_name='wfrs/dashboard/_application_row_order_total.html',
         orderable=False)
+    order_delay = TemplateColumn(
+        verbose_name=_('Time until Order Placement (Minutes)'),
+        template_name='wfrs/dashboard/_application_row_order_delay.html',
+        orderable=False)
     order_merchant_name = Column(
         verbose_name=_('Order Merchant Name'),
         orderable=False)
@@ -84,6 +88,7 @@ class CreditApplicationIndexTable(DashboardTable):
             'purchase_price',
             'credit_limit',
             'order_total',
+            'order_delay',
             'order_merchant_name',
             'created_datetime',
             'modified_datetime',

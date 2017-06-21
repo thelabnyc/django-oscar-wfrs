@@ -312,6 +312,8 @@ class CreditApplicationListView(SingleTableView):
         writer = UnicodeCSVWriter(open_file=response)
 
         def format_csv_cell(str_in):
+            if not str_in:
+                return '–'
             return strip_tags(str_in).replace('\n', '').strip()
 
         # Loop through each row in the table, strip out any HTMl, and write it to a CSV excluding the last column (actions).
