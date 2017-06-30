@@ -94,7 +94,7 @@ class CAJointCreditAppForm(BaseCreditAppFormMixin, forms.ModelForm):
 class FinancingPlanForm(forms.ModelForm):
     class Meta:
         model = FinancingPlan
-        fields = ('plan_number', 'description', 'apr', 'term_months', 'is_default_plan', 'allow_credit_application')
+        fields = ('plan_number', 'description', 'fine_print_superscript', 'apr', 'term_months', 'is_default_plan', 'allow_credit_application')
 
 
 class FinancingPlanBenefitForm(forms.ModelForm):

@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.7.1
+------------------
+- Add new field to the FinancingPlan model to contain a superscript number, corresponding to fine print displayed elsewhere on the page.
+
 0.7.0
 ------------------
 - Fix 404ing JS in Oscar Dashboard

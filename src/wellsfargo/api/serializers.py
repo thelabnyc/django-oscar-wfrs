@@ -146,6 +146,7 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
             'id',
             'plan_number',
             'description',
+            'fine_print_superscript',
             'apr',
             'term_months',
             'allow_credit_application',

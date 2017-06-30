@@ -68,6 +68,7 @@ class FinancingPlan(models.Model):
         MaxValueValidator(9999),
     ])
     description = models.TextField(_("Description"), blank=True, default='')
+    fine_print_superscript = models.CharField(_("Fine Print Superscript"), blank=True, default='', max_length=10)
     apr = models.DecimalField(_("Annual percentage rate (0.0 – 100.0)"), max_digits=5, decimal_places=2, default='0.00', validators=[
         MinValueValidator(Decimal('0.00')),
         MaxValueValidator(Decimal('100.00')),
