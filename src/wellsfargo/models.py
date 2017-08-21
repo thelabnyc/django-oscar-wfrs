@@ -75,6 +75,11 @@ class FinancingPlan(models.Model):
     ])
     term_months = models.PositiveSmallIntegerField(_("Term Length (months)"), default=12)
     is_default_plan = models.BooleanField(_("Is Default Plan?"), default=False)
+    product_price_threshold = models.DecimalField(_("Minimum Product Price for Plan Availability Advertising"),
+        decimal_places=2,
+        max_digits=12,
+        default='0.00',
+        validators=[MinValueValidator(Decimal('0.00'))])
     allow_credit_application = models.BooleanField(_('Allow new credit applications when user is eligible for this plan?'), default=True)
 
     class Meta:

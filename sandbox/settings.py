@@ -87,6 +87,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
             WFRS_TEMPLATE_DIR,
             BLUELIGHT_TEMPLATE_DIR,
             OSCAR_MAIN_TEMPLATE_DIR,

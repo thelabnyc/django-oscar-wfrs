@@ -15,6 +15,7 @@ class FinancingPlanFormTest(TestCase):
             'apr': '27.99',
             'term_months': 0,
             'is_default_plan': True,
+            'product_price_threshold': '0.00',
             'allow_credit_application': True,
         })
 
@@ -44,6 +45,7 @@ class FinancingPlanFormTest(TestCase):
             'apr': '10.50',
             'term_months': 0,
             'is_default_plan': True,
+            'product_price_threshold': '0.00',
             'allow_credit_application': True,
         })
 
