@@ -15,12 +15,12 @@ class TestDefaultPlanTag(TestCase):
         """
         FinancingPlan.objects.create(
             plan_number=1,
-            is_default_plan=False
-        )
+            is_default_plan=False,
+            advertising_enabled=True)
         FinancingPlan.objects.create(
             plan_number=2,
-            is_default_plan=True
-        )
+            is_default_plan=True,
+            advertising_enabled=True)
         rendered = self.render_template(
             '{% load wfrs_default_plan %}'
             '{% get_default_plan as default_plan %}'
