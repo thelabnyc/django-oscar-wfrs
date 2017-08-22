@@ -3,6 +3,13 @@
 Changelog
 =========
 
+0.7.2
+------------------
+- Add support for Django 1.11 and Oscar 1.5
+- Add new field to the FinancingPlan model to contain a price threshold value.
+    - While the offers system is still used to determine what plans a basket is eligible for, sometimes plan data is needed before a product is in the basket. For example, you may wish to advertise a monthly payment price for a product outside of the basket context. Previously the ``is_default_plan`` flag was used for this purpose. Now, each plan can have a price threshold set in the ``product_price_threshold``. Then, those threshold values can be used to determine which plan to display for each product. For example, if you configure plan 0001 with a threshold of $100.00 and plan 0002 with a threshold of $200.00, a product costing $150.00 would display a monthly price calculated based on plan 0001 while a product costing $500.00 would display a monthly price calculated based on plan 0002. The ``is_default_plan`` flag still exists and can be used as a fallback to products not meeting any of the configured thresholds.
+    - Add template override in the sandbox store to demonstrate this behavior.
+
 0.7.1
 ------------------
 - Add new field to the FinancingPlan model to contain a superscript number, corresponding to fine print displayed elsewhere on the page.
