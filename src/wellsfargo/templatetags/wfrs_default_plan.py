@@ -6,7 +6,7 @@ register = template.Library()
 
 @register.simple_tag
 def get_default_plan():
-    return FinancingPlan.objects.filter(is_default_plan=True).first()
+    return FinancingPlan.objects.filter(advertising_enabled=True, is_default_plan=True).first()
 
 
 @register.simple_tag
@@ -20,6 +20,7 @@ def get_plan_for_product(request, product):
     else:
         price = purchase_info.price.excl_tax
     return FinancingPlan.objects\
+        .filter(advertising_enabled=True)\
         .filter(product_price_threshold__gte='0.00')\
         .filter(product_price_threshold__lte=price)\
         .order_by('-product_price_threshold')\

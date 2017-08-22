@@ -38,8 +38,9 @@
                     <th>{% trans "APR" %}</th>
                     <th>{% trans "Term Length (months)" %}</th>
                     <th>{% trans "Description" %}</th>
-                    <th>{% trans "Is Default" %}</th>
                     <th>{% trans "Product Price Threshold" %}</th>
+                    <th>{% trans "Advertising Enabled" %}</th>
+                    <th>{% trans "Is Default" %}</th>
                     <th>{% trans "Allow New Credit Applications" %}</th>
                     <th></th>
                 </tr>
@@ -53,8 +54,9 @@
                         <td>{{ plan.apr }}%</td>
                         <td>{{ plan.term_months }}</td>
                         <td>{{ plan.description }}<sup>{{ plan.fine_print_superscript }}</sup></td>
-                        <td>{{ plan.is_default_plan }}</td>
                         <td>{{ plan.product_price_threshold | currency }}</td>
+                        <td>{{ plan.advertising_enabled }}</td>
+                        <td>{{ plan.is_default_plan }}</td>
                         <td>{{ plan.allow_credit_application }}</td>
                         <td>
                             <a href="{% url 'wfrs-plan-edit' pk=plan.pk %}" class="btn btn-primary">{% trans "Edit" %}</a>
