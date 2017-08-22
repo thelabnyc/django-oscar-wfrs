@@ -57,7 +57,7 @@ class FuzzyDurationWidget(Widget):
             id_ = self.attrs['id']
         else:
             id_ = 'id_%s' % name
-        local_attrs = self.build_attrs(id=field % id_)
+        local_attrs = self.build_attrs(dict(id=field % id_))
         s = self.select_widget(choices=choices)
         select_html = s.render(field % name, val, local_attrs)
         return select_html

@@ -18,12 +18,12 @@ import re
 
 
 class SocialInsuranceFormField(CASocialInsuranceNumberFieldFormField):
-    def __init__(self, max_length=None, *args, **kwargs):
+    def __init__(self, max_length=None, empty_value=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
 class PhoneNumberFormField(CAPhoneNumberFieldFormField):
-    def __init__(self, max_length=None, *args, **kwargs):
+    def __init__(self, max_length=None, empty_value=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
