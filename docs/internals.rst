@@ -17,6 +17,7 @@ wellsfargo.api           Django Rest Framework based API exposing actions like c
 wellsfargo.connector     Wrapper for talking to the WFRS SOAP API.
 wellsfargo.core          Core components like data structures and exceptions.
 wellsfargo.dashboard     Oscar Dashboard application for managing financing plans, searching credit applications, etc.
+wellsfargo.fraud         Pluggable transaction fraud protection connectors.
 wellsfargo.security      Encryption utilities for protecting account numbers.
 wellsfargo.templatetags  Django Template tags.
 wellsfargo.tests         Test suite.
