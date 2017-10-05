@@ -7,7 +7,8 @@ from .connector import actions
 from .core.structures import TransactionRequest
 from .core import exceptions
 from .utils import list_plans_for_basket
-from .models import FinancingPlan
+from .models import FraudScreenResult, FinancingPlan
+from .fraud import screen_transaction
 
 
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
@@ -42,7 +43,7 @@ class WellsFargo(PaymentMethod):
         source = self.get_source(order, reference)
         amount_to_allocate = amount - source.amount_allocated
 
-        # Perform an authorization with WFRS
+        # Build a transaction request
         trans_request = TransactionRequest()
         trans_request.user = order.user
         trans_request.account_number = account_number
@@ -50,10 +51,17 @@ class WellsFargo(PaymentMethod):
         trans_request.amount = amount_to_allocate
         trans_request.ticket_number = order.number
 
+        # If Fraud Screening is enabled, run it and see if the transaction passes muster.
+        fraud_response = screen_transaction(request, order)
+        if fraud_response.decision not in (FraudScreenResult.DECISION_ACCEPT, FraudScreenResult.DECISION_REVIEW):
+            return Declined(amount)
+
+        # Figure out which WFRS credentials to use based on the user
         request_user = None
         if request.user and request.user.is_authenticated():
             request_user = request.user
 
+        # Perform an authorization with WFRS
         try:
             transfer = actions.submit_transaction(trans_request, current_user=request_user)
         except (exceptions.TransactionDenied, ValidationError):

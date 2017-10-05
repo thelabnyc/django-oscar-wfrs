@@ -21,7 +21,7 @@ install_requires = [
     'django-haystack>=2.5.0',
     'django-localflavor>=1.4.1',
     'djangorestframework>=3.1.0',
-    'instrumented-soap>=1.1.0',
+    'instrumented-soap>=1.1.1',
 
     # Legacy. Needed to make migrations run.
     'django-oscar-accounts2>=0.1.0',

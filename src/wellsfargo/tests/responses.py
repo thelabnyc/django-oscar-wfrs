@@ -36,3 +36,12 @@ with open(os.path.join(_base, 'responses/credit_app_denied.xml'), 'r') as f:
 
 with open(os.path.join(_base, 'responses/credit_app_pending.xml'), 'r') as f:
     credit_app_pending = f.read().encode('utf8')
+
+with open(os.path.join(_base, 'responses/cybersource_accept.xml'), 'r') as f:
+    cybersource_accept = f.read().encode('utf8')
+
+with open(os.path.join(_base, 'responses/cybersource_review.xml'), 'r') as f:
+    cybersource_review = f.read().encode('utf8')
+
+with open(os.path.join(_base, 'responses/cybersource_reject.xml'), 'r') as f:
+    cybersource_reject = f.read().encode('utf8')
