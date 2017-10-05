@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 
 def submit_transaction(trans_request, current_user=None):
     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
-
-    request = client.factory.create('ns2:Transaction')
+    type_name = _find_namespaced_name(client, 'Transaction')
+    request = client.factory.create(type_name)
     request.uuid = uuid.uuid1()
 
     creds = APICredentials.get_credentials(current_user)
@@ -79,8 +79,8 @@ def submit_transaction(trans_request, current_user=None):
 
 def submit_inquiry(account_number, current_user=None, locale=EN_US):
     client = soap.get_client(WFRS_INQUIRY_WSDL, 'WFRS')
-
-    request = client.factory.create('ns2:Inquiry')
+    type_name = _find_namespaced_name(client, 'Inquiry')
+    request = client.factory.create(type_name)
     request.uuid = uuid.uuid1()
     request.transactionCode = TRANS_TYPE_INQUIRY
 
@@ -140,7 +140,8 @@ def submit_inquiry(account_number, current_user=None, locale=EN_US):
 
 def submit_credit_application(app, current_user=None):
     client = soap.get_client(WFRS_CREDIT_APP_WSDL, 'WFRS')
-    data = client.factory.create('ns2:CreditApp')
+    type_name = _find_namespaced_name(client, 'CreditApp')
+    data = client.factory.create(type_name)
 
     creds = APICredentials.get_credentials(current_user)
     data.userName = creds.username
@@ -281,3 +282,13 @@ def _as_decimal(string):
         return Decimal(string).quantize(Decimal('.01'))
     except (TypeError, InvalidOperation):
         return Decimal('0.00')
+
+
+def _find_namespaced_name(client, bare_name):
+    for stype in client.sd[0].types:
+        namespaced_name = client.sd[0].xlate(stype[0])
+        if ':' in namespaced_name:
+            prefix, bare = namespaced_name.split(':', 1)
+            if bare == bare_name:
+                return namespaced_name
+    return bare_name
