@@ -20,5 +20,5 @@ def _load_cls_from_abs_path(path):
     try:
         pkg = importlib.import_module(pkgname)
         return getattr(pkg, fnname)
-    except (ModuleNotFoundError, AttributeError):
+    except (ImportError, AttributeError):
         raise ImproperlyConfigured('Could not import class at path {}'.format(path))
