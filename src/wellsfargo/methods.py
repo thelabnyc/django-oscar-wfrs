@@ -72,8 +72,12 @@ class WellsFargo(PaymentMethod):
             logger.info('WFRS transaction failed for Order[{}]. Reason: {}'.format(order.number, str(e)))
             return Declined(amount)
 
-        # Record the allocation and payment event
-        source.allocate(amount_to_allocate, transfer.merchant_reference)
+        # Record the allocation as a transaction
+        source.allocate(amount_to_allocate,
+            reference=transfer.merchant_reference,
+            status=fraud_response.decision)
+
+        # Record the payment event
         event = self.make_authorize_event(order, amount_to_allocate, transfer.merchant_reference)
         for line in order.lines.all():
             self.make_event_quantity(event, line, line.quantity)
