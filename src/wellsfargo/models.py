@@ -147,7 +147,7 @@ class FraudScreenResult(models.Model):
     DECISION_REVIEW = 'REVIEW'
 
     screen_type = models.CharField(_("Fraud Screen Type"), max_length=25)
-    order = models.ForeignKey('order.Order')
+    order = models.ForeignKey('order.Order', related_name='wfrs_fraud_screen_results')
     decision = models.CharField(_("Decision"), max_length=25, choices=(
         (DECISION_REJECT, _("Transaction was rejected")),
         (DECISION_ACCEPT, _("Transaction was accepted")),

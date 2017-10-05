@@ -38,3 +38,4 @@ WFRS_FRAUD_PROTECTION = {
     'fraud_protection': 'wellsfargo.fraud.dummy.DummyFraudProtection',
     'fraud_protection_kwargs': {},
 }
+WFRS_FRAUD_PROTECTION.update( overridable('WFRS_FRAUD_PROTECTION', {}) )
