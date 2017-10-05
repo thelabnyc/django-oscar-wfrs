@@ -9,6 +9,9 @@ from .core import exceptions
 from .utils import list_plans_for_basket
 from .models import FraudScreenResult, FinancingPlan
 from .fraud import screen_transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
@@ -54,6 +57,7 @@ class WellsFargo(PaymentMethod):
         # If Fraud Screening is enabled, run it and see if the transaction passes muster.
         fraud_response = screen_transaction(request, order)
         if fraud_response.decision not in (FraudScreenResult.DECISION_ACCEPT, FraudScreenResult.DECISION_REVIEW):
+            logger.info('WFRS transaction for Order[{}] failed fraud screen. Reason: {}'.format(order.number, fraud_response.message))
             return Declined(amount)
 
         # Figure out which WFRS credentials to use based on the user
@@ -64,7 +68,8 @@ class WellsFargo(PaymentMethod):
         # Perform an authorization with WFRS
         try:
             transfer = actions.submit_transaction(trans_request, current_user=request_user)
-        except (exceptions.TransactionDenied, ValidationError):
+        except (exceptions.TransactionDenied, ValidationError) as e:
+            logger.info('WFRS transaction failed for Order[{}]. Reason: {}'.format(order.number, str(e)))
             return Declined(amount)
 
         # Record the allocation and payment event
