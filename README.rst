@@ -2,7 +2,7 @@
 django-oscar-wfrs
 =================
 
-|  |build| |coverage| |license| |kit| |format| |downloads|
+|  |build| |coverage| |license| |kit| |format|
 
 An extension on-top of django-oscar-api-checkout to allow interfacing with Wells Fargo Retail Services.
 
@@ -17,6 +17,4 @@ An extension on-top of django-oscar-api-checkout to allow interfacing with Wells
 .. |kit| image:: https://badge.fury.io/py/django-oscar-wfrs.svg
     :target: https://pypi.python.org/pypi/django-oscar-wfrs
 .. |format| image:: https://img.shields.io/pypi/format/django-oscar-wfrs.svg
-    :target: https://pypi.python.org/pypi/django-oscar-wfrs
-.. |downloads| image:: https://img.shields.io/pypi/dm/django-oscar-wfrs.svg?maxAge=2592000
     :target: https://pypi.python.org/pypi/django-oscar-wfrs
