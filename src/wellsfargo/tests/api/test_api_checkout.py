@@ -5,8 +5,9 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from oscar.core.loading import get_model
 from oscar.test import factories
-from wellsfargo.models import FinancingPlan, FinancingPlanBenefit
+from wellsfargo.models import FinancingPlan, FinancingPlanBenefit, FraudScreenResult
 from wellsfargo.tests.base import BaseTest
+from wellsfargo.tests.test_fraud import patch_fraud_protection
 from wellsfargo.tests import responses
 import mock
 
@@ -46,7 +47,10 @@ class CheckoutTest(BaseTest):
     @mock.patch('soap.get_transport')
     def test_checkout_authd(self, get_transport):
         """Full checkout process using minimal api calls"""
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
+
+        def gt():
+            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
+        get_transport.side_effect = gt
 
         self.client.login(username='joe', password='schmoe')
 
@@ -60,11 +64,21 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
+        self.assertEqual(FraudScreenResult.objects.count(), 1)
+        fraud_result = FraudScreenResult.objects.first()
+        self.assertEqual(fraud_result.screen_type, 'Dummy')
+        self.assertEqual(fraud_result.order.basket.pk, basket_id)
+        self.assertEqual(fraud_result.decision, FraudScreenResult.DECISION_ACCEPT)
+        self.assertEqual(fraud_result.message, 'Transaction accepted.')
+
 
     @mock.patch('soap.get_transport')
     def test_checkout_trans_declined(self, get_transport):
         """Full checkout process using minimal api calls"""
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_denied)
+
+        def gt():
+            return self._build_transport_with_reply(responses.transaction_denied, pattern='wellsfargo.com')
+        get_transport.side_effect = gt
 
         self.client.login(username='joe', password='schmoe')
 
@@ -79,10 +93,75 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
 
+    @patch_fraud_protection('wellsfargo.fraud.dummy.DummyFraudProtection',
+        decision=FraudScreenResult.DECISION_REJECT,
+        message='Rejected transaction.')
+    @mock.patch('soap.get_transport')
+    def test_checkout_fraud_rejection(self, get_transport):
+        """Full checkout process using minimal api calls"""
+
+        def gt():
+            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
+        get_transport.side_effect = gt
+
+        self.client.login(username='joe', password='schmoe')
+
+        # Should be declined due to the fraud rejection
+        basket_id = self._prepare_basket()
+        self._check_available_plans()
+        resp = self._checkout(basket_id, '9999999999999999')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self._fetch_payment_states()
+        self.assertEqual(resp.data['order_status'], 'Payment Declined')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Declined')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
+
+        self.assertEqual(FraudScreenResult.objects.count(), 1)
+        fraud_result = FraudScreenResult.objects.first()
+        self.assertEqual(fraud_result.screen_type, 'Dummy')
+        self.assertEqual(fraud_result.order.basket.pk, basket_id)
+        self.assertEqual(fraud_result.decision, FraudScreenResult.DECISION_REJECT)
+        self.assertEqual(fraud_result.message, 'Rejected transaction.')
+
+
+    @patch_fraud_protection('wellsfargo.fraud.dummy.DummyFraudProtection',
+        decision=FraudScreenResult.DECISION_REVIEW,
+        message='Transaction flagged for manual review.')
+    @mock.patch('soap.get_transport')
+    def test_checkout_fraud_review_flag(self, get_transport):
+        """Full checkout process using minimal api calls"""
+
+        def gt():
+            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
+        get_transport.side_effect = gt
+
+        self.client.login(username='joe', password='schmoe')
+
+        # Should be successful, but flagged in the dashboard for review
+        basket_id = self._prepare_basket()
+        self._check_available_plans()
+        resp = self._checkout(basket_id, '9999999999999999')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self._fetch_payment_states()
+        self.assertEqual(resp.data['order_status'], 'Authorized')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
+
+        self.assertEqual(FraudScreenResult.objects.count(), 1)
+        fraud_result = FraudScreenResult.objects.first()
+        self.assertEqual(fraud_result.screen_type, 'Dummy')
+        self.assertEqual(fraud_result.order.basket.pk, basket_id)
+        self.assertEqual(fraud_result.decision, FraudScreenResult.DECISION_REVIEW)
+        self.assertEqual(fraud_result.message, 'Transaction flagged for manual review.')
+
+
     @mock.patch('soap.get_transport')
     def test_checkout_anon(self, get_transport):
         """Full checkout process using minimal api calls"""
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
+
+        def gt():
+            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
+        get_transport.side_effect = gt
 
         # Should be successful
         basket_id = self._prepare_basket()
@@ -98,7 +177,10 @@ class CheckoutTest(BaseTest):
     @mock.patch('soap.get_transport')
     def test_checkout_bad_plan_number(self, get_transport):
         """Full checkout process using minimal api calls"""
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
+
+        def gt():
+            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
+        get_transport.side_effect = gt
 
         self.client.login(username='joe', password='schmoe')
 

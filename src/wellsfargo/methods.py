@@ -7,7 +7,11 @@ from .connector import actions
 from .core.structures import TransactionRequest
 from .core import exceptions
 from .utils import list_plans_for_basket
-from .models import FinancingPlan
+from .models import FraudScreenResult, FinancingPlan
+from .fraud import screen_transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
@@ -42,7 +46,7 @@ class WellsFargo(PaymentMethod):
         source = self.get_source(order, reference)
         amount_to_allocate = amount - source.amount_allocated
 
-        # Perform an authorization with WFRS
+        # Build a transaction request
         trans_request = TransactionRequest()
         trans_request.user = order.user
         trans_request.account_number = account_number
@@ -50,17 +54,30 @@ class WellsFargo(PaymentMethod):
         trans_request.amount = amount_to_allocate
         trans_request.ticket_number = order.number
 
+        # If Fraud Screening is enabled, run it and see if the transaction passes muster.
+        fraud_response = screen_transaction(request, order)
+        if fraud_response.decision not in (FraudScreenResult.DECISION_ACCEPT, FraudScreenResult.DECISION_REVIEW):
+            logger.info('WFRS transaction for Order[{}] failed fraud screen. Reason: {}'.format(order.number, fraud_response.message))
+            return Declined(amount)
+
+        # Figure out which WFRS credentials to use based on the user
         request_user = None
         if request.user and request.user.is_authenticated():
             request_user = request.user
 
+        # Perform an authorization with WFRS
         try:
             transfer = actions.submit_transaction(trans_request, current_user=request_user)
-        except (exceptions.TransactionDenied, ValidationError):
+        except (exceptions.TransactionDenied, ValidationError) as e:
+            logger.info('WFRS transaction failed for Order[{}]. Reason: {}'.format(order.number, str(e)))
             return Declined(amount)
 
-        # Record the allocation and payment event
-        source.allocate(amount_to_allocate, transfer.merchant_reference)
+        # Record the allocation as a transaction
+        source.allocate(amount_to_allocate,
+            reference=transfer.merchant_reference,
+            status=fraud_response.decision)
+
+        # Record the payment event
         event = self.make_authorize_event(order, amount_to_allocate, transfer.merchant_reference)
         for line in order.lines.all():
             self.make_event_quantity(event, line, line.quantity)

@@ -12,6 +12,7 @@ Contents
 
    concepts
    install
+   fraud
    integration
    internals
    changes

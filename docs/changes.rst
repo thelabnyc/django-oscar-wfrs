@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.8.0
+------------------
+- Add ability to gate transaction using pluggable fraud screen modules. By default fraud screening is disabled.
+
 0.7.2
 ------------------
 - Add support for Django 1.11 and Oscar 1.5

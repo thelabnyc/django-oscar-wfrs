@@ -45,6 +45,21 @@ class CreditAppAdmin(ReadOnlyAdmin):
     list_filter = ['created_datetime', 'modified_datetime']
 
 
+@admin.register(models.FraudScreenResult)
+class FraudScreenResultAdmin(ReadOnlyAdmin):
+    list_display = ['id', 'screen_type', 'order', 'decision', 'created_datetime']
+    list_filter = ['screen_type', 'decision', 'created_datetime', 'modified_datetime']
+    fields = (
+        'screen_type',
+        'order',
+        'decision',
+        'message',
+        'created_datetime',
+        'modified_datetime',
+    )
+
+
+
 @admin.register(models.AccountInquiryResult)
 class AccountInquiryResultAdmin(ReadOnlyAdmin):
     list_display = ['masked_account_number', 'full_name', 'credit_limit', 'balance', 'open_to_buy', 'status', 'created_datetime']
