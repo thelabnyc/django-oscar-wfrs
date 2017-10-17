@@ -2,6 +2,7 @@ from suds.wsse import Security, UsernameToken
 from ..models import FraudScreenResult
 import soap
 import logging
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -112,14 +113,21 @@ class DecisionManagerFraudProtection(object):
 
         # Parse the response for a decision code and a message
         try:
-            decision, message = self.parse_response(resp)
+            decision, message = self.parse_response_outcome(resp)
         except:
             decision, message = FraudScreenResult.DECISION_ERROR, "Error: Could not parse Cybersource response."
+
+        # Get the transaction ID so that decision manager transactions can be traced through to Wells Fargo transactions
+        try:
+            reference = resp.requestID
+        except:
+            reference = uuid.uuid1()
 
         # Save the result of the fraud screen
         result = FraudScreenResult()
         result.screen_type = self.SCREEN_TYPE_NAME
         result.order = order
+        result.reference = reference
         result.decision = decision
         result.message = message
         result.save()
@@ -128,7 +136,7 @@ class DecisionManagerFraudProtection(object):
         return result
 
 
-    def parse_response(self, resp):
+    def parse_response_outcome(self, resp):
         # Accept
         if resp.reasonCode == 100:
             return FraudScreenResult.DECISION_ACCEPT, "Transaction accepted. Reason code {}".format(resp.reasonCode)

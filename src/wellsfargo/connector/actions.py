@@ -27,11 +27,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def submit_transaction(trans_request, current_user=None):
+def submit_transaction(trans_request, current_user=None, transaction_uuid=None):
     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
     type_name = _find_namespaced_name(client, 'Transaction')
     request = client.factory.create(type_name)
-    request.uuid = uuid.uuid1()
+
+    # If a uuid was given, use that instead of generating a new one. This allows tracing fraud responses through to transactions.
+    request.uuid = transaction_uuid if transaction_uuid else uuid.uuid1()
 
     creds = APICredentials.get_credentials(current_user)
     request.userName = creds.username

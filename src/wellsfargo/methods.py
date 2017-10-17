@@ -67,7 +67,7 @@ class WellsFargo(PaymentMethod):
 
         # Perform an authorization with WFRS
         try:
-            transfer = actions.submit_transaction(trans_request, current_user=request_user)
+            transfer = actions.submit_transaction(trans_request, current_user=request_user, transaction_uuid=fraud_response.reference)
         except (exceptions.TransactionDenied, ValidationError) as e:
             logger.info('WFRS transaction failed for Order[{}]. Reason: {}'.format(order.number, str(e)))
             return Declined(amount)

@@ -1,5 +1,6 @@
 from ..models import FraudScreenResult
 import logging
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ class DummyFraudProtection(object):
         result = FraudScreenResult()
         result.screen_type = self.SCREEN_TYPE_NAME
         result.order = order
+        result.reference = str(uuid.uuid1())
         result.decision = self.decision
         result.message = self.message
         result.save()
