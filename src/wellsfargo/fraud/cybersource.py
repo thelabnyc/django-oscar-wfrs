@@ -107,20 +107,20 @@ class DecisionManagerFraudProtection(object):
         # Send the transaction to Cybersource to process
         try:
             resp = self.client.service.runTransaction(**data)
-        except:
+        except Exception:
             logger.exception("Failed to run Cybersource Advanced Fraud Screen Service on Order {}".format(order.number))
             resp = None
 
         # Parse the response for a decision code and a message
         try:
             decision, message = self.parse_response_outcome(resp)
-        except:
+        except Exception:
             decision, message = FraudScreenResult.DECISION_ERROR, "Error: Could not parse Cybersource response."
 
         # Get the transaction ID so that decision manager transactions can be traced through to Wells Fargo transactions
         try:
             reference = resp.requestID
-        except:
+        except Exception:
             reference = uuid.uuid1()
 
         # Save the result of the fraud screen

@@ -10,7 +10,7 @@ register = template.Library()
 def timeat(value):
     try:
         return _('%s years, %s months') % (int(value[2:]), int(value[:2]))
-    except:
+    except Exception:
         return ""
 
 
