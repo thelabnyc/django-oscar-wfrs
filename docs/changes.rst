@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.9.0
+------------------
+- Add automatic retries to transactions when they encounter a network issue.
+
 0.8.0
 ------------------
 - Add ability to gate transaction using pluggable fraud screen modules. By default fraud screening is disabled.
