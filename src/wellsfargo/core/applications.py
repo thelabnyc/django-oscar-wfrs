@@ -148,7 +148,7 @@ class USCreditAppMixin(models.Model):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    main_employer_phone = USPhoneNumberField(_("Employer Phone Number"), null=False, blank=False)
+    main_employer_phone = USPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
     main_cell_phone = USPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     main_occupation = models.CharField(_("Occupation"), null=True, blank=True, max_length=24)
 
@@ -168,7 +168,7 @@ class USJointCreditAppMixin(USCreditAppMixin):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    joint_employer_phone = USPhoneNumberField(_("Employer Phone Number"), null=False, blank=False)
+    joint_employer_phone = USPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
     joint_cell_phone = USPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     joint_occupation = models.CharField(_("Occupation"), null=True, blank=True, max_length=24)
 
@@ -195,7 +195,7 @@ class CACreditAppMixin(models.Model):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    main_employer_phone = CAPhoneNumberField(_("Employer Phone Number"), null=False, blank=False)
+    main_employer_phone = CAPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
     main_cell_phone = CAPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     main_occupation = models.CharField(_("Occupation"), null=False, blank=False, max_length=24)
     main_photo_id_type = models.CharField(_("Photo ID Type"), null=False, blank=False, choices=PHOTO_ID_TYPES[CA], max_length=2)
@@ -231,7 +231,7 @@ class CAJointCreditAppMixin(CACreditAppMixin):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    joint_employer_phone = CAPhoneNumberField(_("Employer Phone Number"), null=False, blank=False)
+    joint_employer_phone = CAPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
     joint_cell_phone = CAPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     joint_occupation = models.CharField(_("Occupation"), null=False, blank=False, max_length=24)
     joint_photo_id_type = models.CharField(_("Photo ID Type"), null=False, blank=False, choices=PHOTO_ID_TYPES[CA], max_length=3)
