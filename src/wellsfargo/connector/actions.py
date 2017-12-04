@@ -27,7 +27,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def submit_transaction(trans_request, current_user=None, transaction_uuid=None):
+def submit_transaction(trans_request, current_user=None, transaction_uuid=None, persist=True):
     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
     type_name = _find_namespaced_name(client, 'Transaction')
     request = client.factory.create(type_name)
@@ -75,7 +75,8 @@ def submit_transaction(trans_request, current_user=None, transaction_uuid=None):
     transfer.status = resp.transactionStatus
     transfer.message = resp.transactionMessage
     transfer.disclosure = resp.disclosure
-    transfer.save()
+    if persist:
+        transfer.save()
     return transfer
 
 

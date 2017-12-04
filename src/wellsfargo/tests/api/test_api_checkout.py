@@ -9,6 +9,7 @@ from wellsfargo.models import FinancingPlan, FinancingPlanBenefit, FraudScreenRe
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests.test_fraud import patch_fraud_protection
 from wellsfargo.tests import responses
+from requests.exceptions import Timeout
 import mock
 
 ConditionalOffer = get_model('offer', 'ConditionalOffer')
@@ -91,6 +92,39 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.data['order_status'], 'Payment Declined')
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Declined')
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
+
+
+
+    @mock.patch('soap.get_transport')
+    def test_checkout_with_authorization_timeout(self, get_transport):
+        """Test checkout where the first call to WFRS times out, but the second succeeds."""
+        context = { 'i': 0 }
+
+        def gt():
+            context['i'] += 1
+            if context['i'] <= 1:
+                raise Timeout()
+            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
+        get_transport.side_effect = gt
+
+        self.client.login(username='joe', password='schmoe')
+
+        # Should be successful even though first request times out
+        basket_id = self._prepare_basket()
+        self._check_available_plans()
+        resp = self._checkout(basket_id, '9999999999999999')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self._fetch_payment_states()
+        self.assertEqual(resp.data['order_status'], 'Authorized')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
+
+        self.assertEqual(FraudScreenResult.objects.count(), 1)
+        fraud_result = FraudScreenResult.objects.first()
+        self.assertEqual(fraud_result.screen_type, 'Dummy')
+        self.assertEqual(fraud_result.order.basket.pk, basket_id)
+        self.assertEqual(fraud_result.decision, FraudScreenResult.DECISION_ACCEPT)
+        self.assertEqual(fraud_result.message, 'Transaction accepted.')
 
 
     @patch_fraud_protection('wellsfargo.fraud.dummy.DummyFraudProtection',

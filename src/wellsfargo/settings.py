@@ -39,3 +39,5 @@ WFRS_FRAUD_PROTECTION = {
     'fraud_protection_kwargs': {},
 }
 WFRS_FRAUD_PROTECTION.update( overridable('WFRS_FRAUD_PROTECTION', {}) )
+
+WFRS_MAX_TRANSACTION_ATTEMPTS = overridable('WFRS_MAX_TRANSACTION_ATTEMPTS', 2)

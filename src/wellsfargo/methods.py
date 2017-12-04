@@ -3,12 +3,15 @@ from rest_framework import serializers
 from oscarapi.basket import operations
 from oscarapicheckout.methods import PaymentMethod, PaymentMethodSerializer
 from oscarapicheckout.states import Complete, Declined
+from requests.exceptions import Timeout, ConnectionError
 from .connector import actions
+from .core.constants import TRANS_TYPE_AUTH, TRANS_TYPE_CANCEL_AUTH
 from .core.structures import TransactionRequest
 from .core import exceptions
 from .utils import list_plans_for_basket
 from .models import FraudScreenResult, FinancingPlan
 from .fraud import screen_transaction
+from .settings import WFRS_MAX_TRANSACTION_ATTEMPTS
 import logging
 
 logger = logging.getLogger(__name__)
@@ -47,12 +50,20 @@ class WellsFargo(PaymentMethod):
         amount_to_allocate = amount - source.amount_allocated
 
         # Build a transaction request
-        trans_request = TransactionRequest()
-        trans_request.user = order.user
-        trans_request.account_number = account_number
-        trans_request.plan_number = financing_plan.plan_number
-        trans_request.amount = amount_to_allocate
-        trans_request.ticket_number = order.number
+        trans_request = self._build_trans_request(
+            order=order,
+            account_number=account_number,
+            plan_number=financing_plan.plan_number,
+            amount=amount_to_allocate,
+            type_code=TRANS_TYPE_AUTH)
+
+        # Build a cancel transaction request in-case the transaction request fails.
+        cancel_trans_request = self._build_trans_request(
+            order=order,
+            account_number=account_number,
+            plan_number=financing_plan.plan_number,
+            amount=amount_to_allocate,
+            type_code=TRANS_TYPE_CANCEL_AUTH)
 
         # If Fraud Screening is enabled, run it and see if the transaction passes muster.
         fraud_response = screen_transaction(request, order)
@@ -67,7 +78,11 @@ class WellsFargo(PaymentMethod):
 
         # Perform an authorization with WFRS
         try:
-            transfer = actions.submit_transaction(trans_request, current_user=request_user, transaction_uuid=fraud_response.reference)
+            transfer = self._perform_auth_transaction(
+                trans_request=trans_request,
+                cancel_trans_request=cancel_trans_request,
+                current_user=request_user,
+                transaction_uuid=fraud_response.reference)
         except (exceptions.TransactionDenied, ValidationError) as e:
             logger.info('WFRS transaction failed for Order[{}]. Reason: {}'.format(order.number, str(e)))
             return Declined(amount)
@@ -83,3 +98,33 @@ class WellsFargo(PaymentMethod):
             self.make_event_quantity(event, line, line.quantity)
 
         return Complete(source.amount_allocated)
+
+
+    def _perform_auth_transaction(self, trans_request, cancel_trans_request, current_user, transaction_uuid, max_attempts=WFRS_MAX_TRANSACTION_ATTEMPTS):
+        exc = None
+        for i in range(max_attempts):
+            # Try to submit the transaction
+            try:
+                transfer = actions.submit_transaction(trans_request, current_user=current_user, transaction_uuid=transaction_uuid)
+                return transfer
+
+            # If the transaction times out for some reason, cancel it and then try again.
+            except (Timeout, ConnectionError) as e:
+                exc = e
+                logger.warning('WFRS transaction failed for Order[{}]: {}'.format(trans_request.ticket_number, e))
+                actions.submit_transaction(cancel_trans_request, current_user=current_user, transaction_uuid=transaction_uuid, persist=False)
+                logger.warning('Canceled transaction for Order[{}] due to previous error.'.format(trans_request.ticket_number))
+
+        # We couldn't perform the transaction successfully in the allotted time, so bubble up the last exception thrown.
+        raise exc
+
+
+    def _build_trans_request(self, order, account_number, plan_number, amount, type_code=TRANS_TYPE_AUTH):
+        trans_request = TransactionRequest()
+        trans_request.type_code = type_code
+        trans_request.user = order.user
+        trans_request.account_number = account_number
+        trans_request.plan_number = plan_number
+        trans_request.amount = amount
+        trans_request.ticket_number = order.number
+        return trans_request

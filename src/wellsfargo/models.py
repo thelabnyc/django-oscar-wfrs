@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model, get_class
 from oscar.models.fields import PhoneNumberField
-from .core.constants import TRANS_TYPES, TRANS_STATUSES, INQUIRY_STATUSES
+from .core.constants import TRANS_TYPE_AUTH, TRANS_TYPES, TRANS_STATUSES, INQUIRY_STATUSES
 from .core.applications import (
     USCreditAppMixin,
     BaseCreditAppMixin,
@@ -251,11 +251,11 @@ class TransferMetadata(models.Model):
     modified_datetime = models.DateTimeField(auto_now=True)
 
     @classmethod
-    def get_by_oscar_transaction(cls, transaction):
-        try:
-            return cls.objects.get(merchant_reference=transaction.reference)
-        except TransferMetadata.DoesNotExist:
-            return None
+    def get_by_oscar_transaction(cls, transaction, type_code=TRANS_TYPE_AUTH):
+        return cls.objects.filter(merchant_reference=transaction.reference)\
+                          .filter(type_code=type_code)\
+                          .order_by('-created_datetime')\
+                          .first()
 
     @property
     def type_name(self):
