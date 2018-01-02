@@ -19,16 +19,15 @@ from .constants import (
     PHOTO_ID_TYPES,
     REGIONS,
 )
+from oscar.models.fields import PhoneNumberField
 from .fields import (
     USSocialSecurityNumberField,
     USStateField,
     USZipCodeField,
-    USPhoneNumberField,
     CASocialInsuranceNumberField,
     DateOfBirthField,
     CAProvinceField,
     CAPostalCodeField,
-    CAPhoneNumberField
 )
 
 
@@ -49,6 +48,7 @@ class BaseCreditAppMixin(models.Model):
     main_address_line1 = models.CharField(_("Address Line 1"), null=False, blank=False, max_length=35)
     main_address_line2 = models.CharField(_("Address Line 2"), null=True, blank=True, max_length=35)
     main_address_city = models.CharField(_("City"), null=False, blank=False, max_length=15)
+    main_home_phone = PhoneNumberField(_("Home Phone"), blank=False)
     main_home_value = models.IntegerField(_("Home Value"), null=True, blank=True, validators=[
         MinValueValidator(0),
         MaxValueValidator(9999999),
@@ -61,6 +61,8 @@ class BaseCreditAppMixin(models.Model):
         MinValueValidator(0),
         MaxValueValidator(999999),
     ])
+    main_employer_phone = PhoneNumberField(_("Employer Phone Number"), blank=True)
+    main_cell_phone = PhoneNumberField(_("Cell Phone"), blank=True)
 
     insurance = models.BooleanField(_('Optional Insurance'), null=False, default=False)
     sales_person_id = models.CharField(_("Existing Sales Person ID"), null=True, blank=True, max_length=4, validators=[
@@ -120,6 +122,8 @@ class BaseJointCreditAppMixin(BaseCreditAppMixin):
         MinValueValidator(0),
         MaxValueValidator(999999),
     ])
+    joint_employer_phone = PhoneNumberField(_("Employer Phone Number"), blank=True)
+    joint_cell_phone = PhoneNumberField(_("Cell Phone"), blank=True)
 
     class Meta:
         abstract = True
@@ -135,7 +139,6 @@ class USCreditAppMixin(models.Model):
     main_ssn = USSocialSecurityNumberField(_("Social Security Number"), null=False, blank=False)
     main_address_state = USStateField(_("State"), null=False, blank=False)
     main_address_postcode = USZipCodeField(_("Postcode"), null=False, blank=False)
-    main_home_phone = USPhoneNumberField(_("Home Phone"), null=False, blank=False)
     main_time_at_address = models.CharField(_("Time at Address"), null=True, blank=True, max_length=4, validators=[
         MinLengthValidator(4),
         MaxLengthValidator(4),
@@ -148,8 +151,6 @@ class USCreditAppMixin(models.Model):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    main_employer_phone = USPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
-    main_cell_phone = USPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     main_occupation = models.CharField(_("Occupation"), null=True, blank=True, max_length=24)
 
     class Meta:
@@ -168,8 +169,6 @@ class USJointCreditAppMixin(USCreditAppMixin):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    joint_employer_phone = USPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
-    joint_cell_phone = USPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     joint_occupation = models.CharField(_("Occupation"), null=True, blank=True, max_length=24)
 
     class Meta:
@@ -182,7 +181,6 @@ class CACreditAppMixin(models.Model):
     main_ssn = CASocialInsuranceNumberField(_("Social Insurance Number"), null=True, blank=True)
     main_address_state = CAProvinceField(_("Province"), null=False, blank=False)
     main_address_postcode = CAPostalCodeField(_("Postcode"), null=False, blank=False)
-    main_home_phone = CAPhoneNumberField(_("Home Phone"), null=False, blank=False)
     main_time_at_address = models.CharField(_("Time at Address"), null=False, blank=False, max_length=4, validators=[
         MinLengthValidator(4),
         MaxLengthValidator(4),
@@ -195,8 +193,6 @@ class CACreditAppMixin(models.Model):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    main_employer_phone = CAPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
-    main_cell_phone = CAPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     main_occupation = models.CharField(_("Occupation"), null=False, blank=False, max_length=24)
     main_photo_id_type = models.CharField(_("Photo ID Type"), null=False, blank=False, choices=PHOTO_ID_TYPES[CA], max_length=2)
     main_photo_id_number = models.CharField(_("Photo ID Number"), null=False, blank=False, max_length=4, validators=[
@@ -231,8 +227,6 @@ class CAJointCreditAppMixin(CACreditAppMixin):
         MaxLengthValidator(4),
         RegexValidator(r'^[0-9]{4}$'),
     ])
-    joint_employer_phone = CAPhoneNumberField(_("Employer Phone Number"), null=True, blank=True)
-    joint_cell_phone = CAPhoneNumberField(_("Cell Phone"), null=True, blank=True)
     joint_occupation = models.CharField(_("Occupation"), null=False, blank=False, max_length=24)
     joint_photo_id_type = models.CharField(_("Photo ID Type"), null=False, blank=False, choices=PHOTO_ID_TYPES[CA], max_length=3)
     joint_photo_id_number = models.CharField(_("Photo ID Number"), null=False, blank=False, max_length=4, validators=[

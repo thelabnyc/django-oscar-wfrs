@@ -96,8 +96,8 @@ class USIndivCreditApplicationTest(BaseTest):
             'main_address_state': 'NY',
             'main_address_postcode': '10001',
             'main_annual_income': '100000',
-            'main_home_phone': '5555555555',
-            'main_employer_phone': '5555555555',
+            'main_home_phone': '+1 (212) 209-1333',
+            'main_employer_phone': '+1 (212) 209-1333',
         }
 
 
@@ -134,8 +134,8 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(app.main_address_state, 'NY')
         self.assertEqual(app.main_address_postcode, '10001')
         self.assertEqual(app.main_annual_income, 100000)
-        self.assertEqual(app.main_home_phone, '5555555555')
-        self.assertEqual(app.main_employer_phone, '5555555555')
+        self.assertEqual(app.main_home_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_employer_phone.as_e164, '+12122091333')
 
         # Computed properties
         self.assertEqual(app.locale, 'en_US')
@@ -184,8 +184,8 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(app.main_address_state, 'NY')
         self.assertEqual(app.main_address_postcode, '10001')
         self.assertEqual(app.main_annual_income, 100000)
-        self.assertEqual(app.main_home_phone, '5555555555')
-        self.assertEqual(app.main_employer_phone, '5555555555')
+        self.assertEqual(app.main_home_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_employer_phone.as_e164, '+12122091333')
 
         # Computed properties
         self.assertEqual(app.locale, 'en_US')

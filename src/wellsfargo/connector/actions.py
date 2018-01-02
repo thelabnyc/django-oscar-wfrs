@@ -266,7 +266,9 @@ def _format_date(date):
 
 
 def _format_phone(number):
-    return re.sub(r'[^0-9]+', '', number) if number else None
+    if number:
+        return number.national_number
+    return None
 
 
 def _format_ssn(number):

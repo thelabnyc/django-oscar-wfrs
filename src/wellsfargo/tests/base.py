@@ -47,8 +47,8 @@ class BaseTest(SoapTest, APITestCase):
         app.main_ssn = main_ssn
         app.main_address_state = 'NY'
         app.main_address_postcode = '10001'
-        app.main_home_phone = '5555555555'
-        app.main_employer_phone = '5555555555'
+        app.main_home_phone = '+1 (212) 209-1333'
+        app.main_employer_phone = '+1 (212) 209-1333'
         return app
 
     def _build_us_joint_credit_app(self, main_ssn, joint_ssn):
@@ -69,8 +69,8 @@ class BaseTest(SoapTest, APITestCase):
         app.main_ssn = main_ssn
         app.main_address_state = 'NY'
         app.main_address_postcode = '10001'
-        app.main_home_phone = '5555555555'
-        app.main_employer_phone = '5555555555'
+        app.main_home_phone = '+1 (212) 209-1333'
+        app.main_employer_phone = '+1 (212) 209-1333'
         app.joint_first_name = 'Jill'
         app.joint_last_name = 'Schmoe'
         app.joint_date_of_birth = date(1991, 1, 1)
@@ -80,5 +80,5 @@ class BaseTest(SoapTest, APITestCase):
         app.joint_ssn = joint_ssn
         app.joint_address_state = 'NY'
         app.joint_address_postcode = '10001'
-        app.joint_employer_phone = '5555555555'
+        app.joint_employer_phone = '+1 (212) 209-1333'
         return app

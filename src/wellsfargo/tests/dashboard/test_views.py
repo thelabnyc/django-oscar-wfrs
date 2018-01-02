@@ -69,8 +69,8 @@ class CreditApplicationViewTest(BaseTest):
             'main_address_state': 'NY',
             'main_address_postcode': '10001',
             'main_annual_income': '100000',
-            'main_home_phone': '5555555555',
-            'main_employer_phone': '5555555555',
+            'main_home_phone': '+1 (212) 209-1333',
+            'main_employer_phone': '+1 (212) 209-1333',
             'application_source': 'Unit Test',
         }
 
