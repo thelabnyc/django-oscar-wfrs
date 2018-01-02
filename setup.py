@@ -12,32 +12,29 @@ from versiontag import get_version, cache_git_tag  # NOQA
 packages = find_packages('src')
 
 install_requires = [
-    'cryptography>=1.6',
-    'djangorestframework>=3.5.0',
-    'django-oscar>=1.3.0',
-    'django-oscar-api>=1.1.0',
-    'django-oscar-api-checkout>=0.3.2',
+    'cryptography>=2.1.4',
+    'djangorestframework>=3.6.4',
+    'django-oscar>=1.5.1',
+    'django-oscar-api>=1.2.0',
+    'django-oscar-api-checkout>=0.3.3',
     'django-oscar-bluelight>=0.8.3',
-    'django-haystack>=2.5.0',
-    'django-localflavor>=1.4.1',
-    'instrumented-soap>=1.1.1',
-
-    # Legacy. Needed to make migrations run.
-    'django-oscar-accounts2>=0.1.0',
+    'django-haystack>=2.6.1',
+    'django-localflavor>=2.0',
+    'instrumented-soap>=1.2.0',
 ]
 
 extras_require = {
     'kms': [
-        'boto3>=1.4.4',
+        'boto3>=1.5.7',
     ],
     'development': [
-        'coverage>=4.4',
+        'coverage>=4.4.2',
         'elasticsearch>=1.9.0,<2.0.0',
-        'flake8>=3.2.1',
-        'psycopg2>=2.6.2',
+        'flake8>=3.5.0',
+        'psycopg2>=2.7.3.2',
         'PyYAML>=3.12',
-        'sphinx>=1.5.2',
-        'tox>=2.6.0',
+        'sphinx>=1.6.5',
+        'tox>=2.9.1',
         'versiontag>=1.2.0',
     ],
 }
@@ -62,7 +59,7 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 1.10',
+        'Framework :: Django :: 1.11',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Operating System :: Unix',
