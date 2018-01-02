@@ -7,6 +7,9 @@ Changelog
 ------------------
 - Add support for django-localflavor 2.0 by switching to using django-phonenumber-field for phone number fields.
     - This introduces a breaking change in the application APIs. Phone number fields were previously expected to be submitted in the format: ``5555555555``. They must now be submitted in a format accepted by `python-phonenumbers <https://github.com/daviddrysdale/python-phonenumbers>`_, such as ``+1 (555) 555-5555`` or ``+1 555.555.5555``.
+- Remove previously squashed migrations.
+- Remove dependency on django-oscar-accounts and django-oscar-accounts2.
+- Fix Django 2.0 deprecation warnings.
 
 0.9.1
 ------------------
