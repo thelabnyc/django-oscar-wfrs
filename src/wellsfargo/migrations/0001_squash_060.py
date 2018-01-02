@@ -16,20 +16,6 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    replaces = [
-        ('wellsfargo', '0001_squashed_0009_auto_20160729_1432'),
-        ('wellsfargo', '0002_auto_20160729_1512'),
-        ('wellsfargo', '0003_financingplan_is_default_plan'),
-        ('wellsfargo', '0004_auto_20161122_1357'),
-        ('wellsfargo', '0005_auto_20161122_1503'),
-        ('wellsfargo', '0006_apicredentials'),
-        ('wellsfargo', '0007_financingplan_allow_credit_application'),
-        ('wellsfargo', '0008_auto_20170117_1413'),
-        ('wellsfargo', '0009_drop_oscar_accounts_1'),
-        ('wellsfargo', '0009_drop_oscar_accounts_2'),
-        ('wellsfargo', '0009_drop_oscar_accounts_3'),
-    ]
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('auth', '0006_require_contenttypes_0002'),

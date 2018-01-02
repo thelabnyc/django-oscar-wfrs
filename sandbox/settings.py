@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'widget_tweaks',
     'rest_framework',
-    'oscar_accounts',
     'oscarapi',
     'oscarapicheckout',
     'oscarbluelight',
