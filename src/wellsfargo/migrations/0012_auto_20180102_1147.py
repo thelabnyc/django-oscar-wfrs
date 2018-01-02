@@ -16,13 +16,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cacreditapp',
             name='main_cell_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Cell Phone'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='cacreditapp',
             name='main_employer_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -33,25 +33,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='joint_cell_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Cell Phone'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='joint_employer_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='main_cell_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Cell Phone'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='main_employer_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -62,13 +62,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='uscreditapp',
             name='main_cell_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Cell Phone'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='uscreditapp',
             name='main_employer_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -79,25 +79,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='joint_cell_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Cell Phone'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='joint_employer_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='main_cell_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Cell Phone'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone'),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='main_employer_phone',
-            field=oscar.models.fields.PhoneNumberField(blank=True, default='', verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
             preserve_default=False,
         ),
         migrations.AlterField(

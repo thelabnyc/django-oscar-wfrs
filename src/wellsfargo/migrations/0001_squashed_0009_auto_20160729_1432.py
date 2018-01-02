@@ -9,6 +9,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import localflavor.us.models
 import wellsfargo.core.fields
+import oscar.models.fields
 
 
 class Migration(migrations.Migration):
@@ -55,13 +56,13 @@ class Migration(migrations.Migration):
                 ('main_ssn', wellsfargo.core.fields.CASocialInsuranceNumberField(blank=True, null=True, verbose_name='Social Insurance Number')),
                 ('main_address_state', wellsfargo.core.fields.CAProvinceField(verbose_name='Province')),
                 ('main_address_postcode', wellsfargo.core.fields.CAPostalCodeField(verbose_name='Postcode')),
-                ('main_home_phone', wellsfargo.core.fields.CAPhoneNumberField(verbose_name='Home Phone')),
+                ('main_home_phone', oscar.models.fields.PhoneNumberField(verbose_name='Home Phone')),
                 ('main_time_at_address', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Address')),  # NOQA
                 ('main_housing_status', models.CharField(choices=[('R', 'Rent'), ('O', 'Own')], max_length=3, verbose_name='Housing Status')),
                 ('main_employer_name', models.CharField(max_length=30, verbose_name='Employer Name')),
                 ('main_time_at_employer', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Employer')),  # NOQA
-                ('main_employer_phone', wellsfargo.core.fields.CAPhoneNumberField(verbose_name='Employer Phone Number')),
-                ('main_cell_phone', wellsfargo.core.fields.CAPhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
+                ('main_employer_phone', oscar.models.fields.PhoneNumberField(verbose_name='Employer Phone Number')),
+                ('main_cell_phone', oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
                 ('main_occupation', models.CharField(max_length=24, verbose_name='Occupation')),
                 ('main_photo_id_type', models.CharField(choices=[('OA', 'Old Age Security Card'), ('DL', 'Driver’s License'), ('PI', 'Provincial ID'), ('PA', 'Canadian Passport'), ('CN', 'Certificate of Citizenship or Naturalization'), ('IS', 'Certificate of Indian Status'), ('CC', 'Canadian Citizen Form 1000 or 1442')], max_length=2, verbose_name='Photo ID Type')),  # NOQA
                 ('main_photo_id_number', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4)], verbose_name='Photo ID Number')),  # NOQA
@@ -105,13 +106,13 @@ class Migration(migrations.Migration):
                 ('main_ssn', wellsfargo.core.fields.CASocialInsuranceNumberField(blank=True, null=True, verbose_name='Social Insurance Number')),
                 ('main_address_state', wellsfargo.core.fields.CAProvinceField(verbose_name='Province')),
                 ('main_address_postcode', wellsfargo.core.fields.CAPostalCodeField(verbose_name='Postcode')),
-                ('main_home_phone', wellsfargo.core.fields.CAPhoneNumberField(verbose_name='Home Phone')),
+                ('main_home_phone', oscar.models.fields.PhoneNumberField(verbose_name='Home Phone')),
                 ('main_time_at_address', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Address')),  # NOQA
                 ('main_housing_status', models.CharField(choices=[('R', 'Rent'), ('O', 'Own')], max_length=3, verbose_name='Housing Status')),
                 ('main_employer_name', models.CharField(max_length=30, verbose_name='Employer Name')),
                 ('main_time_at_employer', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Employer')),  # NOQA
-                ('main_employer_phone', wellsfargo.core.fields.CAPhoneNumberField(verbose_name='Employer Phone Number')),
-                ('main_cell_phone', wellsfargo.core.fields.CAPhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
+                ('main_employer_phone', oscar.models.fields.PhoneNumberField(verbose_name='Employer Phone Number')),
+                ('main_cell_phone', oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
                 ('main_occupation', models.CharField(max_length=24, verbose_name='Occupation')),
                 ('main_photo_id_type', models.CharField(choices=[('OA', 'Old Age Security Card'), ('DL', 'Driver’s License'), ('PI', 'Provincial ID'), ('PA', 'Canadian Passport'), ('CN', 'Certificate of Citizenship or Naturalization'), ('IS', 'Certificate of Indian Status'), ('CC', 'Canadian Citizen Form 1000 or 1442')], max_length=2, verbose_name='Photo ID Type')),  # NOQA
                 ('main_photo_id_number', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4)], verbose_name='Photo ID Number')),  # NOQA
@@ -122,8 +123,8 @@ class Migration(migrations.Migration):
                 ('joint_address_postcode', wellsfargo.core.fields.CAPostalCodeField(verbose_name='Postcode')),
                 ('joint_employer_name', models.CharField(max_length=30, verbose_name='Employer Name')),
                 ('joint_time_at_employer', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Employer')),  # NOQA
-                ('joint_employer_phone', wellsfargo.core.fields.CAPhoneNumberField(verbose_name='Employer Phone Number')),
-                ('joint_cell_phone', wellsfargo.core.fields.CAPhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
+                ('joint_employer_phone', oscar.models.fields.PhoneNumberField(verbose_name='Employer Phone Number')),
+                ('joint_cell_phone', oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
                 ('joint_occupation', models.CharField(max_length=24, verbose_name='Occupation')),
                 ('joint_photo_id_type', models.CharField(choices=[('OA', 'Old Age Security Card'), ('DL', 'Driver’s License'), ('PI', 'Provincial ID'), ('PA', 'Canadian Passport'), ('CN', 'Certificate of Citizenship or Naturalization'), ('IS', 'Certificate of Indian Status'), ('CC', 'Canadian Citizen Form 1000 or 1442')], max_length=3, verbose_name='Photo ID Type')),  # NOQA
                 ('joint_photo_id_number', models.CharField(max_length=4, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4)], verbose_name='Photo ID Number')),  # NOQA
@@ -186,13 +187,13 @@ class Migration(migrations.Migration):
                 ('main_ssn', wellsfargo.core.fields.USSocialSecurityNumberField(verbose_name='Social Security Number')),
                 ('main_address_state', localflavor.us.models.USStateField(verbose_name='State')),
                 ('main_address_postcode', localflavor.us.models.USZipCodeField(verbose_name='Postcode')),
-                ('main_home_phone', localflavor.us.models.PhoneNumberField(verbose_name='Home Phone')),
+                ('main_home_phone', oscar.models.fields.PhoneNumberField(verbose_name='Home Phone')),
                 ('main_time_at_address', models.CharField(blank=True, max_length=4, null=True, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Address')),  # NOQA
                 ('main_housing_status', models.CharField(blank=True, choices=[('R', 'Rent'), ('O', 'Own'), ('OT', 'Other')], max_length=3, null=True, verbose_name='Housing Status')),  # NOQA
                 ('main_employer_name', models.CharField(blank=True, max_length=30, null=True, verbose_name='Employer Name')),
                 ('main_time_at_employer', models.CharField(blank=True, max_length=4, null=True, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Employer')),  # NOQA
-                ('main_employer_phone', localflavor.us.models.PhoneNumberField(verbose_name='Employer Phone Number')),
-                ('main_cell_phone', localflavor.us.models.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
+                ('main_employer_phone', oscar.models.fields.PhoneNumberField(verbose_name='Employer Phone Number')),
+                ('main_cell_phone', oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
                 ('main_occupation', models.CharField(blank=True, max_length=24, null=True, verbose_name='Occupation')),
                 ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),  # NOQA
             ],
@@ -233,21 +234,21 @@ class Migration(migrations.Migration):
                 ('main_ssn', wellsfargo.core.fields.USSocialSecurityNumberField(verbose_name='Social Security Number')),
                 ('main_address_state', localflavor.us.models.USStateField(verbose_name='State')),
                 ('main_address_postcode', localflavor.us.models.USZipCodeField(verbose_name='Postcode')),
-                ('main_home_phone', localflavor.us.models.PhoneNumberField(verbose_name='Home Phone')),
+                ('main_home_phone', oscar.models.fields.PhoneNumberField(verbose_name='Home Phone')),
                 ('main_time_at_address', models.CharField(blank=True, max_length=4, null=True, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Address')),  # NOQA
                 ('main_housing_status', models.CharField(blank=True, choices=[('R', 'Rent'), ('O', 'Own'), ('OT', 'Other')], max_length=3, null=True, verbose_name='Housing Status')),  # NOQA
                 ('main_employer_name', models.CharField(blank=True, max_length=30, null=True, verbose_name='Employer Name')),
                 ('main_time_at_employer', models.CharField(blank=True, max_length=4, null=True, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Employer')),  # NOQA
-                ('main_employer_phone', localflavor.us.models.PhoneNumberField(verbose_name='Employer Phone Number')),
-                ('main_cell_phone', localflavor.us.models.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
+                ('main_employer_phone', oscar.models.fields.PhoneNumberField(verbose_name='Employer Phone Number')),
+                ('main_cell_phone', oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
                 ('main_occupation', models.CharField(blank=True, max_length=24, null=True, verbose_name='Occupation')),
                 ('joint_ssn', wellsfargo.core.fields.USSocialSecurityNumberField(verbose_name='Social Security Number')),
                 ('joint_address_state', localflavor.us.models.USStateField(verbose_name='State')),
                 ('joint_address_postcode', localflavor.us.models.USZipCodeField(verbose_name='Postcode')),
                 ('joint_employer_name', models.CharField(blank=True, max_length=30, null=True, verbose_name='Employer Name')),
                 ('joint_time_at_employer', models.CharField(blank=True, max_length=4, null=True, validators=[django.core.validators.MinLengthValidator(4), django.core.validators.MaxLengthValidator(4), django.core.validators.RegexValidator('^[0-9]{4}$')], verbose_name='Time at Employer')),  # NOQA
-                ('joint_employer_phone', localflavor.us.models.PhoneNumberField(verbose_name='Employer Phone Number')),
-                ('joint_cell_phone', localflavor.us.models.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
+                ('joint_employer_phone', oscar.models.fields.PhoneNumberField(verbose_name='Employer Phone Number')),
+                ('joint_cell_phone', oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Cell Phone')),
                 ('joint_occupation', models.CharField(blank=True, max_length=24, null=True, verbose_name='Occupation')),
                 ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='credit_applications', to=settings.AUTH_USER_MODEL, verbose_name='Owner')),  # NOQA
             ],

@@ -5,24 +5,17 @@ from localflavor.us.models import (
     USSocialSecurityNumberField as StockUSSocialSecurityNumberField,
     USStateField,
     USZipCodeField,
-    PhoneNumberField as USPhoneNumberField
 )
 from localflavor.ca.ca_provinces import PROVINCE_CHOICES
 from localflavor.ca.forms import (
     CASocialInsuranceNumberField as CASocialInsuranceNumberFieldFormField,
     CAProvinceField as CAProvinceFieldFormField,
     CAPostalCodeField as CAPostalCodeFieldFormField,
-    CAPhoneNumberField as CAPhoneNumberFieldFormField
 )
 import re
 
 
 class SocialInsuranceFormField(CASocialInsuranceNumberFieldFormField):
-    def __init__(self, max_length=None, empty_value=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
-class PhoneNumberFormField(CAPhoneNumberFieldFormField):
     def __init__(self, max_length=None, empty_value=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -133,31 +126,11 @@ class CAPostalCodeField(CharField):
         return super().formfield(**defaults)
 
 
-class CAPhoneNumberField(CharField):
-    description = _("Phone number")
-
-    def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 20
-        super().__init__(*args, **kwargs)
-
-    def deconstruct(self):
-        name, path, args, kwargs = super().deconstruct()
-        del kwargs['max_length']
-        return name, path, args, kwargs
-
-    def formfield(self, **kwargs):
-        defaults = {'form_class': PhoneNumberFormField}
-        defaults.update(kwargs)
-        return super().formfield(**defaults)
-
-
 __all__ = [
     'USSocialSecurityNumberField',
     'USStateField',
     'USZipCodeField',
-    'USPhoneNumberField',
     'CASocialInsuranceNumberField',
     'CAProvinceField',
     'CAPostalCodeField',
-    'CAPhoneNumberField'
 ]

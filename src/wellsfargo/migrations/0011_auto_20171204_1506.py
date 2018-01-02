@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.db import migrations
 import localflavor.us.models
 import wellsfargo.core.fields
+import oscar.models.fields
 
 
 class Migration(migrations.Migration):
@@ -17,31 +18,31 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cacreditapp',
             name='main_employer_phone',
-            field=wellsfargo.core.fields.CAPhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='joint_employer_phone',
-            field=wellsfargo.core.fields.CAPhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
         ),
         migrations.AlterField(
             model_name='cajointcreditapp',
             name='main_employer_phone',
-            field=wellsfargo.core.fields.CAPhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
         ),
         migrations.AlterField(
             model_name='uscreditapp',
             name='main_employer_phone',
-            field=localflavor.us.models.PhoneNumberField(blank=True, max_length=20, null=True, verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='joint_employer_phone',
-            field=localflavor.us.models.PhoneNumberField(blank=True, max_length=20, null=True, verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
         ),
         migrations.AlterField(
             model_name='usjointcreditapp',
             name='main_employer_phone',
-            field=localflavor.us.models.PhoneNumberField(blank=True, max_length=20, null=True, verbose_name='Employer Phone Number'),
+            field=oscar.models.fields.PhoneNumberField(blank=True, null=True, verbose_name='Employer Phone Number'),
         ),
     ]
