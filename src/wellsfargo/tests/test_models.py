@@ -368,6 +368,6 @@ class FinancingPlanBenefitTest(BaseTest):
     def _create_financing_offer(self, priority=0, group_name='Default', group_priority=0):
         plan = FinancingPlan.objects.create(plan_number=9999)
         benefit = FinancingPlanBenefit.objects.create(group_name='Default Financing')
-        benefit.plans = [plan]
+        benefit.plans.set([plan])
         benefit.save()
         return self._create_offer('Financing', benefit, priority, group_name, group_priority)

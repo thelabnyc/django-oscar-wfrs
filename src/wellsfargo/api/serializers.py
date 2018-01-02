@@ -43,7 +43,7 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
         request = self.context['request']
 
         request_user = None
-        if request.user and request.user.is_authenticated():
+        if request.user and request.user.is_authenticated:
             request_user = request.user
 
         # Build application class and save record to DB to record the attempt
@@ -182,7 +182,7 @@ class AccountInquirySerializer(serializers.ModelSerializer):
         request = self.context['request']
 
         request_user = None
-        if request.user and request.user.is_authenticated():
+        if request.user and request.user.is_authenticated:
             request_user = request.user
 
         # Submit inquiry to Wells

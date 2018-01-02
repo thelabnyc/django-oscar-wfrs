@@ -32,7 +32,7 @@ class APICredentials(models.Model):
     username = models.CharField(_('WFRS API Username'), max_length=200)
     password = models.CharField(_('WFRS API Password'), max_length=200)
     merchant_num = models.CharField(_('WFRS API Merchant Number'), max_length=200)
-    user_group = models.ForeignKey(Group, null=True, blank=True)
+    user_group = models.ForeignKey(Group, null=True, blank=True, on_delete=models.CASCADE)
     priority = models.IntegerField(_('Priority Order'), default=1)
 
     class Meta:
@@ -43,7 +43,7 @@ class APICredentials(models.Model):
 
     @classmethod
     def get_credentials(cls, user=None):
-        if user and user.is_authenticated():
+        if user and user.is_authenticated:
             creds = cls.objects.filter(user_group__in=user.groups.all()).first()
             if creds:
                 return creds
@@ -147,7 +147,7 @@ class FraudScreenResult(models.Model):
     DECISION_REVIEW = 'REVIEW'
 
     screen_type = models.CharField(_("Fraud Screen Type"), max_length=25)
-    order = models.ForeignKey('order.Order', related_name='wfrs_fraud_screen_results')
+    order = models.ForeignKey('order.Order', related_name='wfrs_fraud_screen_results', on_delete=models.CASCADE)
     reference = models.CharField(_("Reference"), max_length=128)
     decision = models.CharField(_("Decision"), max_length=25, choices=(
         (DECISION_REJECT, _("Transaction was rejected")),

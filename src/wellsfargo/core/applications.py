@@ -48,7 +48,7 @@ class BaseCreditAppMixin(models.Model):
     main_address_line1 = models.CharField(_("Address Line 1"), null=False, blank=False, max_length=35)
     main_address_line2 = models.CharField(_("Address Line 2"), null=True, blank=True, max_length=35)
     main_address_city = models.CharField(_("City"), null=False, blank=False, max_length=15)
-    main_home_phone = PhoneNumberField(_("Home Phone"), blank=False)
+    main_home_phone = PhoneNumberField(_("Home Phone"), blank=False, null=False)
     main_home_value = models.IntegerField(_("Home Value"), null=True, blank=True, validators=[
         MinValueValidator(0),
         MaxValueValidator(9999999),
@@ -61,8 +61,8 @@ class BaseCreditAppMixin(models.Model):
         MinValueValidator(0),
         MaxValueValidator(999999),
     ])
-    main_employer_phone = PhoneNumberField(_("Employer Phone Number"), blank=True)
-    main_cell_phone = PhoneNumberField(_("Cell Phone"), blank=True)
+    main_employer_phone = PhoneNumberField(_("Employer Phone Number"), blank=True, null=True)
+    main_cell_phone = PhoneNumberField(_("Cell Phone"), blank=True, null=True)
 
     insurance = models.BooleanField(_('Optional Insurance'), null=False, default=False)
     sales_person_id = models.CharField(_("Existing Sales Person ID"), null=True, blank=True, max_length=4, validators=[
@@ -122,8 +122,8 @@ class BaseJointCreditAppMixin(BaseCreditAppMixin):
         MinValueValidator(0),
         MaxValueValidator(999999),
     ])
-    joint_employer_phone = PhoneNumberField(_("Employer Phone Number"), blank=True)
-    joint_cell_phone = PhoneNumberField(_("Cell Phone"), blank=True)
+    joint_employer_phone = PhoneNumberField(_("Employer Phone Number"), blank=True, null=True)
+    joint_cell_phone = PhoneNumberField(_("Cell Phone"), blank=True, null=True)
 
     class Meta:
         abstract = True

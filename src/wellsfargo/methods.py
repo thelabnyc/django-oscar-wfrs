@@ -73,7 +73,7 @@ class WellsFargo(PaymentMethod):
 
         # Figure out which WFRS credentials to use based on the user
         request_user = None
-        if request.user and request.user.is_authenticated():
+        if request.user and request.user.is_authenticated:
             request_user = request.user
 
         # Perform an authorization with WFRS
