@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.10.1
+------------------
+- Fix corrupted package build in version ``0.10.0``.
+
 0.10.0
 ------------------
 - Add support for django-localflavor 2.0 by switching to using django-phonenumber-field for phone number fields.
