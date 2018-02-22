@@ -136,17 +136,32 @@ class TransferMetadataIndexTable(DashboardTable):
 
 
 class PreQualificationIndexTable(DashboardTable):
-    uuid = LinkColumn('wfrs-prequal-detail', args=[A('uuid')], verbose_name=_('UUID'), orderable=False)
-    first_name = Column(verbose_name=_('First Name'))
-    last_name = Column(verbose_name=_('Last Name'))
+    uuid = LinkColumn('wfrs-prequal-detail',
+        args=[A('uuid')],
+        verbose_name=_('UUID'),
+        orderable=False)
+    first_name = Column(
+        verbose_name=_('First Name'),
+        orderable=False)
+    last_name = Column(
+        verbose_name=_('Last Name'),
+        orderable=False)
     address = TemplateColumn(
         verbose_name=_('Address'),
         template_name='wfrs/dashboard/_prequal_row_address.html',
         orderable=False)
-    phone = Column(verbose_name=_('Phone'), orderable=False)
-    response_status = Column(verbose_name=_('Status'), accessor=A('response.status'))
-    response_credit_limit = Column(verbose_name=_('Credit Limit'), accessor=A('response.credit_limit'))
-    response_customer_response = Column(verbose_name=_('Customer Response'), accessor=A('response.customer_response'))
+    response_status = Column(
+        verbose_name=_('Status'),
+        accessor=A('response.status'),
+        orderable=False)
+    response_credit_limit = Column(
+        verbose_name=_('Credit Limit'),
+        accessor=A('response.credit_limit'),
+        orderable=False)
+    response_customer_response = Column(
+        verbose_name=_('Customer Response'),
+        accessor=A('response.customer_response'),
+        orderable=False)
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
         order_by='created_datetime',
@@ -162,9 +177,9 @@ class PreQualificationIndexTable(DashboardTable):
             'first_name',
             'last_name',
             'address',
-            'phone',
             'response_status',
             'response_credit_limit',
             'response_customer_response',
             'created_datetime',
+            'reported_datetime',
         )

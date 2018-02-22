@@ -114,6 +114,18 @@
                         <td>{{ object.response.customer_response_name | default:"-" }}</td>
                     </tr>
                     <tr>
+                        <th>{% trans "Resulting Order" %}</th>
+                        <td>
+                            {% if object.response.customer_order %}
+                                <a href="{% url 'dashboard:order-detail' number=object.response.customer_order.number %}">
+                                    {{ object.response.customer_order.number }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
                         <th>{% trans "Reported Date" %}</th>
                         <td>{{ object.response.reported_datetime | default:"-" }}</td>
                     </tr>

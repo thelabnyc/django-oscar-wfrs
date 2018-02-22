@@ -461,6 +461,10 @@ class PreQualificationResponse(models.Model):
         max_length=_max_len(PREQUAL_CUSTOMER_RESP_CHOICES),
         choices=PREQUAL_CUSTOMER_RESP_CHOICES,
         default=PREQUAL_CUSTOMER_RESP_NONE)
+    customer_order = models.ForeignKey('order.Order',
+        null=True, blank=True,
+        related_name='prequalification_responses',
+        on_delete=models.CASCADE)
     reported_datetime = models.DateTimeField(null=True, blank=True,
         help_text=_('Date customer response was reported to Wells Fargo.'))
     created_datetime = models.DateTimeField(auto_now_add=True)
