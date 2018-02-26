@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.11.0
+------------------
+- Add support for Wells Fargo's Pre-Qualification (soft-credit check) API.
+
 0.10.1
 ------------------
 - Fix corrupted package build in version ``0.10.0``.
