@@ -12,10 +12,17 @@ def overridable(name, default=None, required=False, cast=None):
     return value
 
 
-# Wells Fargo API WSDLs
+# SOAP service for sending transaction requests to WFRS
 WFRS_TRANSACTION_WSDL = overridable('WFRS_TRANSACTION_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitTransactionService?WSDL')
+
+# SOAP service for obtaining account status information from WFRS
 WFRS_INQUIRY_WSDL = overridable('WFRS_INQUIRY_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitInquiryService?WSDL')
+
+# SOAP service for applying for a new Wells Fargo account
 WFRS_CREDIT_APP_WSDL = overridable('WFRS_CREDIT_APP_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitCreditAppService?WSDL')
+
+# SOAP service for checking account pre-qualification status
+WFRS_PRE_QUAL_WSDL = overridable('WFRS_PRE_QUAL_WSDL', 'https://retailservices-uat.wellsfargo.com/services/WFRS_InstantPreScreenService?WSDL')
 
 
 # Encryption settings (used to protect account numbers stored in the database)
@@ -25,6 +32,7 @@ WFRS_SECURITY = {
 }
 WFRS_SECURITY.update( overridable('WFRS_SECURITY', {}) )
 
+# If using the defaults, make sure an encryption key is configured
 if WFRS_SECURITY['encryptor'] == 'wellsfargo.security.fernet.FernetEncryption':
     if WFRS_SECURITY['encryptor_kwargs'].get('key') is None:
         raise ImproperlyConfigured((

@@ -9,6 +9,8 @@ from .views import (
     CAJointCreditAppView,
     FinancingPlanView,
     SubmitAccountInquiryView,
+    PreQualificationRequestView,
+    PreQualificationCustomerResponseView,
 )
 
 
@@ -25,6 +27,10 @@ class WFRSAPIApplication(Application):
             url(r'^plans/$', FinancingPlanView.as_view(), name='wfrs-api-plan-list'),
 
             url(r'^inquiry/$', SubmitAccountInquiryView.as_view(), name='wfrs-api-acct-inquiry'),
+
+            url(r'^prequal/$', PreQualificationRequestView.as_view(), name='wfrs-api-prequal'),
+            url(r'^prequal/set-customer-response/$', PreQualificationCustomerResponseView.as_view(),
+                name='wfrs-api-prequal-customer-response'),
         ]
         return self.post_process_urls(urlpatterns)
 

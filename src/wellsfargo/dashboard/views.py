@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
 from django.views import generic
+from django.contrib.postgres.search import SearchVector
 from django_tables2 import SingleTableView
 from oscar.core.compat import UnicodeCSVWriter
 from haystack.query import SearchQuerySet
@@ -22,15 +23,17 @@ from ..models import (
     CACreditApp,
     CAJointCreditApp,
     TransferMetadata,
+    PreQualificationRequest,
 )
 from .forms import (
     ApplicationSelectionForm,
     FinancingPlanForm,
     FinancingPlanBenefitForm,
     ApplicationSearchForm,
+    PreQualSearchForm,
     get_application_form_class,
 )
-from .tables import CreditApplicationIndexTable, TransferMetadataIndexTable
+from .tables import CreditApplicationIndexTable, TransferMetadataIndexTable, PreQualificationIndexTable
 
 
 DEFAULT_APPLICATION = USCreditApp
@@ -352,6 +355,7 @@ class TransferMetadataListView(SingleTableView):
         return qs
 
 
+
 class TransferMetadataDetailView(generic.DetailView):
     template_name = "wfrs/dashboard/transfer_detail.html"
     slug_field = 'merchant_reference'
@@ -359,3 +363,67 @@ class TransferMetadataDetailView(generic.DetailView):
 
     def get_queryset(self):
         return TransferMetadata.objects.all()
+
+
+
+class PreQualificationListView(SingleTableView):
+    template_name = "wfrs/dashboard/prequal_list.html"
+    form_class = PreQualSearchForm
+    table_class = PreQualificationIndexTable
+    context_table_name = 'prequal_requests'
+    filter_descrs = []
+
+    def get_table(self, **kwargs):
+        table = super().get_table(**kwargs)
+        table.caption = _('Pre-Qualification Requests')
+        return table
+
+
+    def get_queryset(self):
+        qs = PreQualificationRequest.objects.all()
+        # Default ordering
+        if not self.request.GET.get('sort'):
+            qs = qs.order_by('-created_datetime', '-id')
+        # Apply search filters
+        qs = self.apply_search(qs)
+        return qs
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form
+        context['search_filters'] = self.filter_descrs
+        return context
+
+
+    def apply_search(self, qs):
+        self.filter_descrs = []
+        self.form = self.form_class(self.request.GET)
+        if not self.form.is_valid():
+            return qs
+        data = self.form.cleaned_data
+
+        # Basic search
+        search_text = data.get('search_text')
+        if search_text:
+            svector = SearchVector(
+                'first_name',
+                'last_name',
+                'line1',
+                'city',
+                'state',
+                'postcode',
+                'phone')
+            qs = qs.annotate(search=svector).filter(search=search_text)
+            self.filter_descrs.append(_('Request contains “{text}”').format(text=search_text))
+
+        return qs
+
+
+class PreQualificationDetailView(generic.DetailView):
+    template_name = "wfrs/dashboard/prequal_detail.html"
+    slug_field = 'uuid'
+    slug_url_kwarg = 'uuid'
+
+    def get_queryset(self):
+        return PreQualificationRequest.objects.all()

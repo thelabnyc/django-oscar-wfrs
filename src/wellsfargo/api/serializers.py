@@ -18,6 +18,8 @@ from ..models import (
     CACreditApp,
     CAJointCreditApp,
     AccountInquiryResult,
+    PreQualificationRequest,
+    PreQualificationResponse,
 )
 from . import exceptions as api_exceptions
 
@@ -195,3 +197,47 @@ class AccountInquirySerializer(serializers.ModelSerializer):
             })
 
         return result
+
+
+class PreQualificationRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreQualificationRequest
+        read_only_fields = (
+            'uuid',
+            'credentials',
+            'created_datetime',
+            'modified_datetime',
+        )
+        fields = '__all__'
+
+
+    def save(self):
+        prequal_request = super().save()
+
+        request = self.context['request']
+        request_user = None
+        if request.user and request.user.is_authenticated:
+            request_user = request.user
+
+        try:
+            actions.check_pre_qualification_status(prequal_request, current_user=request_user)
+        except DjangoValidationError as e:
+            raise DRFValidationError({
+                'non_field_errors': [e.message]
+            })
+
+        return prequal_request
+
+
+class PreQualificationResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreQualificationResponse
+        read_only_fields = (
+            'status',
+            'is_approved',
+            'message',
+            'credit_limit',
+            'created_datetime',
+            'modified_datetime',
+        )
+        fields = read_only_fields + ('customer_response', )

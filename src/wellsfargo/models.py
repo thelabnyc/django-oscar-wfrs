@@ -8,22 +8,43 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from oscar.core.loading import get_model, get_class
 from oscar.models.fields import PhoneNumberField
-from .core.constants import TRANS_TYPE_AUTH, TRANS_TYPES, TRANS_STATUSES, INQUIRY_STATUSES
+from .core.constants import (
+    TRANS_TYPE_AUTH,
+    TRANS_TYPES,
+    TRANS_STATUSES,
+    INQUIRY_STATUSES,
+    EN_US,
+    PREQUAL_LOCALE_CHOICES,
+    ENTRY_POINT_WEB,
+    ENTRY_POINT_CHOICES,
+    PREQUAL_TRANS_STATUS_APPROVED,
+    PREQUAL_TRANS_STATUS_CHOICES,
+    PREQUAL_CUSTOMER_RESP_NONE,
+    PREQUAL_CUSTOMER_RESP_CHOICES,
+)
 from .core.applications import (
     USCreditAppMixin,
     BaseCreditAppMixin,
     USJointCreditAppMixin,
     BaseJointCreditAppMixin,
     CACreditAppMixin,
-    CAJointCreditAppMixin
+    CAJointCreditAppMixin,
 )
+from .core.fields import USStateField, USZipCodeField
 from .security import encrypt_account_number, decrypt_account_number
 import logging
+import uuid
 
 Benefit = get_model('offer', 'Benefit')
 PostOrderAction = get_class('offer.results', 'PostOrderAction')
 
 logger = logging.getLogger(__name__)
+
+
+def _max_len(choices):
+    """Given a list of char field choices, return the field max length"""
+    lengths = [len(choice) for choice, _ in choices]
+    return max(lengths)
 
 
 
@@ -386,3 +407,80 @@ class CACreditApp(CreditAppCommonMixin, CACreditAppMixin, BaseCreditAppMixin):
 
 class CAJointCreditApp(CreditAppCommonMixin, CAJointCreditAppMixin, BaseJointCreditAppMixin):
     APP_TYPE_CODE = 'ca-joint'
+
+
+
+class PreQualificationRequest(models.Model):
+    locale = models.CharField(_('Locale'),
+        max_length=_max_len(PREQUAL_LOCALE_CHOICES),
+        choices=PREQUAL_LOCALE_CHOICES,
+        default=EN_US)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    entry_point = models.CharField(_('Entry Point'),
+        max_length=_max_len(ENTRY_POINT_CHOICES),
+        choices=ENTRY_POINT_CHOICES,
+        default=ENTRY_POINT_WEB)
+    first_name = models.CharField(_("First Name"), max_length=15)
+    last_name = models.CharField(_("Last Name"), max_length=20)
+    line1 = models.CharField(_("Address Line 1"), max_length=26)
+    city = models.CharField(_("City"), max_length=15)
+    state = USStateField(_("State"))
+    postcode = USZipCodeField(_("Postcode"))
+    phone = PhoneNumberField(_("Phone"))
+    credentials = models.ForeignKey(APICredentials,
+        verbose_name=_("API Credentials"),
+        related_name='prequal_requests',
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_datetime', '-id')
+
+    @property
+    def locale_name(self):
+        return dict(PREQUAL_LOCALE_CHOICES).get(self.locale, self.locale)
+
+    @property
+    def entry_point_name(self):
+        return dict(ENTRY_POINT_CHOICES).get(self.entry_point, self.entry_point)
+
+
+class PreQualificationResponse(models.Model):
+    request = models.OneToOneField(PreQualificationRequest, related_name='response', on_delete=models.CASCADE)
+    status = models.CharField(_('Transaction Status'),
+        max_length=_max_len(PREQUAL_TRANS_STATUS_CHOICES),
+        choices=PREQUAL_TRANS_STATUS_CHOICES)
+    message = models.TextField(_('Message'))
+    offer_indicator = models.CharField(_('Offer Indicator'), max_length=20)
+    credit_limit = models.DecimalField(_("Credit Limit"), decimal_places=2, max_digits=12)
+    response_id = models.CharField(_('Unique Response ID'), max_length=8)
+    application_url = models.CharField(_('Application URL'), max_length=200)
+    customer_response = models.CharField(_('Customer Response'),
+        max_length=_max_len(PREQUAL_CUSTOMER_RESP_CHOICES),
+        choices=PREQUAL_CUSTOMER_RESP_CHOICES,
+        default=PREQUAL_CUSTOMER_RESP_NONE)
+    customer_order = models.ForeignKey('order.Order',
+        null=True, blank=True,
+        related_name='prequalification_responses',
+        on_delete=models.CASCADE)
+    reported_datetime = models.DateTimeField(null=True, blank=True,
+        help_text=_('Date customer response was reported to Wells Fargo.'))
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_datetime', '-id')
+
+    @property
+    def is_approved(self):
+        return self.status == PREQUAL_TRANS_STATUS_APPROVED
+
+    @property
+    def status_name(self):
+        return dict(PREQUAL_TRANS_STATUS_CHOICES).get(self.status, self.status)
+
+    @property
+    def customer_response_name(self):
+        return dict(PREQUAL_CUSTOMER_RESP_CHOICES).get(self.customer_response, self.customer_response)

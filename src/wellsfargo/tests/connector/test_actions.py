@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from wellsfargo.connector import actions
 from wellsfargo.core.exceptions import CreditApplicationPending, CreditApplicationDenied, TransactionDenied
 from wellsfargo.core.structures import TransactionRequest
-from wellsfargo.models import FinancingPlan
+from wellsfargo.models import FinancingPlan, PreQualificationRequest
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses
 import mock
@@ -55,6 +55,7 @@ class SubmitTransactionTest(BaseTest):
 
         with self.assertRaises(TransactionDenied):
             actions.submit_transaction(request)
+
 
 
 class CreditInquiryTest(BaseTest):
@@ -164,3 +165,47 @@ class CreditApplicationTest(BaseTest):
         app = self._build_us_single_credit_app('999999991')
         with self.assertRaises(CreditApplicationPending):
             actions.submit_credit_application(app)
+
+
+
+class CheckPreQualificationStatusTest(BaseTest):
+    @mock.patch('soap.get_transport')
+    def test_prequal_success(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.prequal_successful)
+
+        request = PreQualificationRequest()
+        request.first_name = 'Joe'
+        request.last_name = 'Schmoe'
+        request.line1 = '123 Evergreen Terrace'
+        request.city = 'Springfield'
+        request.state = 'NY'
+        request.postcode = '10001'
+        request.phone = '+1 (212) 209-1333'
+
+        resp = actions.check_pre_qualification_status(request)
+        self.assertEqual(resp.request, request)
+        self.assertEqual(resp.status, 'A')
+        self.assertEqual(resp.is_approved, True)
+        self.assertEqual(resp.message, 'approved')
+        self.assertEqual(resp.offer_indicator, 'F1')
+        self.assertEqual(resp.credit_limit, Decimal('8500.00'))
+        self.assertEqual(resp.response_id, '000005EP')
+        self.assertEqual(resp.application_url, 'https://localhost/ipscr.do?id=u64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.')
+        self.assertEqual(resp.customer_response, '')
+
+
+    @mock.patch('soap.get_transport')
+    def test_prequal_failure(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.prequal_failed)
+
+        request = PreQualificationRequest()
+        request.first_name = 'Joe'
+        request.last_name = 'Schmoe'
+        request.line1 = '123 Evergreen Terrace'
+        request.city = 'Springfield'
+        request.state = 'NY'
+        request.postcode = '10001'
+        request.phone = '+1 (212) 209-1333'
+
+        with self.assertRaises(ValidationError):
+            actions.check_pre_qualification_status(request)

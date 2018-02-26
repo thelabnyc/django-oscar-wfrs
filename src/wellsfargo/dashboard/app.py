@@ -16,6 +16,8 @@ from .views import (
     CreditApplicationDetailView,
     TransferMetadataListView,
     TransferMetadataDetailView,
+    PreQualificationListView,
+    PreQualificationDetailView,
 )
 
 
@@ -37,6 +39,8 @@ class WFRSDashboardApplication(Application):
     application_detail = CreditApplicationDetailView
     transfer_list = TransferMetadataListView
     transfer_detail = TransferMetadataDetailView
+    prequal_list = PreQualificationListView
+    prequal_detail = PreQualificationDetailView
 
     def get_urls(self):
         urlpatterns = [
@@ -87,6 +91,13 @@ class WFRSDashboardApplication(Application):
             url(r'^transfers/(?P<merchant_reference>[A-Za-z0-9\-]+)/$',
                 self.transfer_detail.as_view(),
                 name='wfrs-transfer-detail'),
+
+            url(r'^prequal-requests/$',
+                self.prequal_list.as_view(),
+                name='wfrs-prequal-list'),
+            url(r'^prequal-requests/(?P<uuid>[A-Za-z0-9\-]+)/$',
+                self.prequal_detail.as_view(),
+                name='wfrs-prequal-detail'),
         ]
         return self.post_process_urls(urlpatterns)
 
