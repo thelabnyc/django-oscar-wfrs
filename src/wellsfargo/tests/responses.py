@@ -14,6 +14,15 @@ with open(os.path.join(_base, 'responses/inquiry_successful.xml'), 'r') as f:
 with open(os.path.join(_base, 'responses/inquiry_failed.xml'), 'r') as f:
     inquiry_failed = f.read().encode('utf8')
 
+with open(os.path.join(_base, 'responses/otb_denied.xml'), 'r') as f:
+    otb_denied = f.read().encode('utf8')
+
+with open(os.path.join(_base, 'responses/otb_error.xml'), 'r') as f:
+    otb_error = f.read().encode('utf8')
+
+with open(os.path.join(_base, 'responses/otb_successful.xml'), 'r') as f:
+    otb_successful = f.read().encode('utf8')
+
 with open(os.path.join(_base, 'responses/prequal_successful.xml'), 'r') as f:
     prequal_successful = f.read().encode('utf8')
 

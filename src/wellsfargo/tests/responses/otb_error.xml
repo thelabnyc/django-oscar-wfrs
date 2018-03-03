@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <submitOTBResponse xmlns="http://services.webservices.retaildealer.wff.com">
+            <submitOTBReturn xmlns:flt="http://faults.webservices.retaildealer.wff.com" xmlns:mod="http://model.webservices.retaildealer.wff.com" xmlns:ser="http://services.webservices.retaildealer.wff.com" xmlns:sub="http://retailservices.wellsfargo.com/services/WFRS_SubmitOTBService">
+                <mod:accountNumber/>
+                <mod:availableCredit/>
+                <mod:creditLimit/>
+                <mod:externalStatusCode/>
+                <mod:faults>
+                    <sub:item>
+                        <flt:faultReason/>
+                        <flt:adviceText/>
+                        <flt:faultDetailString>Phone is blank or invalid.</flt:faultDetailString>
+                        <flt:faultString>RWS_INSTANT_PRESCREEN_PHONE_ERROR</flt:faultString>
+                        <flt:faultActor>WFFServices/RetailResponse</flt:faultActor>
+                        <flt:faultCodeAsString>RWS7524</flt:faultCodeAsString>
+                    </sub:item>
+                </mod:faults>
+                <mod:individualJointIndicator/>
+                <mod:jointAddress1/>
+                <mod:jointAddress2/>
+                <mod:jointCity/>
+                <mod:jointName/>
+                <mod:jointPostalCode/>
+                <mod:jointState/>
+                <mod:mainAddress1/>
+                <mod:mainAddress2/>
+                <mod:mainCity/>
+                <mod:mainName/>
+                <mod:mainPostalCode/>
+                <mod:mainState/>
+                <mod:merchantNumber/>
+                <mod:message>some error</mod:message>
+                <mod:outField1/>
+                <mod:outField2/>
+                <mod:outField3/>
+                <mod:outField4/>
+                <mod:outField5/>
+                <mod:transactionCode/>
+                <mod:transactionStatus/>
+                <mod:uniqueId/>
+                <mod:uuid/>
+            </submitOTBReturn>
+        </submitOTBResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

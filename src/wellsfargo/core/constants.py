@@ -21,10 +21,22 @@ TRANS_STATUSES = (
 INQUIRY_SUCCESS = 'I0'
 INQUIRY_ACCT_NOT_FOUND = 'I1'
 INQUIRY_SYS_ERROR = 'I2'
+OTB_SUCCESS = 'H0'
+OTB_FAILED = 'H1'
+OTB_NO_MATCH = 'H2'
+OTB_ACCT_NOT_FOUND = 'H3'
+OTB_DENIED = 'H4'
+OTB_OTHER = 'H5'
 INQUIRY_STATUSES = (
     (INQUIRY_SUCCESS, _("Account Inquiry Succeeded")),
     (INQUIRY_ACCT_NOT_FOUND, _("Could Not Find Requested Account")),
     (INQUIRY_SYS_ERROR, _("Wells Fargo System Error")),
+    (OTB_SUCCESS, _("OTB Success")),
+    (OTB_FAILED, _("OTB Failed")),
+    (OTB_NO_MATCH, _("OTB No Match")),
+    (OTB_ACCT_NOT_FOUND, _("OTB Account Not Found")),
+    (OTB_DENIED, _("OTB Denied")),
+    (OTB_OTHER, _("OTB External Status Code")),
 )
 
 
@@ -153,3 +165,5 @@ PREQUAL_CUSTOMER_RESP_CHOICES = (
     (PREQUAL_CUSTOMER_RESP_ACCEPT, _('Offer Accepted')),
     (PREQUAL_CUSTOMER_RESP_REJECT, _('Offer Rejected')),
 )
+
+PREQUAL_REDIRECT_APP_APPROVED = '41'

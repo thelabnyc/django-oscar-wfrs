@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError as DRFValidationError
+from rest_framework.reverse import reverse
 from oscar.core.loading import get_model
 from ..connector import actions
 from ..core.constants import (
@@ -218,9 +219,9 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
         request_user = None
         if request.user and request.user.is_authenticated:
             request_user = request.user
-
+        return_url = reverse('wfrs-api-prequal-app-complete', request=request)
         try:
-            actions.check_pre_qualification_status(prequal_request, current_user=request_user)
+            actions.check_pre_qualification_status(prequal_request, return_url=return_url, current_user=request_user)
         except DjangoValidationError as e:
             raise DRFValidationError({
                 'non_field_errors': [e.message]
@@ -237,6 +238,7 @@ class PreQualificationResponseSerializer(serializers.ModelSerializer):
             'is_approved',
             'message',
             'credit_limit',
+            'full_application_url',
             'created_datetime',
             'modified_datetime',
         )

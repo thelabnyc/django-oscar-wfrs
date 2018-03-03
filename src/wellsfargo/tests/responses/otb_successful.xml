@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <submitOTBResponse xmlns="http://services.webservices.retaildealer.wff.com">
+            <submitOTBReturn xmlns:flt="http://faults.webservices.retaildealer.wff.com" xmlns:mod="http://model.webservices.retaildealer.wff.com" xmlns:ser="http://services.webservices.retaildealer.wff.com" xmlns:sub="http://retailservices.wellsfargo.com/services/WFRS_SubmitOTBService">
+                <mod:accountNumber>9999999999999999</mod:accountNumber>
+                <mod:availableCredit>8500.00</mod:availableCredit>
+                <mod:creditLimit>9000.00</mod:creditLimit>
+                <mod:externalStatusCode/>
+                <mod:faults/>
+                <mod:individualJointIndicator>I</mod:individualJointIndicator>
+                <mod:jointAddress1/>
+                <mod:jointAddress2/>
+                <mod:jointCity/>
+                <mod:jointName/>
+                <mod:jointPostalCode/>
+                <mod:jointState/>
+                <mod:mainAddress1>123 Evergreen Terrace</mod:mainAddress1>
+                <mod:mainAddress2/>
+                <mod:mainCity>Springfield</mod:mainCity>
+                <mod:mainName>Schmoe,Joe</mod:mainName>
+                <mod:mainPostalCode>10001</mod:mainPostalCode>
+                <mod:mainState>NY</mod:mainState>
+                <mod:merchantNumber>111111111111116</mod:merchantNumber>
+                <mod:message/>
+                <mod:outField1/>
+                <mod:outField2/>
+                <mod:outField3/>
+                <mod:outField4/>
+                <mod:outField5/>
+                <mod:transactionCode>C1</mod:transactionCode>
+                <mod:transactionStatus>H0</mod:transactionStatus>
+                <mod:uniqueId>00000TKA</mod:uniqueId>
+                <mod:uuid>dc97c856-1e73-11e8-bd63-0242ac120006</mod:uuid>
+            </submitOTBReturn>
+        </submitOTBResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

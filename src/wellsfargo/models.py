@@ -190,6 +190,12 @@ class FraudScreenResult(models.Model):
 
 
 class AccountInquiryResult(models.Model):
+    prequal_response_source = models.ForeignKey('wellsfargo.PreQualificationResponse',
+        verbose_name=_("Pre-Qualification Source"),
+        related_name='account_inquiries',
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
+
     status = models.CharField(_("Status"), choices=INQUIRY_STATUSES, max_length=2)
 
     last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
@@ -199,7 +205,7 @@ class AccountInquiryResult(models.Model):
     middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
     last_name = models.CharField(_("Last Name"), max_length=50)
     phone_number = PhoneNumberField(_("Phone Number"))
-    address = models.CharField(_("Last 4 digits of account number"), max_length=100)
+    address = models.CharField(_("Address Line 1"), max_length=100)
 
     credit_limit = models.DecimalField(_("Account Credit Limit"), decimal_places=2, max_digits=12)
     balance = models.DecimalField(_("Current Account Balance"), decimal_places=2, max_digits=12)
@@ -473,14 +479,31 @@ class PreQualificationResponse(models.Model):
     class Meta:
         ordering = ('-created_datetime', '-id')
 
+
     @property
     def is_approved(self):
         return self.status == PREQUAL_TRANS_STATUS_APPROVED
+
 
     @property
     def status_name(self):
         return dict(PREQUAL_TRANS_STATUS_CHOICES).get(self.status, self.status)
 
+
     @property
     def customer_response_name(self):
         return dict(PREQUAL_CUSTOMER_RESP_CHOICES).get(self.customer_response, self.customer_response)
+
+
+    @property
+    def full_application_url(self):
+        # Take the given base URL and append a query param with the last 10 digits of the merchant account number
+        merchant_num = self.request.credentials.merchant_num[-10:]
+        return "{base_url}&mn={merchant_num}".format(
+            base_url=self.application_url,
+            merchant_num=merchant_num)
+
+
+    def check_account_status(self):
+        from .connector import actions
+        return actions.check_pre_qualification_account_status(self)

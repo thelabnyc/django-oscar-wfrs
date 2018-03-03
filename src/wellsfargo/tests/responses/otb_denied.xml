@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soapenv:Body>
+        <submitOTBResponse xmlns="http://services.webservices.retaildealer.wff.com">
+            <submitOTBReturn xmlns:flt="http://faults.webservices.retaildealer.wff.com" xmlns:mod="http://model.webservices.retaildealer.wff.com" xmlns:ser="http://services.webservices.retaildealer.wff.com" xmlns:sub="http://retailservices.wellsfargo.com/services/WFRS_SubmitOTBService">
+                <mod:accountNumber/>
+                <mod:availableCredit/>
+                <mod:creditLimit/>
+                <mod:externalStatusCode/>
+                <mod:faults/>
+                <mod:individualJointIndicator/>
+                <mod:jointAddress1/>
+                <mod:jointAddress2/>
+                <mod:jointCity/>
+                <mod:jointName/>
+                <mod:jointPostalCode/>
+                <mod:jointState/>
+                <mod:mainAddress1/>
+                <mod:mainAddress2/>
+                <mod:mainCity/>
+                <mod:mainName/>
+                <mod:mainPostalCode/>
+                <mod:mainState/>
+                <mod:merchantNumber>111111111111116</mod:merchantNumber>
+                <mod:message>unique id name no match</mod:message>
+                <mod:outField1/>
+                <mod:outField2/>
+                <mod:outField3/>
+                <mod:outField4/>
+                <mod:outField5/>
+                <mod:transactionCode>C1</mod:transactionCode>
+                <mod:transactionStatus>H2</mod:transactionStatus>
+                <mod:uniqueId>00000TKA</mod:uniqueId>
+                <mod:uuid>dc97c856-1e73-11e8-bd63-0242ac120006</mod:uuid>
+            </submitOTBReturn>
+        </submitOTBResponse>
+    </soapenv:Body>
+</soapenv:Envelope>

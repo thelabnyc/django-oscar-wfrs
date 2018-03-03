@@ -1,10 +1,13 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
 from rest_framework import views, generics, status, serializers
 from oscarapi.basket import operations
 from ..core.constants import (
     US, CA,
-    INDIVIDUAL, JOINT
+    INDIVIDUAL, JOINT,
+    PREQUAL_REDIRECT_APP_APPROVED,
 )
 from ..models import PreQualificationResponse
 from .serializers import (
@@ -139,3 +142,43 @@ class PreQualificationCustomerResponseView(views.APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+class PreQualificationCustomerRedirectView(views.APIView):
+    def get(self, request):
+        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
+        if not prequal_request_id:
+            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+        try:
+            prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
+        except PreQualificationResponse.DoesNotExist:
+            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+
+        # Check if the application was approved
+        if request.GET.get('A') != PREQUAL_REDIRECT_APP_APPROVED:
+            return self._return_not_approved(request)
+
+        # Submit account inquiry to Wells to try and fetch account data
+        try:
+            acct_inquiry = prequal_response.check_account_status()
+        except DjangoValidationError as e:
+            acct_inquiry = None
+
+        # If not response, account must have been declined or is pending.
+        if not acct_inquiry:
+            return self._return_not_approved(request)
+
+        # Return response (including their account number) to the user
+        return self._return_approved(request, acct_inquiry)
+
+
+    def _return_approved(self, request, acct_inquiry):
+        context = {
+            'account_inquiry': acct_inquiry
+        }
+        return render(request, 'wfrs/api/prequal-redirect-approved.html', context, content_type='text/html')
+
+
+    def _return_not_approved(self, request):
+        context = {}
+        return render(request, 'wfrs/api/prequal-redirect-not-approved.html', context, content_type='text/html')

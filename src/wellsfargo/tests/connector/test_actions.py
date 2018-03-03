@@ -1,9 +1,14 @@
 from decimal import Decimal
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from wellsfargo.connector import actions
 from wellsfargo.core.exceptions import CreditApplicationPending, CreditApplicationDenied, TransactionDenied
 from wellsfargo.core.structures import TransactionRequest
-from wellsfargo.models import FinancingPlan, PreQualificationRequest
+from wellsfargo.core.constants import (
+    PREQUAL_TRANS_STATUS_APPROVED,
+    PREQUAL_CUSTOMER_RESP_ACCEPT,
+)
+from wellsfargo.models import FinancingPlan, PreQualificationRequest, PreQualificationResponse
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses
 import mock
@@ -181,6 +186,7 @@ class CheckPreQualificationStatusTest(BaseTest):
         request.state = 'NY'
         request.postcode = '10001'
         request.phone = '+1 (212) 209-1333'
+        request.save()
 
         resp = actions.check_pre_qualification_status(request)
         self.assertEqual(resp.request, request)
@@ -206,6 +212,121 @@ class CheckPreQualificationStatusTest(BaseTest):
         request.state = 'NY'
         request.postcode = '10001'
         request.phone = '+1 (212) 209-1333'
+        request.save()
 
         with self.assertRaises(ValidationError):
             actions.check_pre_qualification_status(request)
+
+
+
+class CheckPreQualificationAccountStatusTest(BaseTest):
+    @mock.patch('soap.get_transport')
+    def test_prequal_acct_status_success(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.otb_successful)
+
+        request = PreQualificationRequest()
+        request.first_name = 'Joe'
+        request.last_name = 'Schmoe'
+        request.line1 = '123 Evergreen Terrace'
+        request.city = 'Springfield'
+        request.state = 'NY'
+        request.postcode = '10001'
+        request.phone = '+1 (212) 209-1333'
+        request.credentials = self.credentials
+        request.save()
+
+        prequal_resp = PreQualificationResponse()
+        prequal_resp.request = request
+        prequal_resp.status = PREQUAL_TRANS_STATUS_APPROVED
+        prequal_resp.message = "pass"
+        prequal_resp.offer_indicator = 'F1'
+        prequal_resp.credit_limit = Decimal('5000.00')
+        prequal_resp.response_id = '00000TKA'
+        prequal_resp.application_url = 'https://localhost/ipscr.do?id=u64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.'
+        prequal_resp.customer_response = PREQUAL_CUSTOMER_RESP_ACCEPT
+        prequal_resp.customer_order = None
+        prequal_resp.reported_datetime = timezone.now()
+        prequal_resp.save()
+
+        account_resp = actions.check_pre_qualification_account_status(prequal_resp)
+
+        self.assertEqual(account_resp.prequal_response_source, prequal_resp)
+        self.assertEqual(account_resp.status, 'H0')
+        self.assertEqual(account_resp.last4_account_number, '9999')
+        self.assertEqual(account_resp.account_number, '9999999999999999')
+        self.assertEqual(account_resp.first_name, 'Joe')
+        self.assertEqual(account_resp.middle_initial, '')
+        self.assertEqual(account_resp.last_name, 'Schmoe')
+        self.assertEqual(account_resp.phone_number, '+12122091333')
+        self.assertEqual(account_resp.address, '123 Evergreen Terrace')
+        self.assertEqual(account_resp.credit_limit, Decimal('9000.00'))
+        self.assertEqual(account_resp.balance, Decimal('500.00'))
+        self.assertEqual(account_resp.open_to_buy, Decimal('8500.00'))
+        self.assertEqual(account_resp.last_payment_date, None)
+        self.assertEqual(account_resp.last_payment_amount, None)
+        self.assertEqual(account_resp.payment_due_date, None)
+        self.assertEqual(account_resp.payment_due_amount, None)
+
+
+    @mock.patch('soap.get_transport')
+    def test_prequal_acct_status_denied(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.otb_denied)
+
+        request = PreQualificationRequest()
+        request.first_name = 'Joe'
+        request.last_name = 'Schmoe'
+        request.line1 = '123 Evergreen Terrace'
+        request.city = 'Springfield'
+        request.state = 'NY'
+        request.postcode = '10001'
+        request.phone = '+1 (212) 209-1333'
+        request.credentials = self.credentials
+        request.save()
+
+        prequal_resp = PreQualificationResponse()
+        prequal_resp.request = request
+        prequal_resp.status = PREQUAL_TRANS_STATUS_APPROVED
+        prequal_resp.message = "pass"
+        prequal_resp.offer_indicator = 'F1'
+        prequal_resp.credit_limit = Decimal('5000.00')
+        prequal_resp.response_id = '00000TKA'
+        prequal_resp.application_url = 'https://localhost/ipscr.do?id=u64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.'
+        prequal_resp.customer_response = PREQUAL_CUSTOMER_RESP_ACCEPT
+        prequal_resp.customer_order = None
+        prequal_resp.reported_datetime = timezone.now()
+        prequal_resp.save()
+
+        account_resp = actions.check_pre_qualification_account_status(prequal_resp)
+        self.assertEqual(account_resp, None)
+
+
+    @mock.patch('soap.get_transport')
+    def test_prequal_acct_status_error(self, get_transport):
+        get_transport.return_value = self._build_transport_with_reply(responses.otb_error)
+
+        request = PreQualificationRequest()
+        request.first_name = 'Joe'
+        request.last_name = 'Schmoe'
+        request.line1 = '123 Evergreen Terrace'
+        request.city = 'Springfield'
+        request.state = 'NY'
+        request.postcode = '10001'
+        request.phone = '+1 (212) 209-1333'
+        request.credentials = self.credentials
+        request.save()
+
+        prequal_resp = PreQualificationResponse()
+        prequal_resp.request = request
+        prequal_resp.status = PREQUAL_TRANS_STATUS_APPROVED
+        prequal_resp.message = "pass"
+        prequal_resp.offer_indicator = 'F1'
+        prequal_resp.credit_limit = Decimal('5000.00')
+        prequal_resp.response_id = '00000TKA'
+        prequal_resp.application_url = 'https://localhost/ipscr.do?id=u64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.'
+        prequal_resp.customer_response = PREQUAL_CUSTOMER_RESP_ACCEPT
+        prequal_resp.customer_order = None
+        prequal_resp.reported_datetime = timezone.now()
+        prequal_resp.save()
+
+        with self.assertRaises(ValidationError):
+            actions.check_pre_qualification_account_status(prequal_resp)

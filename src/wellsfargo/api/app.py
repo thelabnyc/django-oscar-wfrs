@@ -11,6 +11,7 @@ from .views import (
     SubmitAccountInquiryView,
     PreQualificationRequestView,
     PreQualificationCustomerResponseView,
+    PreQualificationCustomerRedirectView,
 )
 
 
@@ -31,6 +32,8 @@ class WFRSAPIApplication(Application):
             url(r'^prequal/$', PreQualificationRequestView.as_view(), name='wfrs-api-prequal'),
             url(r'^prequal/set-customer-response/$', PreQualificationCustomerResponseView.as_view(),
                 name='wfrs-api-prequal-customer-response'),
+            url(r'^prequal/application-complete/$', PreQualificationCustomerRedirectView.as_view(),
+                name='wfrs-api-prequal-app-complete'),
         ]
         return self.post_process_urls(urlpatterns)
 
