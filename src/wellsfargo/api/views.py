@@ -125,8 +125,6 @@ class PreQualificationRequestView(generics.GenericAPIView):
 
 
 class PreQualificationCustomerResponseView(views.APIView):
-    serializer_class = PreQualificationResponseSerializer
-
     def post(self, request):
         prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
         if not prequal_request_id:
@@ -135,7 +133,7 @@ class PreQualificationCustomerResponseView(views.APIView):
             prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
         except PreQualificationResponse.DoesNotExist:
             raise serializers.ValidationError('No pre-qualification response was found for this session.')
-        serializer = self.get_serializer_class()(
+        serializer = PreQualificationResponseSerializer(
             instance=prequal_response,
             data=request.data,
             context={'request': request})
