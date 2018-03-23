@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.12.0
+------------------
+- Add new API endpoint for estimating loan payments based on advertised plan thresholds.
+
 0.11.0
 ------------------
 - Add support for Wells Fargo's Pre-Qualification (soft-credit check) API.

@@ -156,6 +156,13 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
         )
 
 
+class EstimatedPaymentSerializer(serializers.Serializer):
+    plan = FinancingPlanSerializer()
+    principal = serializers.DecimalField(decimal_places=2, max_digits=12)
+    monthly_payment = serializers.DecimalField(decimal_places=2, max_digits=12)
+    loan_cost = serializers.DecimalField(decimal_places=2, max_digits=12)
+
+
 class AccountInquirySerializer(serializers.ModelSerializer):
     account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16)
 

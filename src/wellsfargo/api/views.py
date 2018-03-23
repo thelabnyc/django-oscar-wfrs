@@ -9,7 +9,7 @@ from ..core.constants import (
     INDIVIDUAL, JOINT,
     PREQUAL_REDIRECT_APP_APPROVED,
 )
-from ..models import PreQualificationResponse
+from ..models import PreQualificationResponse, FinancingPlan
 from .serializers import (
     AppSelectionSerializer,
     USCreditAppSerializer,
@@ -17,11 +17,13 @@ from .serializers import (
     CACreditAppSerializer,
     CAJointCreditAppSerializer,
     FinancingPlanSerializer,
+    EstimatedPaymentSerializer,
     AccountInquirySerializer,
     PreQualificationRequestSerializer,
     PreQualificationResponseSerializer,
 )
-from ..utils import list_plans_for_basket
+from ..utils import list_plans_for_basket, calculate_monthly_payments
+import decimal
 
 PREQUAL_SESSION_KEY = 'wfrs-prequal-request-id'
 
@@ -80,6 +82,45 @@ class FinancingPlanView(views.APIView):
         basket = operations.get_basket(request)
         plans = list_plans_for_basket(basket)
         ser = FinancingPlanSerializer(plans, many=True)
+        return Response(ser.data)
+
+
+class EstimatedPaymentView(views.APIView):
+    def get(self, request):
+        # Validate the price input
+        try:
+            principal_price = request.GET.get('price', '')
+            principal_price = decimal.Decimal(principal_price)\
+                .quantize(decimal.Decimal('0.00'))
+        except decimal.InvalidOperation:
+            principal_price = decimal.Decimal('0.00')
+
+        if not principal_price or principal_price <= 0:
+            data = {
+                'price': 'Submitted price parameter was not valid.',
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the best matching Financing Plan object for the price
+        plan = FinancingPlan.get_advertisable_plan_by_price(principal_price)
+        if not plan:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        # Calculate the monthly payment
+        monthly_payment = calculate_monthly_payments(principal_price, plan.term_months, plan.apr)
+
+        # Calculate the total loan cost
+        loan_cost = (monthly_payment * plan.term_months) - principal_price
+        loan_cost = max(decimal.Decimal('0.00'), loan_cost)
+        loan_cost = loan_cost.quantize(principal_price, rounding=decimal.ROUND_UP)
+
+        # Return the payment data
+        ser = EstimatedPaymentSerializer(instance={
+            'plan': plan,
+            'principal': principal_price,
+            'monthly_payment': monthly_payment,
+            'loan_cost': loan_cost,
+        })
         return Response(ser.data)
 
 

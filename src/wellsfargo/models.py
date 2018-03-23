@@ -107,6 +107,19 @@ class FinancingPlan(models.Model):
     class Meta:
         ordering = ('plan_number', )
 
+
+    @classmethod
+    def get_advertisable_plan_by_price(cls, price):
+        plan = cls.objects\
+            .exclude(term_months=0)\
+            .filter(advertising_enabled=True)\
+            .filter(product_price_threshold__gte='0.00')\
+            .filter(product_price_threshold__lte=price)\
+            .order_by('-product_price_threshold', '-apr')\
+            .first()
+        return plan
+
+
     def __str__(self):
         return "%s (plan number %s)" % (self.description, self.plan_number)
 
