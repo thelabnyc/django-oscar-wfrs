@@ -44,17 +44,16 @@ class WellsFargo(PaymentMethod):
     code = 'wells-fargo'
     serializer_class = WellsFargoPaymentMethodSerializer
 
-    def _record_payment(self, request, order, amount, reference, account_number, financing_plan, **kwargs):
+    def _record_payment(self, request, order, method_key, amount, reference, account_number, financing_plan, **kwargs):
         # Figure out how much to authorize
         source = self.get_source(order, reference)
-        amount_to_allocate = amount - source.amount_allocated
 
         # Build a transaction request
         trans_request = self._build_trans_request(
             order=order,
             account_number=account_number,
             plan_number=financing_plan.plan_number,
-            amount=amount_to_allocate,
+            amount=amount,
             type_code=TRANS_TYPE_AUTH)
 
         # Build a cancel transaction request in-case the transaction request fails.
@@ -62,7 +61,7 @@ class WellsFargo(PaymentMethod):
             order=order,
             account_number=account_number,
             plan_number=financing_plan.plan_number,
-            amount=amount_to_allocate,
+            amount=amount,
             type_code=TRANS_TYPE_CANCEL_AUTH)
 
         # If Fraud Screening is enabled, run it and see if the transaction passes muster.
@@ -88,12 +87,12 @@ class WellsFargo(PaymentMethod):
             return Declined(amount)
 
         # Record the allocation as a transaction
-        source.allocate(amount_to_allocate,
+        source.allocate(amount,
             reference=transfer.merchant_reference,
             status=fraud_response.decision)
 
         # Record the payment event
-        event = self.make_authorize_event(order, amount_to_allocate, transfer.merchant_reference)
+        event = self.make_authorize_event(order, amount, transfer.merchant_reference)
         for line in order.lines.all():
             self.make_event_quantity(event, line, line.quantity)
 

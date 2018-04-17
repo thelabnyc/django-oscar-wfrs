@@ -62,7 +62,7 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         resp = self._fetch_payment_states()
         self.assertEqual(resp.data['order_status'], 'Authorized')
-        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Consumed')
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
         self.assertEqual(FraudScreenResult.objects.count(), 1)
@@ -116,7 +116,7 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         resp = self._fetch_payment_states()
         self.assertEqual(resp.data['order_status'], 'Authorized')
-        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Consumed')
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
         self.assertEqual(FraudScreenResult.objects.count(), 1)
@@ -178,7 +178,7 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         resp = self._fetch_payment_states()
         self.assertEqual(resp.data['order_status'], 'Authorized')
-        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Consumed')
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
         self.assertEqual(FraudScreenResult.objects.count(), 1)
@@ -204,7 +204,7 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         resp = self._fetch_payment_states()
         self.assertEqual(resp.data['order_status'], 'Authorized')
-        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Complete')
+        self.assertEqual(resp.data['payment_method_states']['wells-fargo']['status'], 'Consumed')
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
 
