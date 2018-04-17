@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.12.1
+------------------
+- Update compatible django-oscar-api-checkout version
+
 0.12.0
 ------------------
 - Add new API endpoint for estimating loan payments based on advertised plan thresholds.
