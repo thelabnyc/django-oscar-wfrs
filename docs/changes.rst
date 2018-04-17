@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.13.0
+------------------
+- Adds support for ``django-oscar-api-checkout>=0.4.0``
+
 0.12.1
 ------------------
 - Update compatible django-oscar-api-checkout version
