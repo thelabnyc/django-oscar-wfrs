@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from wellsfargo.models import USCreditApp
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses

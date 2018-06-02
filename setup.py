@@ -15,11 +15,11 @@ install_requires = [
     'cryptography>=2.1.4',
     'django-haystack>=2.6.1',
     'django-localflavor>=2.0',
-    'django-oscar-api-checkout>=0.4.0b1',
-    'django-oscar-api>=1.3.0',
-    'django-oscar-bluelight>=0.8.4',
-    'django-oscar>=1.5.3',
-    'djangorestframework>=3.6.4',
+    'django-oscar-api-checkout>=0.4.0',
+    'django-oscar-api>=1.4.0',
+    'django-oscar-bluelight>=0.9.0b1',
+    'django-oscar>=1.6.0',
+    'djangorestframework>=3.7.0',
     'instrumented-soap>=1.2.0',
 ]
 

@@ -72,16 +72,14 @@ LOGGING = {
 }
 
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'oscar.apps.basket.middleware.BasketMiddleware',
 )
 
@@ -203,10 +201,6 @@ OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
             'url_name': 'wfrs-apply-step1',
         },
         {
-            'label': 'Add existing Wells Fargo account',
-            'url_name': 'wfrs-add-account',
-        },
-        {
             'label': 'Financing Plans',
             'url_name': 'wfrs-plan-list',
         },
@@ -221,6 +215,10 @@ OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
         {
             'label': 'Transfers',
             'url_name': 'wfrs-transfer-list',
+        },
+        {
+            'label': 'Pre-Qualification Requests',
+            'url_name': 'wfrs-prequal-list',
         },
     ]
 })
