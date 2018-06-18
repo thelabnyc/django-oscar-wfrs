@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.13.1
+------------------
+- Adds support for Django 2.0 and Oscar 1.6.
+
 0.13.0
 ------------------
 - Adds support for ``django-oscar-api-checkout>=0.4.0``
