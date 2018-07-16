@@ -3,6 +3,11 @@
 Changelog
 =========
 
+0.14.0
+------------------
+- Upgrade to django-oscar-bluelight 0.10.0.
+- Make Wells Fargo offers use HiddenPostOrderAction results.
+
 0.13.1
 ------------------
 - Adds support for Django 2.0 and Oscar 1.6.
