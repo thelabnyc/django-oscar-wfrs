@@ -36,7 +36,7 @@ import logging
 import uuid
 
 Benefit = get_model('offer', 'Benefit')
-PostOrderAction = get_class('offer.results', 'PostOrderAction')
+HiddenPostOrderAction = get_class('offer.results', 'HiddenPostOrderAction')
 
 logger = logging.getLogger(__name__)
 
@@ -150,7 +150,7 @@ class FinancingPlanBenefit(Benefit):
 
     def apply(self, basket, condition, offer):
         condition.consume_items(offer, basket, [])
-        return PostOrderAction("Financing is available for your order")
+        return HiddenPostOrderAction("Financing is available for your order")
 
     def apply_deferred(self, basket, order, application):
         return "Financing was available for your order: %s" % self.group_name
