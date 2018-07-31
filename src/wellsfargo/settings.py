@@ -52,3 +52,6 @@ WFRS_FRAUD_PROTECTION = {
 WFRS_FRAUD_PROTECTION.update( overridable('WFRS_FRAUD_PROTECTION', {}) )
 
 WFRS_MAX_TRANSACTION_ATTEMPTS = overridable('WFRS_MAX_TRANSACTION_ATTEMPTS', 2)
+
+# Use the TimeZone setting of the respective project
+USE_TZ = overridable('USE_TZ', True)
