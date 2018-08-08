@@ -390,12 +390,15 @@ class CreditAppCommonMixin(models.Model):
         """
         if not self._orders_cache:
             Order = get_model('order', 'Order')
+            # all transfers made with last 4 digits
             reference_uuids = set(TransferMetadata.objects.filter(last4_account_number=self.last4_account_number)
                                                           .values_list('merchant_reference', flat=True)
                                                           .distinct()
                                                           .all())
+            # all orders made by app.email that contain ref above UUIDs
             orders = Order.objects.filter(Q(guest_email=self.email) | Q(user__email=self.email))\
                                   .filter(sources__transactions__reference__in=reference_uuids)\
+                                  .filter(date_placed__gte=self.created_datetime)\
                                   .order_by('date_placed')\
                                   .all()
             self._orders_cache = orders
