@@ -11,6 +11,7 @@ from .views import (
     EstimatedPaymentView,
     SubmitAccountInquiryView,
     PreQualificationRequestView,
+    PreQualificationSDKResponseView,
     PreQualificationCustomerResponseView,
     PreQualificationCustomerRedirectView,
 )
@@ -33,6 +34,7 @@ class WFRSAPIApplication(Application):
             url(r'^inquiry/$', SubmitAccountInquiryView.as_view(), name='wfrs-api-acct-inquiry'),
 
             url(r'^prequal/$', PreQualificationRequestView.as_view(), name='wfrs-api-prequal'),
+            url(r'^prequal/sdk-response/$', PreQualificationSDKResponseView.as_view(), name='wfrs-api-prequal-sdk-response'),
             url(r'^prequal/set-customer-response/$', PreQualificationCustomerResponseView.as_view(),
                 name='wfrs-api-prequal-customer-response'),
             url(r'^prequal/application-complete/$', PreQualificationCustomerRedirectView.as_view(),

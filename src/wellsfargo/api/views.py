@@ -21,6 +21,7 @@ from .serializers import (
     AccountInquirySerializer,
     PreQualificationRequestSerializer,
     PreQualificationResponseSerializer,
+    PreQualificationSDKResponseSerializer,
 )
 from ..utils import list_plans_for_basket, calculate_monthly_payments
 import decimal
@@ -163,6 +164,10 @@ class PreQualificationRequestView(generics.GenericAPIView):
         request.session[PREQUAL_SESSION_KEY] = prequal_request.pk
         response_ser = PreQualificationResponseSerializer(instance=prequal_response, context={'request': request})
         return Response(response_ser.data)
+
+
+class PreQualificationSDKResponseView(PreQualificationRequestView):
+    serializer_class = PreQualificationSDKResponseSerializer
 
 
 class PreQualificationCustomerResponseView(views.APIView):

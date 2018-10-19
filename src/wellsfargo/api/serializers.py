@@ -10,6 +10,8 @@ from ..core.constants import (
     INDIVIDUAL, JOINT,
     ENGLISH, FRENCH,
     APPLICATION_FORM_EXCLUDE_FIELDS,
+    PREQUAL_TRANS_STATUS_CHOICES,
+    PREQUAL_CUSTOMER_RESP_NONE,
 )
 from ..core import exceptions as core_exceptions
 from ..models import (
@@ -250,3 +252,46 @@ class PreQualificationResponseSerializer(serializers.ModelSerializer):
             'modified_datetime',
         )
         fields = read_only_fields + ('customer_response', )
+
+
+class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
+    status = serializers.ChoiceField(choices=PREQUAL_TRANS_STATUS_CHOICES)
+    credit_limit = serializers.DecimalField(decimal_places=2, max_digits=12, allow_null=True)
+    response_id = serializers.CharField(max_length=8, allow_null=True)
+
+    class Meta:
+        model = PreQualificationRequest
+        fields = (
+            'first_name',
+            'last_name',
+            'line1',
+            'city',
+            'state',
+            'postcode',
+            'status',
+            'credit_limit',
+            'response_id',
+        )
+
+
+    def save(self):
+        request = PreQualificationRequest()
+        request.first_name = self.validated_data['first_name']
+        request.last_name = self.validated_data['last_name']
+        request.line1 = self.validated_data['line1']
+        request.city = self.validated_data['city']
+        request.state = self.validated_data['state']
+        request.postcode = self.validated_data['postcode']
+        request.save()
+        if self.validated_data['response_id']:
+            response = PreQualificationResponse()
+            response.request = request
+            response.status = self.validated_data['status']
+            response.message = ''
+            response.offer_indicator = ''
+            response.credit_limit = self.validated_data['credit_limit']
+            response.response_id = self.validated_data['response_id']
+            response.application_url = ''
+            response.customer_response = PREQUAL_CUSTOMER_RESP_NONE
+            response.save()
+        return request
