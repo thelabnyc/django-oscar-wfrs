@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.15.0
+------------------
+- Extend PreQual views to work with new Wells Fargo Pre-Approval SDK.
+
 0.14.0
 ------------------
 - Upgrade to django-oscar-bluelight 0.10.0.
