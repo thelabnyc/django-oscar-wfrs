@@ -34,7 +34,7 @@ class FernetEncryption(object):
         blob = force_bytes(blob)
         try:
             value = self.fernet.decrypt(blob)
-        except InvalidToken as e:
+        except InvalidToken:
             logger.warning('Unable to decrypt account number blob.')
             return None
         return force_text(value)

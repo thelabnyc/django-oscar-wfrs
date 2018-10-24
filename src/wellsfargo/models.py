@@ -442,6 +442,7 @@ class PreQualificationRequest(models.Model):
         max_length=_max_len(ENTRY_POINT_CHOICES),
         choices=ENTRY_POINT_CHOICES,
         default=ENTRY_POINT_WEB)
+    customer_initiated = models.BooleanField(_("Check was deliberately initiated by customer action"), default=False)
     first_name = models.CharField(_("First Name"), max_length=15)
     last_name = models.CharField(_("Last Name"), max_length=20)
     line1 = models.CharField(_("Address Line 1"), max_length=26)

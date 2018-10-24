@@ -15,6 +15,7 @@ from ..core.constants import (
 )
 from ..core import exceptions as core_exceptions
 from ..models import (
+    APICredentials,
     FinancingPlan,
     USCreditApp,
     USJointCreditApp,
@@ -262,6 +263,7 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = PreQualificationRequest
         fields = (
+            'customer_initiated',
             'first_name',
             'last_name',
             'line1',
@@ -275,13 +277,20 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
 
 
     def save(self):
+        request = self.context['request']
+        request_user = None
+        if request.user and request.user.is_authenticated:
+            request_user = request.user
+        creds = APICredentials.get_credentials(request_user)
         request = PreQualificationRequest()
+        request.customer_initiated = self.validated_data.get('customer_initiated', False)
         request.first_name = self.validated_data['first_name']
         request.last_name = self.validated_data['last_name']
         request.line1 = self.validated_data['line1']
         request.city = self.validated_data['city']
         request.state = self.validated_data['state']
         request.postcode = self.validated_data['postcode']
+        request.credentials = creds
         request.save()
         if self.validated_data['response_id']:
             response = PreQualificationResponse()

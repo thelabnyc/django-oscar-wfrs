@@ -120,3 +120,37 @@ class PreQualificationRequestTest(BaseTest):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertInHTML('<h1>Your Wells Fargo application was not approved.</h1>', response.content.decode())
+
+
+    def test_sdk_prequal_response(self):
+        url = reverse('wfrs-api-prequal-sdk-response')
+        data = {
+            'first_name': 'Joe',
+            'last_name': 'Schmoe',
+            'line1': '123 Evergreen Terrace',
+            'city': 'Springfield',
+            'state': 'NY',
+            'postcode': '10001',
+            'status': 'A',
+            'credit_limit': '7500.00',
+            'response_id': 'ABC123',
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'A')
+        self.assertEqual(response.data['is_approved'], True)
+        self.assertEqual(response.data['message'], '')
+        self.assertEqual(response.data['credit_limit'], '7500.00')
+        self.assertEqual(response.data['customer_response'], '')
+
+        url = reverse('wfrs-api-prequal-customer-response')
+        data = {
+            'customer_response': 'SDKPRESENTED',
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'A')
+        self.assertEqual(response.data['is_approved'], True)
+        self.assertEqual(response.data['message'], '')
+        self.assertEqual(response.data['credit_limit'], '7500.00')
+        self.assertEqual(response.data['customer_response'], 'SDKPRESENTED')

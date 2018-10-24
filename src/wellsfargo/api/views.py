@@ -205,7 +205,7 @@ class PreQualificationCustomerRedirectView(views.APIView):
         # Submit account inquiry to Wells to try and fetch account data
         try:
             acct_inquiry = prequal_response.check_account_status()
-        except DjangoValidationError as e:
+        except DjangoValidationError:
             acct_inquiry = None
 
         # If not response, account must have been declined or is pending.

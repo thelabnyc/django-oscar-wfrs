@@ -88,10 +88,10 @@ class CreditApplicationView(generic.FormView):
                 app.account_number = result.account_number
                 app.save()
                 return self.form_valid(app)
-            except CreditApplicationPending as e:
+            except CreditApplicationPending:
                 messages.add_message(request, messages.ERROR, _('Credit Application approval is pending'))
                 return self.form_valid()
-            except CreditApplicationDenied as e:
+            except CreditApplicationDenied:
                 messages.add_message(request, messages.ERROR, _('Credit Application was denied by Wells Fargo'))
             except ValidationError as e:
                 messages.add_message(request, messages.ERROR, e.message)
