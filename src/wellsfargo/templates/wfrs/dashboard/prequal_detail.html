@@ -37,6 +37,20 @@
                     </td>
                 </tr>
                 <tr>
+                    <th>{% trans "Merchant Number" %}</th>
+                    <td>{{ object.credentials.merchant_num }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Customer Initiated" %}</th>
+                    <td>
+                        {% if object.customer_initiated %}
+                            Yes (PREQUAL)
+                        {% else %}
+                            No (PRESCREEN)
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
                     <th>{% trans "Locale" %}</th>
                     <td>{{ object.locale_name }}</td>
                 </tr>
@@ -140,7 +154,7 @@
                 {% else %}
                     <tr>
                         <td colspan="2">
-                            <em>{% trans "Failed to request pre-qualification status from Wells Fargo." %}</em>
+                            <em>{% trans "Pre-qualified offer was not returned by Wells Fargo for this consumer." %}</em>
                         </td>
                     </tr>
                 {% endif %}

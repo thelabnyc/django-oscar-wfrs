@@ -162,6 +162,14 @@ class PreQualificationIndexTable(DashboardTable):
         verbose_name=_('Customer Response'),
         accessor=A('response.customer_response'),
         orderable=False)
+    merchant_num = Column(
+        verbose_name=_('Merchant Number'),
+        accessor=A('response.request.credentials.merchant_num'),
+        orderable=False)
+    customer_initiated = Column(
+        verbose_name=_('Customer Initiated'),
+        accessor=A('response.request.customer_initiated'),
+        orderable=False)
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
         order_by='created_datetime',
@@ -180,6 +188,8 @@ class PreQualificationIndexTable(DashboardTable):
             'response_status',
             'response_credit_limit',
             'response_customer_response',
+            'merchant_num',
+            'customer_initiated',
             'created_datetime',
             'reported_datetime',
         )
