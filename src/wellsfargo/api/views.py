@@ -9,7 +9,7 @@ from ..core.constants import (
     INDIVIDUAL, JOINT,
     PREQUAL_REDIRECT_APP_APPROVED,
 )
-from ..models import PreQualificationResponse, FinancingPlan
+from ..models import PreQualificationResponse, FinancingPlan, PreQualificationSDKApplicationResult
 from .serializers import (
     AppSelectionSerializer,
     USCreditAppSerializer,
@@ -22,6 +22,7 @@ from .serializers import (
     PreQualificationRequestSerializer,
     PreQualificationResponseSerializer,
     PreQualificationSDKResponseSerializer,
+    PreQualificationSDKApplicationResultSerializer,
 )
 from ..utils import list_plans_for_basket, calculate_monthly_payments
 import decimal
@@ -143,7 +144,6 @@ class PreQualificationRequestView(generics.GenericAPIView):
         prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
         if not prequal_request_id:
             return Response(status=status.HTTP_204_NO_CONTENT)
-
         try:
             prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
         except PreQualificationResponse.DoesNotExist:
@@ -168,6 +168,40 @@ class PreQualificationRequestView(generics.GenericAPIView):
 
 class PreQualificationSDKResponseView(PreQualificationRequestView):
     serializer_class = PreQualificationSDKResponseSerializer
+
+
+class PreQualificationSDKApplicationResultView(generics.GenericAPIView):
+    serializer_class = PreQualificationSDKApplicationResultSerializer
+
+    def get(self, request):
+        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
+        if not prequal_request_id:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            sdk_application_result = PreQualificationSDKApplicationResult.objects.get(prequal_response__request__id=prequal_request_id)
+        except PreQualificationSDKApplicationResult.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        response_ser = self.get_serializer_class()(instance=sdk_application_result, context={'request': request})
+        return Response(response_ser.data)
+
+
+    def post(self, request):
+        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
+        try:
+            instance = PreQualificationSDKApplicationResult.objects.get(prequal_response__request__id=prequal_request_id)
+        except PreQualificationSDKApplicationResult.DoesNotExist:
+            instance = None
+        request_ser = self.get_serializer_class()(instance=instance, data=request.data, context={'request': request})
+        request_ser.is_valid(raise_exception=True)
+        sdk_application_result = request_ser.save()
+        try:
+            prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
+            sdk_application_result.prequal_response = prequal_response
+            sdk_application_result.save()
+        except PreQualificationResponse.DoesNotExist:
+            pass
+        response_ser = self.get_serializer_class()(instance=sdk_application_result, context={'request': request})
+        return Response(response_ser.data)
 
 
 class PreQualificationCustomerResponseView(views.APIView):

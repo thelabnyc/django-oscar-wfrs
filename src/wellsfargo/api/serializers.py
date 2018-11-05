@@ -24,6 +24,7 @@ from ..models import (
     AccountInquiryResult,
     PreQualificationRequest,
     PreQualificationResponse,
+    PreQualificationSDKApplicationResult,
 )
 from . import exceptions as api_exceptions
 
@@ -240,7 +241,25 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
         return prequal_request
 
 
+class PreQualificationSDKApplicationResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreQualificationSDKApplicationResult
+        read_only_fields = (
+            'created_datetime',
+            'modified_datetime',
+        )
+        fields = read_only_fields + (
+            'application_id',
+            'first_name',
+            'last_name',
+            'application_status',
+        )
+
+
+
 class PreQualificationResponseSerializer(serializers.ModelSerializer):
+    sdk_application_result = PreQualificationSDKApplicationResultSerializer(read_only=True)
+
     class Meta:
         model = PreQualificationResponse
         read_only_fields = (
@@ -249,6 +268,7 @@ class PreQualificationResponseSerializer(serializers.ModelSerializer):
             'message',
             'credit_limit',
             'full_application_url',
+            'sdk_application_result',
             'created_datetime',
             'modified_datetime',
         )
