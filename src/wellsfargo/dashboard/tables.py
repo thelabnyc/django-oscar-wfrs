@@ -162,6 +162,10 @@ class PreQualificationIndexTable(DashboardTable):
         verbose_name=_('Customer Response'),
         accessor=A('response.customer_response'),
         orderable=False)
+    sdk_application_result = Column(
+        verbose_name=_('SDK Application Result'),
+        accessor=A('response.sdk_application_result.application_status'),
+        orderable=False)
     merchant_num = Column(
         verbose_name=_('Merchant Number'),
         accessor=A('response.request.credentials.merchant_num'),
@@ -188,6 +192,7 @@ class PreQualificationIndexTable(DashboardTable):
             'response_status',
             'response_credit_limit',
             'response_customer_response',
+            'sdk_application_result',
             'merchant_num',
             'customer_initiated',
             'created_datetime',

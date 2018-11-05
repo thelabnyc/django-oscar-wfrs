@@ -159,6 +159,44 @@
                     </tr>
                 {% endif %}
             </table>
+
+            <div class="table-header">
+                <h2>{% trans "SDK Credit Application Results" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                {% if object.response and object.response.sdk_application_result %}
+                    <tr>
+                        <th>{% trans "Application ID" %}</th>
+                        <td>{{ object.response.sdk_application_result.application_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "First Name" %}</th>
+                        <td>{{ object.response.sdk_application_result.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Last Name" %}</th>
+                        <td>{{ object.response.sdk_application_result.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Application Status" %}</th>
+                        <td>{{ object.response.sdk_application_result.application_status }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Created Date" %}</th>
+                        <td>{{ object.response.sdk_application_result.created_datetime }}</td>
+                    </tr>
+                    <tr>
+                        <th>{% trans "Modified Date" %}</th>
+                        <td>{{ object.response.sdk_application_result.modified_datetime }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">
+                            <em>{% trans "This consumer did not complete the Wells Fargo Credit Application." %}</em>
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
         </div>
     </div>
 {% endblock %}

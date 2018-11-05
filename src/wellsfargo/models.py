@@ -484,6 +484,7 @@ class PreQualificationResponse(models.Model):
         max_length=_max_len(PREQUAL_CUSTOMER_RESP_CHOICES),
         choices=PREQUAL_CUSTOMER_RESP_CHOICES,
         default=PREQUAL_CUSTOMER_RESP_NONE)
+
     customer_order = models.ForeignKey('order.Order',
         null=True, blank=True,
         related_name='prequalification_responses',
@@ -524,3 +525,17 @@ class PreQualificationResponse(models.Model):
     def check_account_status(self):
         from .connector import actions
         return actions.check_pre_qualification_account_status(self)
+
+
+class PreQualificationSDKApplicationResult(models.Model):
+    prequal_response = models.OneToOneField(PreQualificationResponse,
+        verbose_name=_('PreQualification Response'),
+        related_name='sdk_application_result',
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
+    application_id = models.CharField(_('Unique Response ID'), max_length=8)
+    first_name = models.CharField(_("First Name"), max_length=15)
+    last_name = models.CharField(_("Last Name"), max_length=20)
+    application_status = models.CharField(_("Application Status"), max_length=20)
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)

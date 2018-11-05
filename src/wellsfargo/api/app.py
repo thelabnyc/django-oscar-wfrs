@@ -14,6 +14,7 @@ from .views import (
     PreQualificationSDKResponseView,
     PreQualificationCustomerResponseView,
     PreQualificationCustomerRedirectView,
+    PreQualificationSDKApplicationResultView,
 )
 
 
@@ -35,6 +36,7 @@ class WFRSAPIApplication(Application):
 
             url(r'^prequal/$', PreQualificationRequestView.as_view(), name='wfrs-api-prequal'),
             url(r'^prequal/sdk-response/$', PreQualificationSDKResponseView.as_view(), name='wfrs-api-prequal-sdk-response'),
+            url(r'^prequal/sdk-application-result/$', PreQualificationSDKApplicationResultView.as_view(), name='wfrs-api-prequal-sdk-app-result'),
             url(r'^prequal/set-customer-response/$', PreQualificationCustomerResponseView.as_view(),
                 name='wfrs-api-prequal-customer-response'),
             url(r'^prequal/application-complete/$', PreQualificationCustomerRedirectView.as_view(),
