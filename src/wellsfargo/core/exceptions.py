@@ -3,7 +3,7 @@ class WellsFargoException(Exception):
 
 
 class TransactionDenied(WellsFargoException):
-    pass
+    status = None
 
 
 class CreditApplicationDenied(WellsFargoException):

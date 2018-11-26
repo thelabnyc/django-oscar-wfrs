@@ -56,16 +56,6 @@ def submit_transaction(trans_request, current_user=None, transaction_uuid=None, 
     # Submit
     resp = client.service.submitTransaction(request)
 
-    # Check for faults
-    if resp.faults:
-        for fault in resp.faults:
-            logger.info(fault.faultDetailString)
-            raise ValidationError(fault.faultDetailString)
-
-    # Check for approval
-    if resp.transactionStatus != TRANS_APPROVED:
-        raise TransactionDenied('%s: %s' % (resp.transactionStatus, resp.transactionMessage))
-
     # Persist transaction data and WF specific metadata
     transfer = TransferMetadata()
     transfer.user = trans_request.user
@@ -79,9 +69,22 @@ def submit_transaction(trans_request, current_user=None, transaction_uuid=None, 
     transfer.auth_number = resp.authorizationNumber
     transfer.status = resp.transactionStatus
     transfer.message = resp.transactionMessage
-    transfer.disclosure = resp.disclosure
+    transfer.disclosure = resp.disclosure or ''
     if persist:
         transfer.save()
+
+    # Check for faults
+    if resp.faults:
+        for fault in resp.faults:
+            logger.info(fault.faultDetailString)
+            raise ValidationError(fault.faultDetailString)
+
+    # Check for approval
+    if resp.transactionStatus != TRANS_APPROVED:
+        exc = TransactionDenied('%s: %s' % (resp.transactionStatus, resp.transactionMessage))
+        exc.status = resp.transactionStatus
+        raise exc
+
     return transfer
 
 

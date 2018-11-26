@@ -1,11 +1,12 @@
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
+from oscar.core.loading import get_model
 from oscarapi.basket import operations
 from oscarapicheckout.methods import PaymentMethod, PaymentMethodSerializer
 from oscarapicheckout.states import Complete, Declined
 from requests.exceptions import Timeout, ConnectionError
 from .connector import actions
-from .core.constants import TRANS_TYPE_AUTH, TRANS_TYPE_CANCEL_AUTH
+from .core.constants import TRANS_DECLINED, TRANS_TYPE_AUTH, TRANS_TYPE_CANCEL_AUTH
 from .core.structures import TransactionRequest
 from .core import exceptions
 from .utils import list_plans_for_basket
@@ -15,6 +16,8 @@ from .settings import WFRS_MAX_TRANSACTION_ATTEMPTS
 import logging
 
 logger = logging.getLogger(__name__)
+
+Transaction = get_model('payment', 'Transaction')
 
 
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
@@ -84,6 +87,11 @@ class WellsFargo(PaymentMethod):
                 transaction_uuid=fraud_response.reference)
         except (exceptions.TransactionDenied, ValidationError) as e:
             logger.info('WFRS transaction failed for Order[{}]. Reason: {}'.format(order.number, str(e)))
+            source._create_transaction(
+                txn_type=Transaction.AUTHORISE,
+                amount=amount,
+                reference=fraud_response.reference,
+                status=getattr(e, 'status', TRANS_DECLINED))
             return Declined(amount)
 
         # Record the allocation as a transaction
