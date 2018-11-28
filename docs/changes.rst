@@ -6,6 +6,9 @@ Changelog
 0.15.0
 ------------------
 - Extend PreQual views to work with new Wells Fargo Pre-Approval SDK.
+- Record transaction records for denied transaction attempts.
+- Add support for Django 2.1
+- Add support for Python 3.7
 
 0.14.0
 ------------------
