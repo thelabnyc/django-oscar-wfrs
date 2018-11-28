@@ -3,6 +3,10 @@
 Changelog
 =========
 
+0.15.1
+------------------
+- Fix widget rendering issue in Django 2.1
+
 0.15.0
 ------------------
 - Extend PreQual views to work with new Wells Fargo Pre-Approval SDK.
