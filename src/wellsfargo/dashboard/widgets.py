@@ -17,7 +17,7 @@ class FuzzyDurationWidget(Widget):
         self.years = range(0, max_years)
         self.months = range(0, 12)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if value and isinstance(value, str) and len(value) == 4:
             month_val = int(value[:2])
             year_val = int(value[2:])
@@ -26,10 +26,10 @@ class FuzzyDurationWidget(Widget):
             year_val = None
 
         choices = [(i, i) for i in self.months]
-        months = self.create_select(name, self.month_field, value, month_val, choices)
+        months = self.create_select(name, self.month_field, value, month_val, choices, renderer)
 
         choices = [(i, i) for i in self.years]
-        years = self.create_select(name, self.year_field, value, year_val, choices)
+        years = self.create_select(name, self.year_field, value, year_val, choices, renderer)
 
         html = """
             <table class='fuzzy-duration'>
@@ -52,14 +52,14 @@ class FuzzyDurationWidget(Widget):
         y = data.get(self.year_field % name, '').zfill(2)
         return "%s%s" % (m, y)
 
-    def create_select(self, name, field, value, val, choices):
+    def create_select(self, name, field, value, val, choices, renderer):
         if 'id' in self.attrs:
             id_ = self.attrs['id']
         else:
             id_ = 'id_%s' % name
         local_attrs = self.build_attrs(dict(id=field % id_))
         s = self.select_widget(choices=choices)
-        select_html = s.render(field % name, val, local_attrs)
+        select_html = s.render(field % name, val, local_attrs, renderer)
         return select_html
 
 
@@ -72,7 +72,7 @@ class BooleanSelect(Select):
         )
         super().__init__(attrs, choices)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         try:
             mapping = {
                 False: '0',
@@ -83,7 +83,7 @@ class BooleanSelect(Select):
             value = mapping[value]
         except KeyError:
             value = '0'
-        return super().render(name, value, attrs)
+        return super().render(name, value, attrs, renderer)
 
     def value_from_datadict(self, data, files, name):
         value = data.get(name)
