@@ -9,6 +9,7 @@ from ..core.constants import (
     LOCALES,
     APP_TYPES, LANGUAGES, REGIONS,
     APPLICATION_FORM_EXCLUDE_FIELDS,
+    PREQUAL_TRANS_STATUS_CHOICES,
 )
 from ..models import (
     FinancingPlan,
@@ -126,6 +127,14 @@ class ApplicationSearchForm(forms.Form):
 class PreQualSearchForm(forms.Form):
     # Basic Search
     search_text = forms.CharField(required=False, label="Search")
+
+    # Advanced Search
+    customer_initiated = forms.NullBooleanField(required=False, label="Customer Initiated?")
+    first_name = forms.CharField(required=False, label="First Name")
+    last_name = forms.CharField(required=False, label="Last Name")
+    status = forms.ChoiceField(required=False, label="Status", choices=((('', 'All Statuses'), ) + PREQUAL_TRANS_STATUS_CHOICES))
+    created_date_from = forms.DateTimeField(required=False, label=_("Submitted After"), widget=DateTimePickerInput)
+    created_date_to = forms.DateTimeField(required=False, label=_("Submitted Before"), widget=DateTimePickerInput)
 
 
 def get_application_form_class(region, app_type):

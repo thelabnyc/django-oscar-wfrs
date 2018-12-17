@@ -1,4 +1,5 @@
 from urllib.parse import urlencode
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -15,6 +16,7 @@ from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 from ..connector import actions
 from ..core.exceptions import CreditApplicationPending, CreditApplicationDenied
+from ..core.constants import PREQUAL_TRANS_STATUS_REJECTED, get_prequal_trans_status_name
 from ..models import (
     FinancingPlan,
     FinancingPlanBenefit,
@@ -416,6 +418,40 @@ class PreQualificationListView(SingleTableView):
                 'phone')
             qs = qs.annotate(search=svector).filter(search=search_text)
             self.filter_descrs.append(_('Request contains “{text}”').format(text=search_text))
+
+        # Advanced Search
+        customer_initiated = data.get('customer_initiated')
+        if customer_initiated is not None:
+            qs = qs.filter(customer_initiated=customer_initiated)
+            self.filter_descrs.append(_('Customer Initiated is “{text}”').format(text=customer_initiated))
+
+        first_name = data.get('first_name')
+        if first_name:
+            qs = qs.filter(first_name__search=first_name)
+            self.filter_descrs.append(_('First name is “{text}”').format(text=first_name))
+
+        last_name = data.get('last_name')
+        if last_name:
+            qs = qs.filter(last_name__search=last_name)
+            self.filter_descrs.append(_('Last name is “{text}”').format(text=last_name))
+
+        status = data.get('status')
+        if status:
+            _filter = Q(response__status=status)
+            if status == PREQUAL_TRANS_STATUS_REJECTED:
+                _filter = _filter | Q(response__isnull=True)
+            qs = qs.filter(_filter)
+            self.filter_descrs.append(_('Status is “{text}”').format(text=get_prequal_trans_status_name(status)))
+
+        created_date_from = data.get('created_date_from')
+        if created_date_from:
+            qs = qs.filter(created_datetime__gte=created_date_from)
+            self.filter_descrs.append(_('Created after {text}').format(text=created_date_from))
+
+        created_date_to = data.get('created_date_to')
+        if created_date_to:
+            qs = qs.filter(created_datetime__lte=created_date_to)
+            self.filter_descrs.append(_('Created before {text}').format(text=created_date_to))
 
         return qs
 

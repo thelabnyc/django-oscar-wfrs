@@ -140,6 +140,10 @@ class PreQualificationIndexTable(DashboardTable):
         args=[A('uuid')],
         verbose_name=_('UUID'),
         orderable=False)
+    merchant_name = Column(
+        verbose_name=_('Merchant Name'),
+        accessor=A('credentials.name'),
+        orderable=False)
     first_name = Column(
         verbose_name=_('First Name'),
         orderable=False)
@@ -152,10 +156,10 @@ class PreQualificationIndexTable(DashboardTable):
         orderable=False)
     response_status = Column(
         verbose_name=_('Status'),
-        accessor=A('response.status'),
+        accessor=A('status_name'),
         orderable=False)
     response_credit_limit = Column(
-        verbose_name=_('Credit Limit'),
+        verbose_name=_('Pre-Qual Credit Limit'),
         accessor=A('response.credit_limit'),
         orderable=False)
     response_customer_response = Column(
@@ -168,11 +172,11 @@ class PreQualificationIndexTable(DashboardTable):
         orderable=False)
     merchant_num = Column(
         verbose_name=_('Merchant Number'),
-        accessor=A('response.request.credentials.merchant_num'),
+        accessor=A('credentials.merchant_num'),
         orderable=False)
     customer_initiated = Column(
         verbose_name=_('Customer Initiated'),
-        accessor=A('response.request.customer_initiated'),
+        accessor=A('customer_initiated'),
         orderable=False)
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
@@ -186,6 +190,7 @@ class PreQualificationIndexTable(DashboardTable):
     class Meta(DashboardTable.Meta):
         sequence = (
             'uuid',
+            'merchant_name',
             'first_name',
             'last_name',
             'address',

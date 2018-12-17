@@ -148,11 +148,30 @@ PREQUAL_TRANS_STATUS_APPROVED = 'A'  # Instant pre-screen approved
 PREQUAL_TRANS_STATUS_REJECTED = 'D'  # Instant pre-screen not approved
 PREQUAL_TRANS_STATUS_ERROR = 'E'  # System Error
 PREQUAL_TRANS_STATUS_DOWN = 'M'  # Down for Maintenance
+
+_trans_qual_names = {
+    PREQUAL_TRANS_STATUS_APPROVED: _('Pre-qualification Approved'),
+    PREQUAL_TRANS_STATUS_REJECTED: _('Pre-qualification Not Approved'),
+    PREQUAL_TRANS_STATUS_ERROR: _('System Error'),
+    PREQUAL_TRANS_STATUS_DOWN: _('Down for Maintenance'),
+}
+_trans_screen_names = {
+    PREQUAL_TRANS_STATUS_APPROVED: _('Pre-screen Approved'),
+    PREQUAL_TRANS_STATUS_REJECTED: _('Pre-screen Not Approved'),
+    PREQUAL_TRANS_STATUS_ERROR: _('System Error'),
+    PREQUAL_TRANS_STATUS_DOWN: _('Down for Maintenance'),
+}
+
+def get_prequal_trans_status_name(status_code, customer_initiated=True):
+    if customer_initiated:
+        return _trans_qual_names.get(status_code, PREQUAL_TRANS_STATUS_REJECTED)
+    return _trans_screen_names.get(status_code, PREQUAL_TRANS_STATUS_REJECTED)
+
 PREQUAL_TRANS_STATUS_CHOICES = (
-    (PREQUAL_TRANS_STATUS_APPROVED, _('Pre-screen Approved')),
-    (PREQUAL_TRANS_STATUS_REJECTED, _('Pre-screen Not Approved')),
-    (PREQUAL_TRANS_STATUS_ERROR, _('System Error')),
-    (PREQUAL_TRANS_STATUS_DOWN, _('Down for Maintenance')),
+    (PREQUAL_TRANS_STATUS_APPROVED, get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_APPROVED)),
+    (PREQUAL_TRANS_STATUS_REJECTED, get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_REJECTED)),
+    (PREQUAL_TRANS_STATUS_ERROR, get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_ERROR)),
+    (PREQUAL_TRANS_STATUS_DOWN, get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_DOWN)),
 )
 
 PREQUAL_CUSTOMER_RESP_NONE = ''  # No response from customer

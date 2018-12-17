@@ -18,9 +18,11 @@ from .core.constants import (
     ENTRY_POINT_WEB,
     ENTRY_POINT_CHOICES,
     PREQUAL_TRANS_STATUS_APPROVED,
+    PREQUAL_TRANS_STATUS_REJECTED,
     PREQUAL_TRANS_STATUS_CHOICES,
     PREQUAL_CUSTOMER_RESP_NONE,
     PREQUAL_CUSTOMER_RESP_CHOICES,
+    get_prequal_trans_status_name,
 )
 from .core.applications import (
     USCreditAppMixin,
@@ -469,6 +471,13 @@ class PreQualificationRequest(models.Model):
     def entry_point_name(self):
         return dict(ENTRY_POINT_CHOICES).get(self.entry_point, self.entry_point)
 
+    @property
+    def status_name(self):
+        response = getattr(self, 'response', None)
+        if response:
+            return response.status_name
+        return get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_REJECTED, self.customer_initiated)
+
 
 class PreQualificationResponse(models.Model):
     request = models.OneToOneField(PreQualificationRequest, related_name='response', on_delete=models.CASCADE)
@@ -505,7 +514,7 @@ class PreQualificationResponse(models.Model):
 
     @property
     def status_name(self):
-        return dict(PREQUAL_TRANS_STATUS_CHOICES).get(self.status, self.status)
+        return get_prequal_trans_status_name(self.status, self.request.customer_initiated)
 
 
     @property
