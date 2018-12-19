@@ -162,10 +162,12 @@ _trans_screen_names = {
     PREQUAL_TRANS_STATUS_DOWN: _('Down for Maintenance'),
 }
 
+
 def get_prequal_trans_status_name(status_code, customer_initiated=True):
     if customer_initiated:
         return _trans_qual_names.get(status_code, PREQUAL_TRANS_STATUS_REJECTED)
     return _trans_screen_names.get(status_code, PREQUAL_TRANS_STATUS_REJECTED)
+
 
 PREQUAL_TRANS_STATUS_CHOICES = (
     (PREQUAL_TRANS_STATUS_APPROVED, get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_APPROVED)),
