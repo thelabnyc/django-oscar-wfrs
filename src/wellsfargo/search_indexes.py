@@ -7,6 +7,7 @@ from .models import (
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp,
+    PreQualificationRequest,
 )
 
 
@@ -170,3 +171,97 @@ class TransferMetadataIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_user_id(self, obj):
         return obj.user.pk if obj.user else None
+
+
+
+class PreQualificationIndex(indexes.SearchIndex, indexes.Indexable):
+    uuid = indexes.CharField(model_attr='uuid')
+    customer_initiated = indexes.BooleanField(model_attr='customer_initiated')
+    email = indexes.CharField(model_attr='email', null=True)
+    first_name = indexes.CharField(model_attr='first_name')
+    middle_initial = indexes.CharField(model_attr='middle_initial', null=True)
+    last_name = indexes.CharField(model_attr='last_name')
+    line1 = indexes.CharField(model_attr='line1')
+    line2 = indexes.CharField(model_attr='line2', null=True)
+    city = indexes.CharField(model_attr='city')
+    state = indexes.CharField(model_attr='state')
+    postcode = indexes.CharField(model_attr='postcode')
+    phone = indexes.CharField(model_attr='phone')
+    created_datetime = indexes.DateTimeField(model_attr='created_datetime')
+
+    merchant_name = indexes.CharField(null=True)
+    merchant_num = indexes.CharField(null=True)
+
+    response_status = indexes.CharField(model_attr='status')
+    response_status_name = indexes.CharField(model_attr='status_name')
+    response_credit_limit = indexes.CharField(null=True)
+    response_customer_response = indexes.CharField(null=True)
+    response_reported_datetime = indexes.DateTimeField(null=True)
+
+    sdk_application_result = indexes.CharField(null=True)
+
+    order_total = indexes.CharField(null=True)
+    order_date_placed = indexes.DateTimeField(null=True)
+    order_merchant_name = indexes.CharField(null=True)
+
+    text = indexes.EdgeNgramField(document=True, use_template=True, template_name='search/indexes/wellsfargo/prequalification_text.txt')
+
+    def get_model(self):
+        return PreQualificationRequest
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.all()
+
+    def prepare_merchant_name(self, obj):
+        return obj.credentials.name if obj.credentials else None
+
+    def prepare_merchant_num(self, obj):
+        return obj.credentials.merchant_num if obj.credentials else None
+
+    def prepare_response_credit_limit(self, obj):
+        resp = getattr(obj, 'response', None)
+        if resp is None:
+            return None
+        return resp.credit_limit
+
+    def prepare_response_customer_response(self, obj):
+        resp = getattr(obj, 'response', None)
+        if resp is None:
+            return None
+        return resp.customer_response
+
+    def prepare_response_reported_datetime(self, obj):
+        resp = getattr(obj, 'response', None)
+        if resp is None:
+            return None
+        return resp.reported_datetime
+
+    def prepare_sdk_application_result(self, obj):
+        resp = getattr(obj, 'response', None)
+        if resp is None:
+            return None
+        app_result = getattr(resp, 'sdk_application_result', None)
+        if app_result is None:
+            return None
+        return app_result.application_status
+
+    def prepare_order_total(self, obj):
+        return obj.resulting_order.total_incl_tax if obj.resulting_order else None
+
+    def prepare_order_date_placed(self, obj):
+        return obj.resulting_order.date_placed if obj.resulting_order else None
+
+    def prepare_order_merchant_name(self, obj):
+        order = obj.resulting_order
+        if not order:
+            return None
+        transfers = []
+        for source in order.sources.filter(source_type__name=WellsFargo.name).all():
+            for transaction in source.transactions.filter(txn_type=Transaction.AUTHORISE).all():
+                transfer = TransferMetadata.get_by_oscar_transaction(transaction)
+                if transfer:
+                    transfers.append(transfer)
+        if len(transfers) <= 0:
+            return None
+        credentials = transfers[0].credentials
+        return credentials.name if credentials else None

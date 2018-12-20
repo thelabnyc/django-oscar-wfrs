@@ -8,13 +8,13 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
 from django.views import generic
-from django.contrib.postgres.search import SearchVector
 from django_tables2 import SingleTableView
 from oscar.core.compat import UnicodeCSVWriter
 from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 from ..connector import actions
 from ..core.exceptions import CreditApplicationPending, CreditApplicationDenied
+from ..core.constants import get_prequal_trans_status_name
 from ..models import (
     FinancingPlan,
     FinancingPlanBenefit,
@@ -43,6 +43,48 @@ APPLICATION_MODELS = {
     CACreditApp.APP_TYPE_CODE: CACreditApp,
     CAJointCreditApp.APP_TYPE_CODE: CAJointCreditApp,
 }
+
+
+class CSVDownloadableTableMixin(object):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        download_params = { k: v for k, v in self.request.GET.items() }
+        download_params['response_format'] = 'csv'
+        context['download_querystring'] = urlencode(download_params)
+        return context
+
+
+    def is_csv_download(self):
+        return self.request.GET.get('response_format', None) == 'csv'
+
+
+    def render_to_response(self, context, **response_kwargs):
+        if self.is_csv_download():
+            return self.download_applications(self.request, context[self.context_table_name])
+        return super().render_to_response(context, **response_kwargs)
+
+
+    def get_download_filename(self, request):
+        return 'results.csv'
+
+
+    def download_applications(self, request, table):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=%s' % self.get_download_filename(request)
+        writer = UnicodeCSVWriter(open_file=response)
+
+        def format_csv_cell(str_in):
+            if not str_in:
+                return '–'
+            return strip_tags(str_in).replace('\n', '').strip()
+
+        # Loop through each row in the table, strip out any HTMl, and write it to a CSV excluding the last column (actions).
+        for row_raw in table.as_values():
+            row_values = tuple(format_csv_cell(value) for value in row_raw)
+            writer.writerow(row_values[:-1])
+
+        return response
 
 
 
@@ -188,7 +230,7 @@ class FinancingPlanBenefitDeleteView(generic.DeleteView):
 
 
 
-class CreditApplicationListView(SingleTableView):
+class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
     template_name = "wfrs/dashboard/application_list.html"
     form_class = ApplicationSearchForm
     table_class = CreditApplicationIndexTable
@@ -200,11 +242,6 @@ class CreditApplicationListView(SingleTableView):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form
         context['search_filters'] = self.filter_descrs
-
-        download_params = { k: v for k, v in self.request.GET.items() }
-        download_params['response_format'] = 'csv'
-        context['download_querystring'] = urlencode(download_params)
-
         return context
 
 
@@ -295,36 +332,8 @@ class CreditApplicationListView(SingleTableView):
         return qs
 
 
-    def is_csv_download(self):
-        return self.request.GET.get('response_format', None) == 'csv'
-
-
-    def render_to_response(self, context, **response_kwargs):
-        if self.is_csv_download():
-            return self.download_applications(self.request, context[self.context_table_name])
-        return super().render_to_response(context, **response_kwargs)
-
-
     def get_download_filename(self, request):
         return 'applications.csv'
-
-
-    def download_applications(self, request, table):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=%s' % self.get_download_filename(request)
-        writer = UnicodeCSVWriter(open_file=response)
-
-        def format_csv_cell(str_in):
-            if not str_in:
-                return '–'
-            return strip_tags(str_in).replace('\n', '').strip()
-
-        # Loop through each row in the table, strip out any HTMl, and write it to a CSV excluding the last column (actions).
-        for row_raw in table.as_values():
-            row_values = tuple(format_csv_cell(value) for value in row_raw)
-            writer.writerow(row_values[:-1])
-
-        return response
 
 
 
@@ -366,27 +375,12 @@ class TransferMetadataDetailView(generic.DetailView):
 
 
 
-class PreQualificationListView(SingleTableView):
+class PreQualificationListView(CSVDownloadableTableMixin, SingleTableView):
     template_name = "wfrs/dashboard/prequal_list.html"
     form_class = PreQualSearchForm
     table_class = PreQualificationIndexTable
     context_table_name = 'prequal_requests'
     filter_descrs = []
-
-    def get_table(self, **kwargs):
-        table = super().get_table(**kwargs)
-        table.caption = _('Pre-Qualification Requests')
-        return table
-
-
-    def get_queryset(self):
-        qs = PreQualificationRequest.objects.all()
-        # Default ordering
-        if not self.request.GET.get('sort'):
-            qs = qs.order_by('-created_datetime', '-id')
-        # Apply search filters
-        qs = self.apply_search(qs)
-        return qs
 
 
     def get_context_data(self, **kwargs):
@@ -394,6 +388,28 @@ class PreQualificationListView(SingleTableView):
         context['form'] = self.form
         context['search_filters'] = self.filter_descrs
         return context
+
+
+    def get_description(self, form):
+        if form.is_valid() and any(form.cleaned_data.values()):
+            return _('Pre-Qualification Search Results')
+        return _('Pre-Qualification Requests')
+
+
+    def get_table(self, **kwargs):
+        table = super().get_table(**kwargs)
+        table.caption = self.get_description(self.form)
+        return table
+
+
+    def get_queryset(self):
+        qs = SearchQuerySet().models(PreQualificationRequest)
+        # Default ordering
+        if not self.request.GET.get('sort'):
+            qs = qs.order_by('-created_datetime', '-id')
+        # Apply search filters
+        qs = self.apply_search(qs)
+        return qs
 
 
     def apply_search(self, qs):
@@ -406,18 +422,46 @@ class PreQualificationListView(SingleTableView):
         # Basic search
         search_text = data.get('search_text')
         if search_text:
-            svector = SearchVector(
-                'first_name',
-                'last_name',
-                'line1',
-                'city',
-                'state',
-                'postcode',
-                'phone')
-            qs = qs.annotate(search=svector).filter(search=search_text)
+            qs = qs.filter(text=AutoQuery(search_text))
             self.filter_descrs.append(_('Request contains “{text}”').format(text=search_text))
 
+        # Advanced Search
+        customer_initiated = data.get('customer_initiated')
+        if customer_initiated is not None:
+            qs = qs.filter(customer_initiated__exact=str(customer_initiated).lower())
+            self.filter_descrs.append(_('Customer Initiated is “{text}”').format(text=customer_initiated))
+
+        first_name = data.get('first_name')
+        if first_name:
+            qs = qs.filter(first_name__fuzzy=first_name)
+            self.filter_descrs.append(_('First name is “{text}”').format(text=first_name))
+
+        last_name = data.get('last_name')
+        if last_name:
+            qs = qs.filter(last_name__fuzzy=last_name)
+            self.filter_descrs.append(_('Last name is “{text}”').format(text=last_name))
+
+        status = data.get('status')
+        if status:
+            qs = qs.filter(response_status=status)
+            self.filter_descrs.append(_('Status is “{text}”').format(text=get_prequal_trans_status_name(status)))
+
+        created_date_from = data.get('created_date_from')
+        if created_date_from:
+            qs = qs.filter(created_datetime__gte=created_date_from)
+            self.filter_descrs.append(_('Created after {text}').format(text=created_date_from))
+
+        created_date_to = data.get('created_date_to')
+        if created_date_to:
+            qs = qs.filter(created_datetime__lte=created_date_to)
+            self.filter_descrs.append(_('Created before {text}').format(text=created_date_to))
+
         return qs
+
+
+    def get_download_filename(self, request):
+        return 'prequalifications.csv'
+
 
 
 class PreQualificationDetailView(generic.DetailView):

@@ -18,9 +18,11 @@ from .core.constants import (
     ENTRY_POINT_WEB,
     ENTRY_POINT_CHOICES,
     PREQUAL_TRANS_STATUS_APPROVED,
+    PREQUAL_TRANS_STATUS_REJECTED,
     PREQUAL_TRANS_STATUS_CHOICES,
     PREQUAL_CUSTOMER_RESP_NONE,
     PREQUAL_CUSTOMER_RESP_CHOICES,
+    get_prequal_trans_status_name,
 )
 from .core.applications import (
     USCreditAppMixin,
@@ -443,9 +445,12 @@ class PreQualificationRequest(models.Model):
         choices=ENTRY_POINT_CHOICES,
         default=ENTRY_POINT_WEB)
     customer_initiated = models.BooleanField(_("Check was deliberately initiated by customer action"), default=False)
+    email = models.EmailField(_("Email"), null=True, blank=True)
     first_name = models.CharField(_("First Name"), max_length=15)
+    middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
     last_name = models.CharField(_("Last Name"), max_length=20)
     line1 = models.CharField(_("Address Line 1"), max_length=26)
+    line2 = models.CharField(_("Address Line 2"), max_length=26, null=True, blank=True)
     city = models.CharField(_("City"), max_length=15)
     state = USStateField(_("State"))
     postcode = USZipCodeField(_("Postcode"))
@@ -461,13 +466,47 @@ class PreQualificationRequest(models.Model):
     class Meta:
         ordering = ('-created_datetime', '-id')
 
+
     @property
     def locale_name(self):
         return dict(PREQUAL_LOCALE_CHOICES).get(self.locale, self.locale)
 
+
     @property
     def entry_point_name(self):
         return dict(ENTRY_POINT_CHOICES).get(self.entry_point, self.entry_point)
+
+
+    @property
+    def status(self):
+        response = getattr(self, 'response', None)
+        if response:
+            return response.status
+        return PREQUAL_TRANS_STATUS_REJECTED
+
+
+    @property
+    def status_name(self):
+        response = getattr(self, 'response', None)
+        if response:
+            return response.status_name
+        return get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_REJECTED, self.customer_initiated)
+
+
+    @property
+    def resulting_order(self):
+        resp = getattr(self, 'response', None)
+        if resp and resp.customer_order:
+            return resp.customer_order
+        # Look for other orders which might have been placed by this customer
+        Order = get_model('order', 'Order')
+        email_matches = Q(guest_email=self.email) | Q(user__email=self.email)
+        date_matches = Q(date_placed__gt=self.created_datetime)
+        order = Order.objects.filter(email_matches & date_matches)\
+                             .order_by('date_placed')\
+                             .first()
+        return order
+
 
 
 class PreQualificationResponse(models.Model):
@@ -505,7 +544,7 @@ class PreQualificationResponse(models.Model):
 
     @property
     def status_name(self):
-        return dict(PREQUAL_TRANS_STATUS_CHOICES).get(self.status, self.status)
+        return get_prequal_trans_status_name(self.status, self.request.customer_initiated)
 
 
     @property
