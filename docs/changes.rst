@@ -3,6 +3,13 @@
 Changelog
 =========
 
+0.16.0
+------------------
+- Improve Pre-Qualification Dashboard.
+    - Adds new columns
+    - Improves search using Haystack
+    - Adds export ability
+
 0.15.1
 ------------------
 - Fix widget rendering issue in Django 2.1
