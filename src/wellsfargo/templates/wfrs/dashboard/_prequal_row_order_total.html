@@ -1,0 +1,4 @@
+{% spaceless %}
+    {% load currency_filters %}
+    {{ record.order_total | currency | default:'—' }}
+{% endspaceless %}

@@ -21,8 +21,15 @@
 
 
 {% block header %}
-    <div class="page-header">
-        <h1>{% trans "Pre-Qualification Inquiries" %}</h1>
+    <div class="page-header clearfix">
+        <div class="pull-left">
+            <h1>{% trans "Pre-Qualification Inquiries" %}</h1>
+        </div>
+        <div class="pull-right">
+            <a href="{% url 'wfrs-prequal-list' %}?{{ download_querystring | safe }}" class="btn btn-primary btn-lg">
+                <i class="icon-download-alt"></i> Export Results
+            </a>
+        </div>
     </div>
 {% endblock header %}
 

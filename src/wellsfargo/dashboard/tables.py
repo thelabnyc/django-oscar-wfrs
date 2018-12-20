@@ -142,7 +142,7 @@ class PreQualificationIndexTable(DashboardTable):
         orderable=False)
     merchant_name = Column(
         verbose_name=_('Merchant Name'),
-        accessor=A('credentials.name'),
+        accessor=A('merchant_name'),
         orderable=False)
     first_name = Column(
         verbose_name=_('First Name'),
@@ -154,37 +154,43 @@ class PreQualificationIndexTable(DashboardTable):
         verbose_name=_('Address'),
         template_name='wfrs/dashboard/_prequal_row_address.html',
         orderable=False)
-    response_status = Column(
+    response_status_name = Column(
         verbose_name=_('Status'),
-        accessor=A('status_name'),
         orderable=False)
-    response_credit_limit = Column(
+    response_credit_limit = TemplateColumn(
         verbose_name=_('Pre-Qual Credit Limit'),
-        accessor=A('response.credit_limit'),
+        template_name='wfrs/dashboard/_prequal_row_credit_limit.html',
         orderable=False)
     response_customer_response = Column(
         verbose_name=_('Customer Response'),
-        accessor=A('response.customer_response'),
         orderable=False)
     sdk_application_result = Column(
         verbose_name=_('SDK Application Result'),
-        accessor=A('response.sdk_application_result.application_status'),
         orderable=False)
     merchant_num = Column(
         verbose_name=_('Merchant Number'),
-        accessor=A('credentials.merchant_num'),
         orderable=False)
     customer_initiated = Column(
         verbose_name=_('Customer Initiated'),
-        accessor=A('customer_initiated'),
+        orderable=False)
+    order_total = TemplateColumn(
+        verbose_name=_('Order Total'),
+        template_name='wfrs/dashboard/_prequal_row_order_total.html',
+        orderable=False)
+    order_delay = TemplateColumn(
+        verbose_name=_('Time until Order Placement (Minutes)'),
+        template_name='wfrs/dashboard/_prequal_row_order_delay.html',
+        orderable=False)
+    order_merchant_name = Column(
+        verbose_name=_('Order Merchant Name'),
         orderable=False)
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
         order_by='created_datetime',
         format='D, N j Y, P')
-    reported_datetime = TZAwareDateTimeColumn(
+    response_reported_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Reported On'),
-        order_by='reported_datetime',
+        order_by='response_reported_datetime',
         format='D, N j Y, P')
 
     class Meta(DashboardTable.Meta):
@@ -194,12 +200,15 @@ class PreQualificationIndexTable(DashboardTable):
             'first_name',
             'last_name',
             'address',
-            'response_status',
+            'response_status_name',
             'response_credit_limit',
             'response_customer_response',
             'sdk_application_result',
             'merchant_num',
             'customer_initiated',
+            'order_total',
+            'order_delay',
+            'order_merchant_name',
             'created_datetime',
-            'reported_datetime',
+            'response_reported_datetime',
         )

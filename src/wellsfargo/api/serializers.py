@@ -284,9 +284,12 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
         model = PreQualificationRequest
         fields = (
             'customer_initiated',
+            'email',
             'first_name',
+            'middle_initial',
             'last_name',
             'line1',
+            'line2',
             'city',
             'state',
             'postcode',
@@ -304,9 +307,12 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
         creds = APICredentials.get_credentials(request_user)
         request = PreQualificationRequest()
         request.customer_initiated = self.validated_data.get('customer_initiated', False)
+        request.email = self.validated_data.get('email')
         request.first_name = self.validated_data['first_name']
+        request.middle_initial = self.validated_data.get('middle_initial')
         request.last_name = self.validated_data['last_name']
         request.line1 = self.validated_data['line1']
+        request.line2 = self.validated_data.get('line2')
         request.city = self.validated_data['city']
         request.state = self.validated_data['state']
         request.postcode = self.validated_data['postcode']
