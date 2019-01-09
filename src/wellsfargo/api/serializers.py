@@ -157,6 +157,7 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
             'apr',
             'term_months',
             'allow_credit_application',
+            'product_price_threshold',
         )
 
 

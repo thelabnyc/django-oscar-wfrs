@@ -55,7 +55,8 @@ class EstimatedPaymentsTest(APITestCase):
                 "fine_print_superscript": "",
                 "apr": "0.00",
                 "term_months": 12,
-                "allow_credit_application": True
+                "allow_credit_application": True,
+                "product_price_threshold": '1000.00',
             },
             "principal": "1500.00",
             "monthly_payment": "125.00",
@@ -76,7 +77,8 @@ class EstimatedPaymentsTest(APITestCase):
                 "fine_print_superscript": "",
                 "apr": "10.00",
                 "term_months": 24,
-                "allow_credit_application": True
+                "allow_credit_application": True,
+                "product_price_threshold": '2000.00',
             },
             "principal": "2500.00",
             "monthly_payment": "115.37",
