@@ -9,6 +9,7 @@ Changelog
     - Adds new columns
     - Improves search using Haystack
     - Adds export ability
+- Add financing advertising thresholds to the API
 
 0.15.1
 ------------------
