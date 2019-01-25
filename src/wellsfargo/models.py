@@ -6,6 +6,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from django.utils.functional import cached_property
 from oscar.core.loading import get_model, get_class
 from oscar.models.fields import PhoneNumberField
 from .core.constants import (
@@ -275,7 +276,7 @@ class TransferMetadata(models.Model):
         related_name='transfers',
         null=True, blank=True,
         on_delete=models.SET_NULL)
-    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
+    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4, db_index=True)
     encrypted_account_number = models.BinaryField(null=True)
     merchant_reference = models.CharField(max_length=128, null=True)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
@@ -371,9 +372,6 @@ class CreditAppCommonMixin(models.Model):
         verbose_name=_("Account Inquiries"),
         related_name='+')
 
-    _orders_cache = None
-    _first_order_cache = None
-
     class Meta:
         abstract = True
 
@@ -390,7 +388,7 @@ class CreditAppCommonMixin(models.Model):
         Find orders that were probably placed using the account that resulted from this application. It's
         not foolproof since we don't store the full account number.
         """
-        if not self._orders_cache:
+        if not hasattr(self, '_orders_cache'):
             Order = get_model('order', 'Order')
             # all transfers made with last 4 digits
             reference_uuids = set(TransferMetadata.objects.filter(last4_account_number=self.last4_account_number)
@@ -408,7 +406,7 @@ class CreditAppCommonMixin(models.Model):
 
 
     def get_first_order(self):
-        if not self._first_order_cache:
+        if not hasattr(self, '_first_order_cache'):
             self._first_order_cache = self.get_orders().first()
         return self._first_order_cache
 
@@ -465,6 +463,9 @@ class PreQualificationRequest(models.Model):
 
     class Meta:
         ordering = ('-created_datetime', '-id')
+        indexes = [
+            models.Index(fields=['-created_datetime', '-id']),
+        ]
 
 
     @property
@@ -493,7 +494,7 @@ class PreQualificationRequest(models.Model):
         return get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_REJECTED, self.customer_initiated)
 
 
-    @property
+    @cached_property
     def resulting_order(self):
         resp = getattr(self, 'response', None)
         if resp and resp.customer_order:

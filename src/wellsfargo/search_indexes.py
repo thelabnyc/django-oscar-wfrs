@@ -47,7 +47,10 @@ class BaseCreditAppIndex(indexes.SearchIndex):
     text = indexes.EdgeNgramField(document=True, use_template=True, template_name='search/indexes/wellsfargo/application_text.txt')
 
     def index_queryset(self, using=None):
-        return self.get_model().objects.all()
+        qs = self.get_model().objects\
+                             .select_related('credentials', 'user', 'submitting_user')\
+                             .all()
+        return qs
 
     def prepare_merchant_name(self, obj):
         return obj.credentials.name if obj.credentials else None
@@ -210,7 +213,16 @@ class PreQualificationIndex(indexes.SearchIndex, indexes.Indexable):
         return PreQualificationRequest
 
     def index_queryset(self, using=None):
-        return self.get_model().objects.all()
+        _related = [
+            'credentials',
+            'response',
+            'response__customer_order',
+            'response__sdk_application_result'
+        ]
+        qs = self.get_model().objects\
+                             .select_related(*_related)\
+                             .all()
+        return qs
 
     def prepare_merchant_name(self, obj):
         return obj.credentials.name if obj.credentials else None
