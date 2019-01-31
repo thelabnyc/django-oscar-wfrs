@@ -94,6 +94,9 @@ class WellsFargo(PaymentMethod):
                 status=getattr(e, 'status', TRANS_DECLINED))
             return Declined(amount)
 
+        # Clear existing allocation, because allocate() will increment by `amount`
+        source.amount_allocated = 0
+
         # Record the allocation as a transaction
         source.allocate(amount,
             reference=transfer.merchant_reference,
