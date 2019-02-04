@@ -10,7 +10,7 @@ from .core.constants import TRANS_DECLINED, TRANS_TYPE_AUTH, TRANS_TYPE_CANCEL_A
 from .core.structures import TransactionRequest
 from .core import exceptions
 from .utils import list_plans_for_basket
-from .models import FraudScreenResult, FinancingPlan
+from .models import FraudScreenResult, FinancingPlan, TransferMetadata
 from .fraud import screen_transaction
 from .settings import WFRS_MAX_TRANSACTION_ATTEMPTS
 import logging
@@ -18,6 +18,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 Transaction = get_model('payment', 'Transaction')
+Source = get_model('payment', 'Source')
 
 
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
@@ -47,10 +48,31 @@ class WellsFargo(PaymentMethod):
     code = 'wells-fargo'
     serializer_class = WellsFargoPaymentMethodSerializer
 
-    def _record_payment(self, request, order, method_key, amount, reference, account_number, financing_plan, **kwargs):
-        # Figure out how much to authorize
-        source = self.get_source(order, reference)
 
+    def void_existing_payment(self, request, order, method_key, state_to_void):
+        # Perform the default action
+        super().void_existing_payment(order, method_key, state_to_void)
+        # Send a cancel request to WFRS
+        source = Source.objects.filter(pk=getattr(state_to_void, 'source_id', None)).first()
+        if not source:
+            return
+        transfer_meta = TransferMetadata.objects.filter(merchant_reference=source.reference, type_code=TRANS_TYPE_AUTH)\
+                                                .order_by('-created_datetime')\
+                                                .first()
+        cancel_trans_request = self._build_trans_request(
+            order=order,
+            account_number=transfer_meta.account_number,
+            plan_number=transfer_meta.financing_plan.plan_number,
+            amount=state_to_void.amount,
+            type_code=TRANS_TYPE_CANCEL_AUTH)
+        current_user = request.user if request.user and request.user.is_authenticated else None
+        try:
+            actions.submit_transaction(cancel_trans_request, current_user=current_user, transaction_uuid=None, persist=False)
+        except (Timeout, ConnectionError) as e:
+            logger.warning('Failed to void WFRS transaction for Order[{}]. Reason: {}'.format(order.number, str(e)))
+
+
+    def _record_payment(self, request, order, method_key, amount, reference, account_number, financing_plan, **kwargs):
         # Build a transaction request
         trans_request = self._build_trans_request(
             order=order,
@@ -69,9 +91,14 @@ class WellsFargo(PaymentMethod):
 
         # If Fraud Screening is enabled, run it and see if the transaction passes muster.
         fraud_response = screen_transaction(request, order)
+
+        # Using the UUID from the Fraud Screen as the Reference number, get a PaymentSource
+        source = self.get_source(order, fraud_response.reference)
+
+        # If the transaction is suspected as fraud, decline the transaction
         if fraud_response.decision not in (FraudScreenResult.DECISION_ACCEPT, FraudScreenResult.DECISION_REVIEW):
             logger.info('WFRS transaction for Order[{}] failed fraud screen. Reason: {}'.format(order.number, fraud_response.message))
-            return Declined(amount)
+            return Declined(amount, source_id=source.pk)
 
         # Figure out which WFRS credentials to use based on the user
         request_user = None
@@ -92,7 +119,7 @@ class WellsFargo(PaymentMethod):
                 amount=amount,
                 reference=fraud_response.reference,
                 status=getattr(e, 'status', TRANS_DECLINED))
-            return Declined(amount)
+            return Declined(amount, source_id=source.pk)
 
         # Record the allocation as a transaction
         source.allocate(amount,
@@ -104,7 +131,7 @@ class WellsFargo(PaymentMethod):
         for line in order.lines.all():
             self.make_event_quantity(event, line, line.quantity)
 
-        return Complete(source.amount_allocated)
+        return Complete(source.amount_allocated, source_id=source.pk)
 
 
     def _perform_auth_transaction(self, trans_request, cancel_trans_request, current_user, transaction_uuid, max_attempts=WFRS_MAX_TRANSACTION_ATTEMPTS):
