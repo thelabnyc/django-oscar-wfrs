@@ -10,7 +10,7 @@ from .core.constants import TRANS_DECLINED, TRANS_TYPE_AUTH, TRANS_TYPE_CANCEL_A
 from .core.structures import TransactionRequest
 from .core import exceptions
 from .utils import list_plans_for_basket
-from .models import FraudScreenResult, FinancingPlan
+from .models import FraudScreenResult, FinancingPlan, TransferMetadata
 from .fraud import screen_transaction
 from .settings import WFRS_MAX_TRANSACTION_ATTEMPTS
 import logging
@@ -18,6 +18,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 Transaction = get_model('payment', 'Transaction')
+Source = get_model('payment', 'Source')
 
 
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
@@ -48,7 +49,7 @@ class WellsFargo(PaymentMethod):
     serializer_class = WellsFargoPaymentMethodSerializer
 
 
-    def void_existing_payment(self, order, method_key, state_to_void):
+    def void_existing_payment(self, request, order, method_key, state_to_void):
         # Perform the default action
         super().void_existing_payment(order, method_key, state_to_void)
         # Send a cancel request to WFRS
@@ -64,10 +65,11 @@ class WellsFargo(PaymentMethod):
             plan_number=transfer_meta.financing_plan.plan_number,
             amount=state_to_void.amount,
             type_code=TRANS_TYPE_CANCEL_AUTH)
+        current_user = request.user if request.user and request.user.is_authenticated else None
         try:
-            actions.submit_transaction(cancel_trans_request, current_user=current_user, transaction_uuid=transaction_uuid, persist=False)
+            actions.submit_transaction(cancel_trans_request, current_user=current_user, transaction_uuid=None, persist=False)
         except (Timeout, ConnectionError) as e:
-            logger.warning('Failed to void WFRS transaction for Order[{}].'.format(order.number))
+            logger.warning('Failed to void WFRS transaction for Order[{}]. Reason: {}'.format(order.number, str(e)))
 
 
     def _record_payment(self, request, order, method_key, amount, reference, account_number, financing_plan, **kwargs):
