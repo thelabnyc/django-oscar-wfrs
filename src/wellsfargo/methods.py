@@ -51,7 +51,7 @@ class WellsFargo(PaymentMethod):
 
     def void_existing_payment(self, request, order, method_key, state_to_void):
         # Perform the default action
-        super().void_existing_payment(order, method_key, state_to_void)
+        super().void_existing_payment(request, order, method_key, state_to_void)
         # Send a cancel request to WFRS
         source = Source.objects.filter(pk=getattr(state_to_void, 'source_id', None)).first()
         if not source:
