@@ -6,6 +6,20 @@ CREDIT_APP_DECISION_DELAYED = 'E1'
 CREDIT_APP_FORMAT_ERROR = 'E2'
 CREDIT_APP_WFF_ERROR = 'E3'
 CREDIT_APP_DENIED = 'E4'
+CREDIT_APP_STATUSES = (
+    ('', _("Unknown")),
+    (CREDIT_APP_APPROVED, _("Approved")),
+    (CREDIT_APP_DECISION_DELAYED, _("Pending")),
+    (CREDIT_APP_FORMAT_ERROR, _("Format Error")),
+    (CREDIT_APP_WFF_ERROR, _("Wells Fargo Error")),
+    (CREDIT_APP_DENIED, _("Denied")),
+)
+
+
+def get_credit_app_status_name(status_code):
+    names = dict(CREDIT_APP_STATUSES)
+    return names.get(status_code, _("Unknown"))
+
 
 TRANS_DECLINED = 'A0'
 TRANS_APPROVED = 'A1'
@@ -134,7 +148,7 @@ PHOTO_ID_TYPES = {
 }
 
 
-APPLICATION_FORM_EXCLUDE_FIELDS = ('user', 'submitting_user', 'last4_account_number', 'inquiries', 'credentials')
+APPLICATION_FORM_EXCLUDE_FIELDS = ('status', 'user', 'submitting_user', 'last4_account_number', 'credentials')
 
 
 ENTRY_POINT_WEB = 'web'

@@ -124,16 +124,16 @@ def submit_inquiry(account_number, current_user=None, locale=EN_US):
 
     result.account_number = resp.wfAccountNumber
 
-    result.first_name = resp.firstName
-    result.middle_initial = resp.middleInitial
-    result.last_name = resp.lastName
+    result.first_name = resp.firstName or ''
+    result.middle_initial = resp.middleInitial or ''
+    result.last_name = resp.lastName or ''
 
     # This is kind of awful, but WFRS only uses national phone number (with an implied +1 country code). So, we
     # add back the country code to make it valid to store in the DB.
     # E.g. Take "5559998888" and convert it to "+15559998888"
     result.phone_number = '+1{}'.format(resp.phone)
 
-    result.address = resp.address
+    result.address = resp.address or ''
 
     result.credit_limit = (_as_decimal(resp.accountBalance) + _as_decimal(resp.openToBuy))
     result.balance = _as_decimal(resp.accountBalance)
@@ -224,6 +224,11 @@ def submit_credit_application(app, current_user=None):
     # Submit
     resp = client.service.submitCreditApp(data)
 
+    # Save the status and credentials used to apply
+    app.status = resp.transactionStatus or ''
+    app.credentials = creds
+    app.save()
+
     # Check for faults
     if resp.faults:
         for fault in resp.faults:
@@ -240,20 +245,17 @@ def submit_credit_application(app, current_user=None):
     if resp.transactionStatus in (CREDIT_APP_FORMAT_ERROR, CREDIT_APP_WFF_ERROR):
         raise ValidationError('An unknown error occurred.')
 
-    # Check if application approval is pending
-    if resp.transactionStatus == CREDIT_APP_DECISION_DELAYED:
-        raise CreditApplicationPending('Credit Application is approval is pending.')
-
-    # Check for approval
-    if resp.transactionStatus != CREDIT_APP_APPROVED:
+    # If the status is not either Approved or Pending, it must be denied
+    if resp.transactionStatus not in (CREDIT_APP_APPROVED, CREDIT_APP_DECISION_DELAYED):
         raise CreditApplicationDenied('Credit Application was denied by Wells Fargo.')
 
-    # Save the credentials used to apply
-    app.credentials = creds
+    # Save the suffix of the account number
+    app.account_number = resp.wfAccountNumber
     app.save()
 
-    # Credit application must be approved. Build response
+    # Record an account inquiry
     result = AccountInquiryResult()
+    result.credit_app_source = app
     result.status = INQUIRY_SUCCESS
     result.account_number = resp.wfAccountNumber
     result.first_name = app.main_first_name
@@ -265,6 +267,12 @@ def submit_credit_application(app, current_user=None):
     result.balance = Decimal('0.00')
     result.open_to_buy = result.credit_limit
     result.save()
+
+    # Check if application approval is pending
+    if resp.transactionStatus == CREDIT_APP_DECISION_DELAYED:
+        pending = CreditApplicationPending('Credit Application is approval is pending.')
+        pending.inquiry = result
+        raise pending
 
     return result
 

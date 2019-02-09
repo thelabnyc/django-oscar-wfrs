@@ -7,6 +7,7 @@ class CreditApplicationPending(APIException):
     status_code = status.HTTP_403_FORBIDDEN
     default_code = 'pending'
     default_detail = _('Credit Application approval is pending')
+    inquiry = None
 
 
 class CreditApplicationDenied(APIException):

@@ -5,11 +5,14 @@ from django.core import exceptions
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Q
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from oscar.core.loading import get_model, get_class
 from oscar.models.fields import PhoneNumberField
 from .core.constants import (
+    CREDIT_APP_STATUSES,
     TRANS_TYPE_AUTH,
     TRANS_TYPES,
     TRANS_STATUSES,
@@ -205,7 +208,44 @@ class FraudScreenResult(models.Model):
 
 
 
-class AccountInquiryResult(models.Model):
+class AccountNumberMixin(models.Model):
+    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
+    encrypted_account_number = models.BinaryField(null=True)
+
+    class Meta:
+        abstract = True
+
+    @property
+    def masked_account_number(self):
+        return 'xxxxxxxxxxxx{}'.format(self.last4_account_number or 'xxxx')
+
+    @property
+    def account_number(self):
+        acct_num = None
+        if self.encrypted_account_number:
+            acct_num = decrypt_account_number(self.encrypted_account_number)
+        if not acct_num:
+            acct_num = self.masked_account_number
+        return acct_num
+
+    @account_number.setter
+    def account_number(self, value):
+        if len(value) != 16:
+            raise ValueError('Account number must be 16 digits long')
+        self.last4_account_number = value[-4:]
+        self.encrypted_account_number = encrypt_account_number(value)
+
+    def purge_encrypted_account_number(self):
+        self.encrypted_account_number = None
+        self.save()
+
+
+
+class AccountInquiryResult(AccountNumberMixin, models.Model):
+    credit_app_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    credit_app_id = models.PositiveIntegerField(null=True, blank=True)
+    credit_app_source = GenericForeignKey('credit_app_type', 'credit_app_id')
+
     prequal_response_source = models.ForeignKey('wellsfargo.PreQualificationResponse',
         verbose_name=_("Pre-Qualification Source"),
         related_name='account_inquiries',
@@ -213,9 +253,6 @@ class AccountInquiryResult(models.Model):
         on_delete=models.SET_NULL)
 
     status = models.CharField(_("Status"), choices=INQUIRY_STATUSES, max_length=2)
-
-    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
-    _full_account_number = None
 
     first_name = models.CharField(_("First Name"), max_length=50)
     middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
@@ -243,26 +280,9 @@ class AccountInquiryResult(models.Model):
     def full_name(self):
         return '{} {} {}'.format(self.first_name, self.middle_initial, self.last_name)
 
-    @property
-    def masked_account_number(self):
-        return 'xxxxxxxxxxxx{}'.format(self.last4_account_number)
-
-    @property
-    def account_number(self):
-        if self._full_account_number:
-            return self._full_account_number
-        return self.masked_account_number
-
-    @account_number.setter
-    def account_number(self, value):
-        if len(value) != 16:
-            raise ValueError('Account number must be 16 digits long')
-        self.last4_account_number = value[-4:]
-        self._full_account_number = value
 
 
-
-class TransferMetadata(models.Model):
+class TransferMetadata(AccountNumberMixin, models.Model):
     """
     Store WFRS specific metadata about a transfer
     """
@@ -276,8 +296,6 @@ class TransferMetadata(models.Model):
         related_name='transfers',
         null=True, blank=True,
         on_delete=models.SET_NULL)
-    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4, db_index=True)
-    encrypted_account_number = models.BinaryField(null=True)
     merchant_reference = models.CharField(max_length=128, null=True)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, max_length=2)
@@ -308,26 +326,6 @@ class TransferMetadata(models.Model):
     def status_name(self):
         return dict(TRANS_STATUSES).get(self.status)
 
-    @property
-    def masked_account_number(self):
-        return 'xxxxxxxxxxxx{}'.format(self.last4_account_number or 'xxxx')
-
-    @property
-    def account_number(self):
-        acct_num = None
-        if self.encrypted_account_number:
-            acct_num = decrypt_account_number(self.encrypted_account_number)
-        if not acct_num:
-            acct_num = self.masked_account_number
-        return acct_num
-
-    @account_number.setter
-    def account_number(self, value):
-        if len(value) != 16:
-            raise ValueError('Account number must be 16 digits long')
-        self.last4_account_number = value[-4:]
-        self.encrypted_account_number = encrypt_account_number(value)
-
     def get_oscar_transaction(self):
         Transaction = get_model('payment', 'Transaction')
         try:
@@ -341,13 +339,13 @@ class TransferMetadata(models.Model):
             return None
         return transaction.source.order
 
-    def purge_encrypted_account_number(self):
-        self.encrypted_account_number = None
-        self.save()
-
 
 
 class CreditAppCommonMixin(models.Model):
+    status = models.CharField(_('Application Status'),
+        max_length=_max_len(CREDIT_APP_STATUSES),
+        choices=CREDIT_APP_STATUSES,
+        default='')
     credentials = models.ForeignKey(APICredentials,
         null=True, blank=True,
         verbose_name=_("Merchant"),
@@ -368,16 +366,20 @@ class CreditAppCommonMixin(models.Model):
         help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
         related_name='+',
         on_delete=models.SET_NULL)
-    inquiries = models.ManyToManyField(AccountInquiryResult,
-        verbose_name=_("Account Inquiries"),
-        related_name='+')
+    inquiries = GenericRelation(AccountInquiryResult,
+        content_type_field='credit_app_type',
+        object_id_field='credit_app_id')
 
     class Meta:
         abstract = True
 
 
+    def get_inquiries(self):
+        return self.inquiries.order_by('-created_datetime').all()
+
+
     def get_credit_limit(self):
-        inquiry = self.inquiries.order_by('-created_datetime').first()
+        inquiry = self.get_inquiries().first()
         if not inquiry:
             return None
         return inquiry.credit_limit

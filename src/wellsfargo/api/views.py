@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import transaction
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
 from rest_framework import views, generics, status, serializers
@@ -9,7 +11,12 @@ from ..core.constants import (
     INDIVIDUAL, JOINT,
     PREQUAL_REDIRECT_APP_APPROVED,
 )
-from ..models import PreQualificationResponse, FinancingPlan, PreQualificationSDKApplicationResult
+from ..models import (
+    PreQualificationResponse,
+    FinancingPlan,
+    PreQualificationSDKApplicationResult,
+    AccountInquiryResult,
+)
 from .serializers import (
     AppSelectionSerializer,
     USCreditAppSerializer,
@@ -24,9 +31,11 @@ from .serializers import (
     PreQualificationSDKResponseSerializer,
     PreQualificationSDKApplicationResultSerializer,
 )
+from .exceptions import CreditApplicationPending
 from ..utils import list_plans_for_basket, calculate_monthly_payments
 import decimal
 
+INQUIRY_SESSION_KEY = 'wfrs-acct-inquiry-id'
 PREQUAL_SESSION_KEY = 'wfrs-prequal-request-id'
 
 
@@ -54,12 +63,21 @@ class SelectCreditAppView(generics.GenericAPIView):
         return routes.get(region, {}).get(app_type)
 
 
+# This (non-atomic request) is needed because we use exceptions to bubble up the application pending / declined
+# status, but when that happens we still want to save the application data (rather than rollback).
+@method_decorator(transaction.non_atomic_requests, name='dispatch')
 class BaseCreditAppView(generics.GenericAPIView):
+
     def post(self, request):
         request_ser = self.get_serializer_class()(data=request.data, context={'request': request})
         request_ser.is_valid(raise_exception=True)
-        result = request_ser.save()
+        try:
+            result = request_ser.save()
+        except CreditApplicationPending as e:
+            request.session[INQUIRY_SESSION_KEY] = e.inquiry.pk
+            raise e
         response_ser = AccountInquirySerializer(instance=result, context={'request': request})
+        request.session[INQUIRY_SESSION_KEY] = result.pk
         return Response(response_ser.data)
 
 
@@ -126,13 +144,50 @@ class EstimatedPaymentView(views.APIView):
         return Response(ser.data)
 
 
+class UpdateAccountInquiryView(views.APIView):
+    """
+    After submitting a credit app, a client may use this view to update their credit limit info (for
+    example, if the credit app was returned as pending).
+    """
+    def post(self, request):
+        # Check for ID of last account inquiry in session (from the credit app view)
+        inquiry_id = request.session.get(INQUIRY_SESSION_KEY)
+        if not inquiry_id:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            inquiry = AccountInquiryResult.objects.get(pk=inquiry_id)
+        except AccountInquiryResult.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # Make sure we have an account number to work with
+        account_number = inquiry.account_number
+        if not account_number or account_number.startswith('xxxx'):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        # Perform another inquiry on the account
+        request_ser = AccountInquirySerializer(data={'account_number': account_number}, context={'request': request})
+        request_ser.is_valid(raise_exception=True)
+        result = request_ser.save()
+        # Update the inquiry source to match the original inquiry
+        result.credit_app_source = inquiry.credit_app_source
+        result.prequal_response_source = inquiry.prequal_response_source
+        result.save()
+        # Update the session to have the new inquiry ID
+        request.session[INQUIRY_SESSION_KEY] = result.pk
+        # Return the results
+        response_ser = AccountInquirySerializer(instance=result, context={'request': request})
+        return Response(response_ser.data)
+
+
 class SubmitAccountInquiryView(generics.GenericAPIView):
     serializer_class = AccountInquirySerializer
 
     def post(self, request):
+        # Perform an account inquiry using the submitted account number
         request_ser = self.get_serializer_class()(data=request.data, context={'request': request})
         request_ser.is_valid(raise_exception=True)
         result = request_ser.save()
+        # Update the session to have the new inquiry ID
+        request.session[INQUIRY_SESSION_KEY] = result.pk
+        # Return the results
         response_ser = self.get_serializer_class()(instance=result, context={'request': request})
         return Response(response_ser.data)
 

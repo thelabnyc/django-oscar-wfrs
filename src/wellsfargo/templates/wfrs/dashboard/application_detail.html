@@ -285,5 +285,49 @@
                 </tr>
             </table>
         </div>
+
+        <div class="col-md-12">
+            <div class="table-header">
+                <h2>{% trans "Account Inquiries" %}</h2>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Inquiry Date/Time</th>
+                        <th>Inquiry Account Number</th>
+                        <th>Status</th>
+                        <th>Credit Limit</th>
+                        <th>Balance</th>
+                        <th>Open to Buy</th>
+                        <th>Last Payment Date</th>
+                        <th>Last Payment Amount</th>
+                        <th>Payment Due Date</th>
+                        <th>Payment Due Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inquiry in object.get_inquiries %}
+                        <tr>
+                            <td>{{ inquiry.created_datetime }}</td>
+                            <td>{{ inquiry.masked_account_number }}</td>
+                            <td>{{ inquiry.get_status_display }}</td>
+                            <td>{{ inquiry.credit_limit | currency | default:"-" }}</td>
+                            <td>{{ inquiry.balance | currency | default:"-" }}</td>
+                            <td>{{ inquiry.open_to_buy | currency | default:"-" }}</td>
+                            <td>{{ inquiry.last_payment_date | default:"-" }}</td>
+                            <td>{{ inquiry.last_payment_amount | currency | default:"-" }}</td>
+                            <td>{{ inquiry.payment_due_date | default:"-" }}</td>
+                            <td>{{ inquiry.payment_due_amount | currency | default:"-" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="10">
+                                <em>No account inquiries currently exist for this Credit Application</em>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

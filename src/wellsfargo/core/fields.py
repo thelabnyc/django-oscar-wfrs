@@ -44,6 +44,8 @@ class USSocialSecurityNumberField(StockUSSocialSecurityNumberField):
 
     def pre_save(self, model_instance, add):
         full_ssn = getattr(model_instance, self.attname)
+        if full_ssn is None:
+            return 'xxx-xx-xxxx'
         masked_ssn = 'xxx-xx-%s' % full_ssn[-4:]
         return masked_ssn
 

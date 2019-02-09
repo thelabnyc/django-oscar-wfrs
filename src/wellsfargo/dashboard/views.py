@@ -14,7 +14,7 @@ from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 from ..connector import actions
 from ..core.exceptions import CreditApplicationPending, CreditApplicationDenied
-from ..core.constants import get_prequal_trans_status_name
+from ..core.constants import get_credit_app_status_name, get_prequal_trans_status_name
 from ..models import (
     FinancingPlan,
     FinancingPlanBenefit,
@@ -281,6 +281,11 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
             self.filter_descrs.append(_('Application contains “{text}”').format(text=search_text))
 
         # Advanced search
+        status = data.get('status')
+        if status:
+            qs = qs.filter(status=status)
+            self.filter_descrs.append(_('Status is “{status}”').format(status=get_credit_app_status_name(status)))
+
         name = data.get('name')
         if name:
             qs = qs.filter(name=name)

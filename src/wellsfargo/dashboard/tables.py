@@ -40,6 +40,9 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Submitted By'),
         template_name='wfrs/dashboard/_application_row_submitting_user.html',
         order_by=('submitting_user_full_name', 'submitting_user_username'))
+    status_name = Column(
+        verbose_name=_('Application Status'),
+        orderable=False)
     account_number = TemplateColumn(
         verbose_name=_('Resulting Account Number'),
         template_name='wfrs/dashboard/_application_row_account_number.html',
@@ -85,6 +88,7 @@ class CreditApplicationIndexTable(DashboardTable):
             'application_source',
             'user',
             'submitting_user',
+            'status_name',
             'account_number',
             'purchase_price',
             'credit_limit',
