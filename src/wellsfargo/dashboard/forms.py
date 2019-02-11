@@ -9,6 +9,7 @@ from ..core.constants import (
     LOCALES,
     APP_TYPES, LANGUAGES, REGIONS,
     APPLICATION_FORM_EXCLUDE_FIELDS,
+    CREDIT_APP_STATUSES,
     PREQUAL_TRANS_STATUS_CHOICES,
 )
 from ..models import (
@@ -111,6 +112,7 @@ class ApplicationSearchForm(forms.Form):
     search_text = forms.CharField(required=False, label="Search")
 
     # Advanced Search
+    status = forms.ChoiceField(required=False, label="Status", choices=((('', 'All Statuses'), ) + CREDIT_APP_STATUSES))
     name = forms.CharField(required=False, label="Applicant Name")
     email = forms.CharField(required=False, label="Applicant Email Address")
     address = forms.CharField(required=False, label="Applicant Address")

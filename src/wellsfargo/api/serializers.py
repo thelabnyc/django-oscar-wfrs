@@ -63,20 +63,16 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
         # Submit application to to Wells
         try:
             result = actions.submit_credit_application(app, current_user=request_user)
-        except core_exceptions.CreditApplicationPending:
-            raise api_exceptions.CreditApplicationPending()
+        except core_exceptions.CreditApplicationPending as e:
+            pending = api_exceptions.CreditApplicationPending()
+            pending.inquiry = e.inquiry
+            raise pending
         except core_exceptions.CreditApplicationDenied:
             raise api_exceptions.CreditApplicationDenied()
         except DjangoValidationError as e:
             raise DRFValidationError({
                 'non_field_errors': [e.message]
             })
-
-        # Update resulting account number
-        app.account_number = result.account_number
-        app.inquiries.add(result)
-        app.save()
-
         return result
 
 

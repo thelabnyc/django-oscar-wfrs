@@ -41,8 +41,8 @@ class TransferMetadataAdmin(ReadOnlyAdmin):
 @admin.register(models.CACreditApp)
 @admin.register(models.CAJointCreditApp)
 class CreditAppAdmin(ReadOnlyAdmin):
-    list_display = ['email', 'region', 'language', 'app_type', 'user', 'created_datetime', 'modified_datetime']
-    list_filter = ['created_datetime', 'modified_datetime']
+    list_display = ['email', 'region', 'language', 'app_type', 'user', 'status', 'created_datetime', 'modified_datetime']
+    list_filter = ['status', 'created_datetime', 'modified_datetime']
 
 
 @admin.register(models.FraudScreenResult)

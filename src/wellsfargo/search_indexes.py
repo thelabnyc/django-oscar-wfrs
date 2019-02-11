@@ -17,6 +17,8 @@ Transaction = get_model('payment', 'Transaction')
 class BaseCreditAppIndex(indexes.SearchIndex):
     APP_TYPE_CODE = indexes.CharField(model_attr='APP_TYPE_CODE')
     merchant_name = indexes.CharField()
+    status = indexes.CharField(model_attr='status')
+    status_name = indexes.CharField(model_attr='status')
     application_source = indexes.CharField(model_attr='application_source')
     modified_datetime = indexes.DateTimeField(model_attr='modified_datetime')
     created_datetime = indexes.DateTimeField(model_attr='created_datetime')
@@ -54,6 +56,9 @@ class BaseCreditAppIndex(indexes.SearchIndex):
 
     def prepare_merchant_name(self, obj):
         return obj.credentials.name if obj.credentials else None
+
+    def prepare_status_name(self, obj):
+        return obj.get_status_display()
 
     def prepare_credit_limit(self, obj):
         return obj.get_credit_limit()

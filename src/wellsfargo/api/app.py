@@ -9,6 +9,7 @@ from .views import (
     CAJointCreditAppView,
     FinancingPlanView,
     EstimatedPaymentView,
+    UpdateAccountInquiryView,
     SubmitAccountInquiryView,
     PreQualificationRequestView,
     PreQualificationSDKResponseView,
@@ -27,6 +28,8 @@ class WFRSAPIApplication(Application):
             url(r'^apply/us-joint/$', USJointCreditAppView.as_view(), name='wfrs-api-apply-us-join'),
             url(r'^apply/ca-individual/$', CACreditAppView.as_view(), name='wfrs-api-apply-ca-individual'),
             url(r'^apply/ca-joint/$', CAJointCreditAppView.as_view(), name='wfrs-api-apply-ca-joint'),
+
+            url(r'^apply/update-inquiry/$', UpdateAccountInquiryView.as_view(), name='wfrs-api-update-inquiry'),
 
             url(r'^plans/$', FinancingPlanView.as_view(), name='wfrs-api-plan-list'),
 

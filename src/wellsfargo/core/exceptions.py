@@ -11,4 +11,4 @@ class CreditApplicationDenied(WellsFargoException):
 
 
 class CreditApplicationPending(WellsFargoException):
-    pass
+    inquiry = None
