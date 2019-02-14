@@ -48,6 +48,9 @@ class BaseCreditAppIndex(indexes.SearchIndex):
 
     text = indexes.EdgeNgramField(document=True, use_template=True, template_name='search/indexes/wellsfargo/application_text.txt')
 
+    def get_updated_field(self):
+        return 'modified_datetime'
+
     def index_queryset(self, using=None):
         qs = self.get_model().objects\
                              .select_related('credentials', 'user', 'submitting_user')\
@@ -161,6 +164,9 @@ class TransferMetadataIndex(indexes.SearchIndex, indexes.Indexable):
     def get_model(self):
         return TransferMetadata
 
+    def get_updated_field(self):
+        return 'modified_datetime'
+
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
 
@@ -216,6 +222,9 @@ class PreQualificationIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return PreQualificationRequest
+
+    def get_updated_field(self):
+        return 'modified_datetime'
 
     def index_queryset(self, using=None):
         _related = [
