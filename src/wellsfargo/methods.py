@@ -96,7 +96,7 @@ class WellsFargo(PaymentMethod):
         source = self.get_source(order, fraud_response.reference)
 
         # If the transaction is suspected as fraud, decline the transaction
-        if fraud_response.decision not in (FraudScreenResult.DECISION_ACCEPT, FraudScreenResult.DECISION_REVIEW):
+        if fraud_response.decision == FraudScreenResult.DECISION_REJECT:
             logger.info('WFRS transaction for Order[{}] failed fraud screen. Reason: {}'.format(order.number, fraud_response.message))
             return Declined(amount, source_id=source.pk)
 
