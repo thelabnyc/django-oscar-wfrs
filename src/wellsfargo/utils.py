@@ -29,17 +29,3 @@ def calculate_monthly_payments(principal, term_months, apr):
     payment = principal * (interest * (1 + interest) ** term_months) / ((1 + interest) ** term_months - 1)
 
     return payment.quantize(principal, rounding=ROUND_UP)
-
-
-def get_user_ip_address(request):
-    """
-    Try to obtain the IP address of the user sending the request
-    """
-
-    x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
-
-    if x_forwarded:
-        ip = x_forwarded.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
