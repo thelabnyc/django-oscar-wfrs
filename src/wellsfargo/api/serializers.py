@@ -27,6 +27,7 @@ from ..models import (
     PreQualificationSDKApplicationResult,
 )
 from . import exceptions as api_exceptions
+from ..utils import get_user_ip_address
 
 Basket = get_model('basket', 'Basket')
 BillingAddress = get_model('order', 'BillingAddress')
@@ -56,6 +57,10 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
         # Build application class and save record to DB to record the attempt
         Application = self.Meta.model
         app = Application(**self.validated_data)
+
+        # Store the ip address of user sending the request
+        app.id_address = get_user_ip_address(request)
+
         app.user = request_user
         app.submitting_user = request_user
         app.save()
@@ -298,6 +303,7 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
 
     def save(self):
         request = self.context['request']
+
         request_user = None
         if request.user and request.user.is_authenticated:
             request_user = request.user
@@ -314,7 +320,9 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
         request.state = self.validated_data['state']
         request.postcode = self.validated_data['postcode']
         request.credentials = creds
+        request.ip_address = get_user_ip_address(self.context['request'])
         request.save()
+
         if self.validated_data['response_id']:
             response = PreQualificationResponse()
             response.request = request

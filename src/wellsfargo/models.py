@@ -360,6 +360,7 @@ class CreditAppCommonMixin(models.Model):
         help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='+',
         on_delete=models.SET_NULL)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
     submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=True, blank=True,
         verbose_name=_("Submitting User"),
@@ -455,6 +456,7 @@ class PreQualificationRequest(models.Model):
     state = USStateField(_("State"))
     postcode = USZipCodeField(_("Postcode"))
     phone = PhoneNumberField(_("Phone"))
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
     credentials = models.ForeignKey(APICredentials,
         verbose_name=_("API Credentials"),
         related_name='prequal_requests',
