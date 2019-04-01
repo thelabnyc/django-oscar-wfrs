@@ -45,6 +45,10 @@
                     <td>{{ object.purchase_price | currency | default:"-" }}</td>
                 </tr>
                 <tr>
+                    <td>{% trans "IP Address" %}</td>
+                    <td>{{ object.ip_address | default:"-" }}</td>
+                </tr>
+                <tr>
                     <td>{% trans "Created Date" %}</td>
                     <td>{{ object.created_datetime | default:"-" }}</td>
                 </tr>
