@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.reverse import reverse
+from ipware import get_client_ip
 from oscar.core.loading import get_model
 from ..connector import actions
 from ..core.constants import (
@@ -56,6 +57,10 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
         # Build application class and save record to DB to record the attempt
         Application = self.Meta.model
         app = Application(**self.validated_data)
+
+        # Store the ip address of user sending the request
+        app.ip_address, _ = get_client_ip(request)
+
         app.user = request_user
         app.submitting_user = request_user
         app.save()
@@ -298,6 +303,7 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
 
     def save(self):
         request = self.context['request']
+
         request_user = None
         if request.user and request.user.is_authenticated:
             request_user = request.user
@@ -314,7 +320,9 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
         request.state = self.validated_data['state']
         request.postcode = self.validated_data['postcode']
         request.credentials = creds
+        request.ip_address, _ = get_client_ip(self.context['request'])
         request.save()
+
         if self.validated_data['response_id']:
             response = PreQualificationResponse()
             response.request = request

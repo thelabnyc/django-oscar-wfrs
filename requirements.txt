@@ -13,6 +13,7 @@ cryptography==1.8.1
 Django==1.10.6
 django-extra-views==0.6.4
 django-haystack==2.5.1
+django-ipware=2.1.0
 django-localflavor==1.4.1
 django-oscar==1.4
 django-oscar-accounts2==0.1.0
