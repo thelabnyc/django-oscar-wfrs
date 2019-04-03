@@ -7,6 +7,7 @@ Changelog
 ------------------
 - Make payment methods create separate ``payment.Source`` objects per Reference number (`!24 <https://gitlab.com/thelabnyc/django-oscar/django-oscar-wfrs/merge_requests/24>`_).
 - Change behavior of denied and pended credit applications. Application records are now always saved to the database (`!26 <https://gitlab.com/thelabnyc/django-oscar/django-oscar-wfrs/merge_requests/26>`_).
+- Made Fraud screen system fail-open (rather than closed, denying all orders) upon returning an error.
 
 0.16.0
 ------------------
