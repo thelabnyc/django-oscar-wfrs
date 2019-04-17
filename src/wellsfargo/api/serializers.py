@@ -226,9 +226,11 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
 
 
     def save(self):
-        prequal_request = super().save()
-
         request = self.context['request']
+        # Save IPAdress of the user
+        user_ipaddress, _ = get_client_ip(request)
+        self.validated_data['ip_address'] = user_ipaddress
+        prequal_request = super().save()
         request_user = None
         if request.user and request.user.is_authenticated:
             request_user = request.user
