@@ -179,3 +179,58 @@ class PreQualificationRequestTest(BaseTest):
         # Check if IPAddress was stored
         prequal_request = PreQualificationRequest.objects.first()
         self.assertEqual(prequal_request.ip_address, self.ip_address)
+
+
+    def test_sdk_resume_prequal(self):
+        # Set-up a prequal response
+        url = reverse('wfrs-api-prequal-sdk-response')
+        data = {
+            'first_name': 'Joe',
+            'last_name': 'Schmoe',
+            'line1': '123 Evergreen Terrace',
+            'city': 'Springfield',
+            'state': 'NY',
+            'postcode': '10001',
+            'status': 'A',
+            'credit_limit': '7500.00',
+            'response_id': 'ABC123',
+        }
+        response = self.client.post(url, data, format='json', REMOTE_ADDR=self.ip_address)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'A')
+        self.assertEqual(response.data['is_approved'], True)
+        self.assertEqual(response.data['message'], '')
+        self.assertEqual(response.data['credit_limit'], '7500.00')
+        self.assertEqual(response.data['customer_response'], '')
+
+        url = reverse('wfrs-api-prequal-customer-response')
+        data = {
+            'customer_response': 'SDKPRESENTED',
+        }
+        response = self.client.post(url, data, format='json', REMOTE_ADDR=self.ip_address)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'A')
+        self.assertEqual(response.data['is_approved'], True)
+        self.assertEqual(response.data['message'], '')
+        self.assertEqual(response.data['credit_limit'], '7500.00')
+        self.assertEqual(response.data['customer_response'], 'SDKPRESENTED')
+
+        # Hit the resume view
+        prequal_request = PreQualificationRequest.objects.first()
+        url = '%s?next=/my-redirect/' % prequal_request.get_resume_offer_url()
+        response = self.client.get(url)
+        self.assertRedirects(response, '/my-redirect/', fetch_redirect_response=False)
+
+        # Fetch the response data
+        url = reverse('wfrs-api-prequal-sdk-response')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'A')
+        self.assertEqual(response.data['is_approved'], True)
+        self.assertEqual(response.data['message'], '')
+        self.assertEqual(response.data['credit_limit'], '7500.00')
+        self.assertEqual(response.data['customer_response'], 'SDKPRESENTED')
+        self.assertEqual(response.data['full_application_url'], '&mn=1111111111')
+        self.assertEqual(response.data['offer_indicator'], '')
+        self.assertEqual(response.data['response_id'], 'ABC123')
+        self.assertEqual(response.data['sdk_application_result'], None)

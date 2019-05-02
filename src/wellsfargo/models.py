@@ -1,10 +1,11 @@
 from decimal import Decimal
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core import exceptions
+from django.core import signing, exceptions
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
@@ -511,6 +512,14 @@ class PreQualificationRequest(models.Model):
                              .order_by('date_placed')\
                              .first()
         return order
+
+
+    def get_signed_id(self):
+        return signing.Signer().sign(self.pk)
+
+
+    def get_resume_offer_url(self, next_url='/'):
+        return reverse('wfrs-api-prequal-resume', args=[self.get_signed_id()])
 
 
 

@@ -1,7 +1,9 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core import signing, exceptions
 from django.db import transaction
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
+from django.utils.http import is_safe_url
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
 from rest_framework import views, generics, status, serializers
@@ -12,6 +14,7 @@ from ..core.constants import (
     PREQUAL_REDIRECT_APP_APPROVED,
 )
 from ..models import (
+    PreQualificationRequest,
     PreQualificationResponse,
     FinancingPlan,
     PreQualificationSDKApplicationResult,
@@ -192,6 +195,35 @@ class SubmitAccountInquiryView(generics.GenericAPIView):
         return Response(response_ser.data)
 
 
+class PreQualificationResumeView(generics.GenericAPIView):
+    def get(self, request, signed_prequal_request_id):
+        # Validate signed ID
+        signer = signing.Signer()
+        try:
+            prequal_request_id = signer.unsign(signed_prequal_request_id)
+        except signing.BadSignature:
+            raise exceptions.SuspiciousOperation('Invalid Signature')
+
+        # Get and validate redirect URL
+        redirect_url = self.request.GET.get('next', '/')
+        redirect_url_is_safe = is_safe_url(
+            url=redirect_url,
+            allowed_hosts=set(request.get_host()),
+            require_https=request.is_secure())
+        if not redirect_url_is_safe:
+            redirect_url = '/'
+
+        # Make sure request ID is valid
+        try:
+            prequal_request = PreQualificationRequest.objects.get(pk=prequal_request_id)
+        except PreQualificationRequest.DoesNotExist:
+            raise exceptions.SuspiciousOperation('PreQualificationRequest does not exist')
+
+        # Put ID into session and redirect to next view
+        request.session[PREQUAL_SESSION_KEY] = prequal_request.pk
+        return redirect(redirect_url)
+
+
 class PreQualificationRequestView(generics.GenericAPIView):
     serializer_class = PreQualificationRequestSerializer
 
@@ -203,7 +235,6 @@ class PreQualificationRequestView(generics.GenericAPIView):
             prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
         except PreQualificationResponse.DoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
-
         response_ser = PreQualificationResponseSerializer(instance=prequal_response, context={'request': request})
         return Response(response_ser.data)
 

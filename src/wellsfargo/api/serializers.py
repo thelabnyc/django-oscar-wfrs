@@ -260,7 +260,6 @@ class PreQualificationSDKApplicationResultSerializer(serializers.ModelSerializer
         )
 
 
-
 class PreQualificationResponseSerializer(serializers.ModelSerializer):
     sdk_application_result = PreQualificationSDKApplicationResultSerializer(read_only=True)
 
@@ -270,7 +269,9 @@ class PreQualificationResponseSerializer(serializers.ModelSerializer):
             'status',
             'is_approved',
             'message',
+            'offer_indicator',
             'credit_limit',
+            'response_id',
             'full_application_url',
             'sdk_application_result',
             'created_datetime',
