@@ -260,12 +260,34 @@ class PreQualificationSDKApplicationResultSerializer(serializers.ModelSerializer
         )
 
 
+class PreQualificationRequestInlineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreQualificationRequest
+        read_only_fields = (
+            'uuid',
+            'entry_point',
+            'customer_initiated',
+            'email',
+            'first_name',
+            'middle_initial',
+            'last_name',
+            'line1',
+            'line2',
+            'city',
+            'state',
+            'postcode',
+        )
+        fields = read_only_fields
+
+
 class PreQualificationResponseSerializer(serializers.ModelSerializer):
+    request = PreQualificationRequestInlineSerializer(read_only=True)
     sdk_application_result = PreQualificationSDKApplicationResultSerializer(read_only=True)
 
     class Meta:
         model = PreQualificationResponse
         read_only_fields = (
+            'request',
             'status',
             'is_approved',
             'message',
