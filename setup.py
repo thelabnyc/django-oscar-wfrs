@@ -35,6 +35,7 @@ extras_require = {
         'psycopg2cffi>=2.7.7',
         'PyYAML>=3.12',
         'sphinx>=1.6.5',
+        'sphinx-rtd-theme>=0.4.3',
         'tox>=2.9.1',
         'versiontag>=1.2.0',
     ],
