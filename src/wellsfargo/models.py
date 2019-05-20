@@ -41,6 +41,7 @@ from .core.fields import USStateField, USZipCodeField
 from .security import encrypt_account_number, decrypt_account_number
 import logging
 import uuid
+import urllib.parse
 
 Benefit = get_model('offer', 'Benefit')
 HiddenPostOrderAction = get_class('offer.results', 'HiddenPostOrderAction')
@@ -519,7 +520,11 @@ class PreQualificationRequest(models.Model):
 
 
     def get_resume_offer_url(self, next_url='/'):
-        return reverse('wfrs-api-prequal-resume', args=[self.get_signed_id()])
+        url = reverse('wfrs-api-prequal-resume', args=[self.get_signed_id()])
+        qs = urllib.parse.urlencode({
+            'next': next_url,
+        })
+        return '{}?{}'.format(url, qs)
 
 
 
