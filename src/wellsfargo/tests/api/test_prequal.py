@@ -217,7 +217,7 @@ class PreQualificationRequestTest(BaseTest):
 
         # Hit the resume view
         prequal_request = PreQualificationRequest.objects.first()
-        url = '%s?next=/my-redirect/' % prequal_request.get_resume_offer_url()
+        url = prequal_request.get_resume_offer_url(next_url='/my-redirect/')
         response = self.client.get(url)
         self.assertRedirects(response, '/my-redirect/', fetch_redirect_response=False)
 
