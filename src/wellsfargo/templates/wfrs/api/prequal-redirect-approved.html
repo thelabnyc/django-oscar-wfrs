@@ -1,10 +1,19 @@
+{% load i18n %}
 <html>
     <head>
-        <title>Application Approved</title>
+        <title>{% trans "Application Approved" %}</title>
     </head>
     <body>
-        <h1>Your Wells Fargo application was approved.</h1>
-        <p>Your account number is {{ account_inquiry.account_number }}.</p>
-        <p>Your credit limit is {{ account_inquiry.credit_limit }}.</p>
+        <h1>{% trans "Your Wells Fargo application was approved." %}</h1>
+        <p>
+            {% blocktrans with account_number=account_inquiry.account_number %}
+                Your account number is {{ account_number }}.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans with credit_limit=account_inquiry.credit_limit %}
+                Your credit limit is {{ credit_limit }}.
+            {% endblocktrans %}
+        </p>
     </body>
 </html>

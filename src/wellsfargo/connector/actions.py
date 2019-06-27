@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from ..core.constants import (
     CREDIT_APP_APPROVED,
     CREDIT_APP_DECISION_DELAYED,
@@ -243,11 +244,11 @@ def submit_credit_application(app, current_user=None):
 
     # Check for any other errors we didn't catch already for any reason
     if resp.transactionStatus in (CREDIT_APP_FORMAT_ERROR, CREDIT_APP_WFF_ERROR):
-        raise ValidationError('An unknown error occurred.')
+        raise ValidationError(_('An unknown error occurred.'))
 
     # If the status is not either Approved or Pending, it must be denied
     if resp.transactionStatus not in (CREDIT_APP_APPROVED, CREDIT_APP_DECISION_DELAYED):
-        raise CreditApplicationDenied('Credit Application was denied by Wells Fargo.')
+        raise CreditApplicationDenied(_('Credit Application was denied by Wells Fargo.'))
 
     # Save the suffix of the account number
     app.account_number = resp.wfAccountNumber
@@ -270,7 +271,7 @@ def submit_credit_application(app, current_user=None):
 
     # Check if application approval is pending
     if resp.transactionStatus == CREDIT_APP_DECISION_DELAYED:
-        pending = CreditApplicationPending('Credit Application is approval is pending.')
+        pending = CreditApplicationPending(_('Credit Application is approval is pending.'))
         pending.inquiry = result
         raise pending
 

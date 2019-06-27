@@ -31,7 +31,7 @@
             </a>
 
             <a href="{% url 'wfrs-application-list' %}?{{ download_querystring | safe }}" class="btn btn-primary btn-lg">
-                <i class="icon-download-alt"></i> Export Applications
+                <i class="icon-download-alt"></i> {% trans "Export Applications" %}
             </a>
         </div>
     </div>
@@ -87,7 +87,7 @@
 
         {% if search_filters %}
             <div class="search-filter-list">
-                <label>Filters:</label>
+                <label>{% trans "Filters:" %}</label>
                 {% for filter in search_filters %}
                     <span class="label label-success">{{ filter }}</span>
                 {% endfor %}

@@ -154,8 +154,8 @@ APPLICATION_FORM_EXCLUDE_FIELDS = ('status', 'user', 'submitting_user', 'last4_a
 ENTRY_POINT_WEB = 'web'
 ENTRY_POINT_POS = 'pos'
 ENTRY_POINT_CHOICES = (
-    (ENTRY_POINT_WEB, 'Web'),
-    (ENTRY_POINT_POS, 'Point of Sale'),
+    (ENTRY_POINT_WEB, _('Web')),
+    (ENTRY_POINT_POS, _('Point of Sale')),
 )
 
 PREQUAL_TRANS_STATUS_APPROVED = 'A'  # Instant pre-screen approved
@@ -196,7 +196,7 @@ PREQUAL_CUSTOMER_RESP_ACCEPT = 'YES'  # Customer accepted offer
 PREQUAL_CUSTOMER_RESP_REJECT = 'NO'  # Customer rejected offer
 PREQUAL_CUSTOMER_RESP_SDKPRESENTED = 'SDKPRESENTED'  # WFRS SDK Presented Pre-Approval Offer
 PREQUAL_CUSTOMER_RESP_CHOICES = (
-    (PREQUAL_CUSTOMER_RESP_NONE, _('')),
+    (PREQUAL_CUSTOMER_RESP_NONE, ''),
     (PREQUAL_CUSTOMER_RESP_CLOSE, _('Offer Closed')),
     (PREQUAL_CUSTOMER_RESP_ACCEPT, _('Offer Accepted')),
     (PREQUAL_CUSTOMER_RESP_REJECT, _('Offer Rejected')),

@@ -1,12 +1,13 @@
+{% load i18n %}
 {% spaceless %}
     {% if record.APP_TYPE_CODE == 'us-individual' %}
-        US Individual
+        {% trans "US Individual" %}
     {% elif record.APP_TYPE_CODE == 'us-joint' %}
-        US Joint
+        {% trans "US Joint" %}
     {% elif record.APP_TYPE_CODE == 'ca-individual' %}
-        CA Individual
+        {% trans "CA Individual" %}
     {% elif record.APP_TYPE_CODE == 'us-joint' %}
-        CA Joint
+        {% trans "CA Joint" %}
     {% else %}
         —
     {% endif %}
