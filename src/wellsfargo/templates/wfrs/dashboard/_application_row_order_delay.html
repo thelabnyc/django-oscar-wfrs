@@ -1,7 +1,10 @@
+{% load i18n %}
 {% spaceless %}
     {% load wfrs_filters %}
     {% if record.order_placed %}
-        <span title="Order placed on {{ record.order_placed | localizedatetime }}, {{ record.created_datetime | timesince:record.order_placed }} after initial credit application.">
+        <span title="{% blocktrans trimmed with placed_on=record.order_placed|localizedatetime time_diff=record.created_datetime|timesince:record.order_placed %}
+            Order placed on {{ placed_on }}, {{ time_diff }} after initial credit application.
+        {% endblocktrans %}">
             {{ record.order_placed | timesinceminutes:record.created_datetime }}
         </span>
     {% else %}

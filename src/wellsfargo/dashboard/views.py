@@ -278,43 +278,43 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
         search_text = data.get('search_text')
         if search_text:
             qs = qs.filter(text=AutoQuery(search_text))
-            self.filter_descrs.append(_('Application contains “{text}”').format(text=search_text))
+            self.filter_descrs.append(_('Application contains “%(text)s”') % dict(text=search_text))
 
         # Advanced search
         status = data.get('status')
         if status:
             qs = qs.filter(status=status)
-            self.filter_descrs.append(_('Status is “{status}”').format(status=get_credit_app_status_name(status)))
+            self.filter_descrs.append(_('Status is “%(status)s”') % dict(status=get_credit_app_status_name(status)))
 
         name = data.get('name')
         if name:
             qs = qs.filter(name=name)
-            self.filter_descrs.append(_('Applicant name contains “{name}”').format(name=name))
+            self.filter_descrs.append(_('Applicant name contains “%(name)s”') % dict(name=name))
 
         email = data.get('email')
         if email:
             qs = qs.filter(email=email)
-            self.filter_descrs.append(_('Applicant email contains “{email}”').format(email=email))
+            self.filter_descrs.append(_('Applicant email contains “%(email)s”') % dict(email=email))
 
         address = data.get('address')
         if address:
             qs = qs.filter(address=address)
-            self.filter_descrs.append(_('Applicant address contains “{address}”').format(address=address))
+            self.filter_descrs.append(_('Applicant address contains “%(address)s”') % dict(address=address))
 
         phone = data.get('phone')
         if phone:
             qs = qs.filter(phone__exact=phone)
-            self.filter_descrs.append(_('Phone number contains “{phone}”').format(phone=phone))
+            self.filter_descrs.append(_('Phone number contains “%(phone)s”') % dict(phone=phone))
 
         created_date_from = data.get('created_date_from')
         if created_date_from:
             qs = qs.filter(created_datetime__gt=created_date_from)
-            self.filter_descrs.append(_('Application submitted after {date}').format(date=created_date_from.strftime('%c')))
+            self.filter_descrs.append(_('Application submitted after %(date)s') % dict(date=created_date_from.strftime('%c')))
 
         created_date_to = data.get('created_date_to')
         if created_date_to:
             qs = qs.filter(created_datetime__lt=created_date_to)
-            self.filter_descrs.append(_('Application submitted before {date}').format(date=created_date_to.strftime('%c')))
+            self.filter_descrs.append(_('Application submitted before %(date)s') % dict(date=created_date_to.strftime('%c')))
 
         submitted_by = data.get('submitted_by')
 
@@ -322,17 +322,17 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
         if user_id:
             user = get_object_or_404(get_user_model(), pk=user_id)
             qs = qs.filter(user_id=user_id)
-            self.filter_descrs.append(_('Application owned by “{name}”').format(name=user.get_full_name()))
+            self.filter_descrs.append(_('Application owned by “%(name)s”') % dict(name=user.get_full_name()))
 
         submitting_user_id = data.get('submitting_user_id')
         submitted_by = data.get('submitted_by')
         if submitting_user_id:
             user = get_object_or_404(get_user_model(), pk=submitting_user_id)
             qs = qs.filter(submitting_user_id=submitting_user_id)
-            self.filter_descrs.append(_('Application submitted by “{name}”').format(name=user.get_full_name()))
+            self.filter_descrs.append(_('Application submitted by “%(name)s”') % dict(name=user.get_full_name()))
         elif submitted_by:
             qs = qs.filter(submitting_user_full_name=submitted_by)
-            self.filter_descrs.append(_('Application submitted by “{name}”').format(name=submitted_by))
+            self.filter_descrs.append(_('Application submitted by “%(name)s”') % dict(name=submitted_by))
 
         return qs
 
@@ -428,38 +428,38 @@ class PreQualificationListView(CSVDownloadableTableMixin, SingleTableView):
         search_text = data.get('search_text')
         if search_text:
             qs = qs.filter(text=AutoQuery(search_text))
-            self.filter_descrs.append(_('Request contains “{text}”').format(text=search_text))
+            self.filter_descrs.append(_('Request contains “%(text)s”') % dict(text=search_text))
 
         # Advanced Search
         customer_initiated = data.get('customer_initiated')
         if customer_initiated is not None:
             qs = qs.filter(customer_initiated__exact=str(customer_initiated).lower())
-            self.filter_descrs.append(_('Customer Initiated is “{text}”').format(text=customer_initiated))
+            self.filter_descrs.append(_('Customer Initiated is “%(text)s”') % dict(text=customer_initiated))
 
         first_name = data.get('first_name')
         if first_name:
             qs = qs.filter(first_name__fuzzy=first_name)
-            self.filter_descrs.append(_('First name is “{text}”').format(text=first_name))
+            self.filter_descrs.append(_('First name is “%(text)s”') % dict(text=first_name))
 
         last_name = data.get('last_name')
         if last_name:
             qs = qs.filter(last_name__fuzzy=last_name)
-            self.filter_descrs.append(_('Last name is “{text}”').format(text=last_name))
+            self.filter_descrs.append(_('Last name is “%(text)s”') % dict(text=last_name))
 
         status = data.get('status')
         if status:
             qs = qs.filter(response_status=status)
-            self.filter_descrs.append(_('Status is “{text}”').format(text=get_prequal_trans_status_name(status)))
+            self.filter_descrs.append(_('Status is “%(text)s”') % dict(text=get_prequal_trans_status_name(status)))
 
         created_date_from = data.get('created_date_from')
         if created_date_from:
             qs = qs.filter(created_datetime__gte=created_date_from)
-            self.filter_descrs.append(_('Created after {text}').format(text=created_date_from))
+            self.filter_descrs.append(_('Created after %(text)s') % dict(text=created_date_from))
 
         created_date_to = data.get('created_date_to')
         if created_date_to:
             qs = qs.filter(created_datetime__lte=created_date_to)
-            self.filter_descrs.append(_('Created before {text}').format(text=created_date_to))
+            self.filter_descrs.append(_('Created before %(text)s') % dict(text=created_date_to))
 
         return qs
 

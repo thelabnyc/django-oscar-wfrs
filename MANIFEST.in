@@ -1,2 +1,3 @@
 include *.txt *.md *.rst *.xml
 recursive-include src/wellsfargo *.html *.js *.txt *.xml *.yaml
+recursive-include src/wellsfargo/locale *.po *.mo

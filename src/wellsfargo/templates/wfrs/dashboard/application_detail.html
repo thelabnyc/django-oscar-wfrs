@@ -297,16 +297,16 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Inquiry Date/Time</th>
-                        <th>Inquiry Account Number</th>
-                        <th>Status</th>
-                        <th>Credit Limit</th>
-                        <th>Balance</th>
-                        <th>Open to Buy</th>
-                        <th>Last Payment Date</th>
-                        <th>Last Payment Amount</th>
-                        <th>Payment Due Date</th>
-                        <th>Payment Due Amount</th>
+                        <th>{% trans "Inquiry Date/Time" %}</th>
+                        <th>{% trans "Inquiry Account Number" %}</th>
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Credit Limit" %}</th>
+                        <th>{% trans "Balance" %}</th>
+                        <th>{% trans "Open to Buy" %}</th>
+                        <th>{% trans "Last Payment Date" %}</th>
+                        <th>{% trans "Last Payment Amount" %}</th>
+                        <th>{% trans "Payment Due Date" %}</th>
+                        <th>{% trans "Payment Due Amount" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -326,7 +326,7 @@
                     {% empty %}
                         <tr>
                             <td colspan="10">
-                                <em>No account inquiries currently exist for this Credit Application</em>
+                                <em>{% trans "No account inquiries currently exist for this Credit Application" %}</em>
                             </td>
                         </tr>
                     {% endfor %}

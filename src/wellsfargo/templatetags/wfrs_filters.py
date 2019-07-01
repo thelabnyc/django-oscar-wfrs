@@ -9,7 +9,9 @@ register = template.Library()
 @register.filter(name='timeat')
 def timeat(value):
     try:
-        return _('%s years, %s months') % (int(value[2:]), int(value[:2]))
+        return _('%(years)s years, %(months)s months') % dict(
+            years=int(value[2:]),
+            months=int(value[:2]))
     except Exception:
         return ""
 

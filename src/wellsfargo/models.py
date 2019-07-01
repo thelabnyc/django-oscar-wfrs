@@ -114,6 +114,8 @@ class FinancingPlan(models.Model):
 
     class Meta:
         ordering = ('plan_number', )
+        verbose_name = _('Financing Plan')
+        verbose_name_plural = _('Financing Plans')
 
 
     @classmethod
@@ -129,7 +131,9 @@ class FinancingPlan(models.Model):
 
 
     def __str__(self):
-        return "%s (plan number %s)" % (self.description, self.plan_number)
+        return _("%(description)s (plan number %(number)s)") % dict(
+            description=self.description,
+            number=self.plan_number)
 
     def save(self, *args, **kwargs):
         if self.is_default_plan:
@@ -148,6 +152,8 @@ class FinancingPlanBenefit(Benefit):
 
     class Meta(Benefit.Meta):
         app_label = 'wellsfargo'
+        verbose_name = _('Financing Plan Benefit')
+        verbose_name_plural = _('Financing Plan Benefits')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -158,10 +164,10 @@ class FinancingPlanBenefit(Benefit):
 
     def apply(self, basket, condition, offer):
         condition.consume_items(offer, basket, [])
-        return HiddenPostOrderAction("Financing is available for your order")
+        return HiddenPostOrderAction(_("Financing is available for your order"))
 
     def apply_deferred(self, basket, order, application):
-        return "Financing was available for your order: %s" % self.group_name
+        return _("Financing was available for your order: %s") % self.group_name
 
     @property
     def name(self):
@@ -170,7 +176,7 @@ class FinancingPlanBenefit(Benefit):
     @property
     def description(self):
         nums = ', '.join([str(p.plan_number) for p in self.plans.all()])
-        return "Causes the following Wells Fargo financing plans to be available: %s" % nums
+        return _("Causes the following Wells Fargo financing plans to be available: %s") % nums
 
     def _clean(self):
         group_name = getattr(self, 'group_name', None)
@@ -189,7 +195,10 @@ class FraudScreenResult(models.Model):
     DECISION_REVIEW = 'REVIEW'
 
     screen_type = models.CharField(_("Fraud Screen Type"), max_length=25)
-    order = models.ForeignKey('order.Order', related_name='wfrs_fraud_screen_results', on_delete=models.CASCADE)
+    order = models.ForeignKey('order.Order',
+        verbose_name=_("Order"),
+        related_name='wfrs_fraud_screen_results',
+        on_delete=models.CASCADE)
     reference = models.CharField(_("Reference"), max_length=128)
     decision = models.CharField(_("Decision"), max_length=25, choices=(
         (DECISION_REJECT, _("Transaction was rejected")),
@@ -198,12 +207,13 @@ class FraudScreenResult(models.Model):
         (DECISION_REVIEW, _("Transaction was flagged for manual review")),
     ))
     message = models.TextField(_("Message"))
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    modified_datetime = models.DateTimeField(auto_now=True)
+    created_datetime = models.DateTimeField(_("Created On"), auto_now_add=True)
+    modified_datetime = models.DateTimeField(_("Modified On"), auto_now=True)
 
     class Meta:
         ordering = ('-created_datetime', '-id')
-
+        verbose_name = _('Fraud Screen Result')
+        verbose_name_plural = _('Fraud Screen Results')
 
     def __str__(self):
         return self.message
@@ -233,7 +243,7 @@ class AccountNumberMixin(models.Model):
     @account_number.setter
     def account_number(self, value):
         if len(value) != 16:
-            raise ValueError('Account number must be 16 digits long')
+            raise ValueError(_('Account number must be 16 digits long'))
         self.last4_account_number = value[-4:]
         self.encrypted_account_number = encrypt_account_number(value)
 
@@ -277,10 +287,16 @@ class AccountInquiryResult(AccountNumberMixin, models.Model):
 
     class Meta:
         ordering = ('-created_datetime', '-id')
+        verbose_name = _('Account Inquiry Result')
+        verbose_name_plural = _('Account Inquiry Results')
 
     @property
     def full_name(self):
-        return '{} {} {}'.format(self.first_name, self.middle_initial, self.last_name)
+        # Translators: Assemble name pieces into full name
+        return _('%(first_name)s %(middle_initial)s %(last_name)s') % dict(
+            first_name=self.first_name,
+            middle_initial=self.middle_initial,
+            last_name=self.last_name)
 
 
 
@@ -310,8 +326,8 @@ class TransferMetadata(AccountNumberMixin, models.Model):
     status = models.CharField(_("Status"), choices=TRANS_STATUSES, max_length=2)
     message = models.TextField(_("Message"))
     disclosure = models.TextField(_("Disclosure"))
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    modified_datetime = models.DateTimeField(auto_now=True)
+    created_datetime = models.DateTimeField(_("Created"), auto_now_add=True)
+    modified_datetime = models.DateTimeField(_("Modified"), auto_now=True)
 
     @classmethod
     def get_by_oscar_transaction(cls, transaction, type_code=TRANS_TYPE_AUTH):
@@ -354,7 +370,7 @@ class CreditAppCommonMixin(models.Model):
         help_text=_("Which merchant account submitted this application?"),
         related_name='+',
         on_delete=models.SET_NULL)
-    application_source = models.CharField(_("Application Source"), default='Website', max_length=25,
+    application_source = models.CharField(_("Application Source"), default=_('Website'), max_length=25,
         help_text=_("Where/how is user applying? E.g. Website, Call Center, In-Store, etc."))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=True, blank=True,
@@ -420,20 +436,36 @@ class CreditAppCommonMixin(models.Model):
 class USCreditApp(CreditAppCommonMixin, USCreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'us-individual'
 
+    class Meta:
+        verbose_name = _('US Individual Credit Application')
+        verbose_name_plural = _('US Individual Credit Applications')
+
 
 
 class USJointCreditApp(CreditAppCommonMixin, USJointCreditAppMixin, BaseJointCreditAppMixin):
     APP_TYPE_CODE = 'us-joint'
+
+    class Meta:
+        verbose_name = _('US Joint Credit Application')
+        verbose_name_plural = _('US Joint Credit Applications')
 
 
 
 class CACreditApp(CreditAppCommonMixin, CACreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'ca-individual'
 
+    class Meta:
+        verbose_name = _('CA Individual Credit Application')
+        verbose_name_plural = _('CA Individual Credit Applications')
+
 
 
 class CAJointCreditApp(CreditAppCommonMixin, CAJointCreditAppMixin, BaseJointCreditAppMixin):
     APP_TYPE_CODE = 'ca-joint'
+
+    class Meta:
+        verbose_name = _('CA Joint Credit Application')
+        verbose_name_plural = _('CA Joint Credit Applications')
 
 
 
@@ -468,6 +500,8 @@ class PreQualificationRequest(models.Model):
     modified_datetime = models.DateTimeField(auto_now=True)
 
     class Meta:
+        verbose_name = _('Pre-Qualification Request')
+        verbose_name_plural = _('Pre-Qualification Requests')
         ordering = ('-created_datetime', '-id')
         indexes = [
             models.Index(fields=['-created_datetime', '-id']),
@@ -553,6 +587,8 @@ class PreQualificationResponse(models.Model):
     modified_datetime = models.DateTimeField(auto_now=True)
 
     class Meta:
+        verbose_name = _('Pre-Qualification Response')
+        verbose_name_plural = _('Pre-Qualification Responses')
         ordering = ('-created_datetime', '-id')
 
 
@@ -597,3 +633,7 @@ class PreQualificationSDKApplicationResult(models.Model):
     application_status = models.CharField(_("Application Status"), max_length=20)
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _('Pre-Qualification SDK Application Result')
+        verbose_name_plural = _('Pre-Qualification SDK Application Results')

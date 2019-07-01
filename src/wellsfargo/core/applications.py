@@ -79,8 +79,8 @@ class BaseCreditAppMixin(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = "Credit Application"
-        verbose_name_plural = "Credit Applications"
+        verbose_name = _("Credit Application")
+        verbose_name_plural = _("Credit Applications")
         ordering = ('-created_datetime', )
 
     @property
@@ -127,8 +127,8 @@ class BaseJointCreditAppMixin(BaseCreditAppMixin):
 
     class Meta:
         abstract = True
-        verbose_name = "Joint Credit Application"
-        verbose_name_plural = "Joint Credit Applications"
+        verbose_name = _("Joint Credit Application")
+        verbose_name_plural = _("Joint Credit Applications")
 
     @property
     def is_joint(self):
@@ -155,8 +155,8 @@ class USCreditAppMixin(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = "US Individual Credit Application"
-        verbose_name_plural = "US Individual Credit Applications"
+        verbose_name = _("US Individual Credit Application")
+        verbose_name_plural = _("US Individual Credit Applications")
 
 
 class USJointCreditAppMixin(USCreditAppMixin):
@@ -173,8 +173,8 @@ class USJointCreditAppMixin(USCreditAppMixin):
 
     class Meta:
         abstract = True
-        verbose_name = "US Joint Credit Application"
-        verbose_name_plural = "US Joint Credit Applications"
+        verbose_name = _("US Joint Credit Application")
+        verbose_name_plural = _("US Joint Credit Applications")
 
 
 class CACreditAppMixin(models.Model):
@@ -204,8 +204,8 @@ class CACreditAppMixin(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = "CA Individual Credit Application"
-        verbose_name_plural = "CA Individual Credit Applications"
+        verbose_name = _("CA Individual Credit Application")
+        verbose_name_plural = _("CA Individual Credit Applications")
 
     def clean(self):
         self._clean_dl_province('main_drivers_license_province', self.main_photo_id_type, self.main_drivers_license_province)
@@ -238,8 +238,8 @@ class CAJointCreditAppMixin(CACreditAppMixin):
 
     class Meta:
         abstract = True
-        verbose_name = "CA Joint Credit Application"
-        verbose_name_plural = "CA Joint Credit Applications"
+        verbose_name = _("CA Joint Credit Application")
+        verbose_name_plural = _("CA Joint Credit Applications")
 
     def clean(self):
         self._clean_dl_province('joint_drivers_license_province', self.joint_photo_id_type, self.joint_drivers_license_province)

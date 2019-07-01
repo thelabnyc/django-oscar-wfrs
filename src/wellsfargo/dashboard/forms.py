@@ -112,14 +112,14 @@ class ApplicationSearchForm(forms.Form):
     search_text = forms.CharField(required=False, label="Search")
 
     # Advanced Search
-    status = forms.ChoiceField(required=False, label="Status", choices=((('', 'All Statuses'), ) + CREDIT_APP_STATUSES))
-    name = forms.CharField(required=False, label="Applicant Name")
-    email = forms.CharField(required=False, label="Applicant Email Address")
-    address = forms.CharField(required=False, label="Applicant Address")
-    phone = forms.CharField(required=False, label="Applicant Phone Number")
+    status = forms.ChoiceField(required=False, label=_("Status"), choices=((('', _('All Statuses')), ) + CREDIT_APP_STATUSES))
+    name = forms.CharField(required=False, label=_("Applicant Name"))
+    email = forms.CharField(required=False, label=_("Applicant Email Address"))
+    address = forms.CharField(required=False, label=_("Applicant Address"))
+    phone = forms.CharField(required=False, label=_("Applicant Phone Number"))
     created_date_from = forms.DateTimeField(required=False, label=_("Submitted After"), widget=DateTimePickerInput)
     created_date_to = forms.DateTimeField(required=False, label=_("Submitted Before"), widget=DateTimePickerInput)
-    submitted_by = forms.CharField(required=False, label="Submitted By")
+    submitted_by = forms.CharField(required=False, label=_("Submitted By"))
 
     # Hidden filters linked to by other parts of the application
     user_id = forms.IntegerField(required=False, widget=forms.HiddenInput())
@@ -128,13 +128,13 @@ class ApplicationSearchForm(forms.Form):
 
 class PreQualSearchForm(forms.Form):
     # Basic Search
-    search_text = forms.CharField(required=False, label="Search")
+    search_text = forms.CharField(required=False, label=_("Search"))
 
     # Advanced Search
-    customer_initiated = forms.NullBooleanField(required=False, label="Customer Initiated?")
-    first_name = forms.CharField(required=False, label="First Name")
-    last_name = forms.CharField(required=False, label="Last Name")
-    status = forms.ChoiceField(required=False, label="Status", choices=((('', 'All Statuses'), ) + PREQUAL_TRANS_STATUS_CHOICES))
+    customer_initiated = forms.NullBooleanField(required=False, label=_("Customer Initiated?"))
+    first_name = forms.CharField(required=False, label=_("First Name"))
+    last_name = forms.CharField(required=False, label=_("Last Name"))
+    status = forms.ChoiceField(required=False, label=_("Status"), choices=((('', _('All Statuses')), ) + PREQUAL_TRANS_STATUS_CHOICES))
     created_date_from = forms.DateTimeField(required=False, label=_("Submitted After"), widget=DateTimePickerInput)
     created_date_to = forms.DateTimeField(required=False, label=_("Submitted Before"), widget=DateTimePickerInput)
 

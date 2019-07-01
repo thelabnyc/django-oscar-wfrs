@@ -1,0 +1,1778 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-28 20:38+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: api/exceptions.py:9 dashboard/views.py:134
+msgid "Credit Application approval is pending"
+msgstr ""
+
+#: api/exceptions.py:16 dashboard/views.py:137
+msgid "Credit Application was denied by Wells Fargo"
+msgstr ""
+
+#: api/serializers.py:86 api/serializers.py:102 core/constants.py:100
+msgid "United States"
+msgstr ""
+
+#: api/serializers.py:89 api/serializers.py:121 core/constants.py:86
+msgid "Individual"
+msgstr ""
+
+#: api/serializers.py:92 api/serializers.py:108 api/serializers.py:124
+#: api/serializers.py:141 core/constants.py:93
+msgid "English"
+msgstr ""
+
+#: api/serializers.py:105 api/serializers.py:138 core/constants.py:87
+msgid "Joint"
+msgstr ""
+
+#: api/serializers.py:118 api/serializers.py:135 core/constants.py:101
+msgid "Canada"
+msgstr ""
+
+#: api/serializers.py:125 api/serializers.py:142 core/constants.py:94
+msgid "French"
+msgstr ""
+
+#: api/views.py:124
+msgid "Submitted price parameter was not valid."
+msgstr ""
+
+#: api/views.py:298 api/views.py:302 api/views.py:316 api/views.py:320
+msgid "No pre-qualification response was found for this session."
+msgstr ""
+
+#. Translators: Backend Library Name
+#: config.py:9
+msgid "Wells Fargo Retail Services"
+msgstr ""
+
+#: connector/actions.py:247
+msgid "An unknown error occurred."
+msgstr ""
+
+#: connector/actions.py:251
+msgid "Credit Application was denied by Wells Fargo."
+msgstr ""
+
+#: connector/actions.py:274
+msgid "Credit Application is approval is pending."
+msgstr ""
+
+#: core/applications.py:35 dashboard/forms.py:37
+msgid "Region"
+msgstr ""
+
+#: core/applications.py:36 dashboard/forms.py:38
+msgid "Language"
+msgstr ""
+
+#: core/applications.py:37 dashboard/forms.py:39 dashboard/tables.py:26
+msgid "Application Type"
+msgstr ""
+
+#: core/applications.py:39
+msgid "Requested Credit Amount"
+msgstr ""
+
+#: core/applications.py:44 core/applications.py:114 dashboard/forms.py:135
+#: dashboard/tables.py:152 models.py:269 models.py:484 models.py:631
+#: templates/wfrs/dashboard/application_detail.html:71
+#: templates/wfrs/dashboard/application_detail.html:199
+#: templates/wfrs/dashboard/prequal_detail.html:88
+#: templates/wfrs/dashboard/prequal_detail.html:187
+msgid "First Name"
+msgstr ""
+
+#: core/applications.py:45 core/applications.py:115 dashboard/forms.py:136
+#: dashboard/tables.py:155 models.py:271 models.py:486 models.py:632
+#: templates/wfrs/dashboard/application_detail.html:75
+#: templates/wfrs/dashboard/application_detail.html:203
+#: templates/wfrs/dashboard/prequal_detail.html:96
+#: templates/wfrs/dashboard/prequal_detail.html:191
+msgid "Last Name"
+msgstr ""
+
+#: core/applications.py:46 core/applications.py:116 models.py:270 models.py:485
+#: templates/wfrs/dashboard/application_detail.html:79
+#: templates/wfrs/dashboard/application_detail.html:207
+#: templates/wfrs/dashboard/prequal_detail.html:92
+msgid "Middle Initial"
+msgstr ""
+
+#: core/applications.py:47 core/applications.py:117
+msgid "Date of Birth"
+msgstr ""
+
+#: core/applications.py:48 core/applications.py:118 models.py:273 models.py:487
+#: templates/wfrs/dashboard/prequal_detail.html:100
+msgid "Address Line 1"
+msgstr ""
+
+#: core/applications.py:49 core/applications.py:119 models.py:488
+#: templates/wfrs/dashboard/prequal_detail.html:104
+msgid "Address Line 2"
+msgstr ""
+
+#: core/applications.py:50 core/applications.py:120 models.py:489
+#: templates/wfrs/dashboard/application_detail.html:99
+#: templates/wfrs/dashboard/application_detail.html:227
+#: templates/wfrs/dashboard/prequal_detail.html:108
+msgid "City"
+msgstr ""
+
+#: core/applications.py:51 templates/wfrs/dashboard/application_detail.html:115
+msgid "Home Phone"
+msgstr ""
+
+#: core/applications.py:52 templates/wfrs/dashboard/application_detail.html:127
+msgid "Home Value"
+msgstr ""
+
+#: core/applications.py:56 templates/wfrs/dashboard/application_detail.html:131
+msgid "Mortgage Balance"
+msgstr ""
+
+#: core/applications.py:60 core/applications.py:121
+#: templates/wfrs/dashboard/application_detail.html:151
+#: templates/wfrs/dashboard/application_detail.html:255
+msgid "Annual Income"
+msgstr ""
+
+#: core/applications.py:64 core/applications.py:125
+msgid "Employer Phone Number"
+msgstr ""
+
+#: core/applications.py:65 core/applications.py:126
+#: templates/wfrs/dashboard/application_detail.html:119
+#: templates/wfrs/dashboard/application_detail.html:243
+msgid "Cell Phone"
+msgstr ""
+
+#: core/applications.py:67
+msgid "Optional Insurance"
+msgstr ""
+
+#: core/applications.py:68
+msgid "Existing Sales Person ID"
+msgstr ""
+
+#: core/applications.py:72
+msgid "New Sales Person Name"
+msgstr ""
+
+#: core/applications.py:73 models.py:483
+#: templates/wfrs/dashboard/prequal_detail.html:84
+msgid "Email"
+msgstr ""
+
+#: core/applications.py:75
+msgid "Resulting Account"
+msgstr ""
+
+#: core/applications.py:82
+msgid "Credit Application"
+msgstr ""
+
+#: core/applications.py:83 dashboard/views.py:251
+#: templates/dashboard/users/detail.html:12
+#: templates/dashboard/users/detail.html:21
+#: templates/wfrs/dashboard/application_detail.html:18
+#: templates/wfrs/dashboard/application_list.html:9
+#: templates/wfrs/dashboard/application_list.html:18
+#: templates/wfrs/dashboard/application_list.html:26
+#: templatetags/wfrs_credit_apps.py:23
+msgid "Credit Applications"
+msgstr ""
+
+#: core/applications.py:130
+msgid "Joint Credit Application"
+msgstr ""
+
+#: core/applications.py:131
+msgid "Joint Credit Applications"
+msgstr ""
+
+#: core/applications.py:139 core/applications.py:163
+msgid "Social Security Number"
+msgstr ""
+
+#: core/applications.py:140 core/applications.py:164 models.py:490
+#: templates/wfrs/dashboard/application_detail.html:103
+#: templates/wfrs/dashboard/application_detail.html:231
+#: templates/wfrs/dashboard/prequal_detail.html:112
+msgid "State"
+msgstr ""
+
+#: core/applications.py:141 core/applications.py:165 core/applications.py:183
+#: core/applications.py:223 models.py:491
+msgid "Postcode"
+msgstr ""
+
+#: core/applications.py:142 core/applications.py:184
+#: templates/wfrs/dashboard/application_detail.html:135
+msgid "Time at Address"
+msgstr ""
+
+#: core/applications.py:147 core/applications.py:189
+#: templates/wfrs/dashboard/application_detail.html:139
+msgid "Housing Status"
+msgstr ""
+
+#: core/applications.py:148 core/applications.py:166 core/applications.py:190
+#: core/applications.py:224
+#: templates/wfrs/dashboard/application_detail.html:155
+#: templates/wfrs/dashboard/application_detail.html:259
+msgid "Employer Name"
+msgstr ""
+
+#: core/applications.py:149 core/applications.py:167 core/applications.py:191
+#: core/applications.py:225
+#: templates/wfrs/dashboard/application_detail.html:159
+#: templates/wfrs/dashboard/application_detail.html:263
+msgid "Time at Employer"
+msgstr ""
+
+#: core/applications.py:154 core/applications.py:172 core/applications.py:196
+#: core/applications.py:230
+#: templates/wfrs/dashboard/application_detail.html:147
+#: templates/wfrs/dashboard/application_detail.html:251
+msgid "Occupation"
+msgstr ""
+
+#: core/applications.py:158 models.py:440
+msgid "US Individual Credit Application"
+msgstr ""
+
+#: core/applications.py:159 models.py:441
+msgid "US Individual Credit Applications"
+msgstr ""
+
+#: core/applications.py:176 models.py:449
+msgid "US Joint Credit Application"
+msgstr ""
+
+#: core/applications.py:177 models.py:450
+msgid "US Joint Credit Applications"
+msgstr ""
+
+#: core/applications.py:181 core/applications.py:221
+msgid "Social Insurance Number"
+msgstr ""
+
+#: core/applications.py:182 core/applications.py:222
+msgid "Province"
+msgstr ""
+
+#: core/applications.py:197 core/applications.py:231
+#: templates/wfrs/dashboard/application_detail.html:171
+#: templates/wfrs/dashboard/application_detail.html:275
+msgid "Photo ID Type"
+msgstr ""
+
+#: core/applications.py:198 core/applications.py:232
+#: templates/wfrs/dashboard/application_detail.html:175
+#: templates/wfrs/dashboard/application_detail.html:279
+msgid "Photo ID Number"
+msgstr ""
+
+#: core/applications.py:202 core/applications.py:236
+msgid "Driver’s License Province"
+msgstr ""
+
+#: core/applications.py:203 core/applications.py:237
+#: templates/wfrs/dashboard/application_detail.html:183
+#: templates/wfrs/dashboard/application_detail.html:287
+msgid "Photo ID Expiration Date"
+msgstr ""
+
+#: core/applications.py:207 models.py:458
+msgid "CA Individual Credit Application"
+msgstr ""
+
+#: core/applications.py:208 models.py:459
+msgid "CA Individual Credit Applications"
+msgstr ""
+
+#: core/applications.py:215
+msgid ""
+"\"Driver’s License Province\" is required if Photo ID Type is \"Driver’s "
+"License\""
+msgstr ""
+
+#: core/applications.py:241 models.py:467
+msgid "CA Joint Credit Application"
+msgstr ""
+
+#: core/applications.py:242 models.py:468
+msgid "CA Joint Credit Applications"
+msgstr ""
+
+#: core/constants.py:10 core/constants.py:21
+msgid "Unknown"
+msgstr ""
+
+#: core/constants.py:11
+msgid "Approved"
+msgstr ""
+
+#: core/constants.py:12
+msgid "Pending"
+msgstr ""
+
+#: core/constants.py:13
+msgid "Format Error"
+msgstr ""
+
+#: core/constants.py:14
+msgid "Wells Fargo Error"
+msgstr ""
+
+#: core/constants.py:15
+msgid "Denied"
+msgstr ""
+
+#: core/constants.py:29
+msgid ""
+"Transaction not approved or declined. For time-out reversal and void "
+"transactions, match was found but was already funded."
+msgstr ""
+
+#: core/constants.py:30
+msgid ""
+"Approved. For time-out reversal and void transactions, match was found and "
+"processed."
+msgstr ""
+
+#: core/constants.py:31
+msgid ""
+"Time-out reversal or void approved, but no matching transaction was found."
+msgstr ""
+
+#: core/constants.py:32
+msgid "Time-out reversal or void approved, but matched duplicate transactions."
+msgstr ""
+
+#: core/constants.py:45
+msgid "Account Inquiry Succeeded"
+msgstr ""
+
+#: core/constants.py:46
+msgid "Could Not Find Requested Account"
+msgstr ""
+
+#: core/constants.py:47
+msgid "Wells Fargo System Error"
+msgstr ""
+
+#: core/constants.py:48
+msgid "OTB Success"
+msgstr ""
+
+#: core/constants.py:49
+msgid "OTB Failed"
+msgstr ""
+
+#: core/constants.py:50
+msgid "OTB No Match"
+msgstr ""
+
+#: core/constants.py:51
+msgid "OTB Account Not Found"
+msgstr ""
+
+#: core/constants.py:52
+msgid "OTB Denied"
+msgstr ""
+
+#: core/constants.py:53
+msgid "OTB External Status Code"
+msgstr ""
+
+#: core/constants.py:69
+msgid "Authorization for Future Charge"
+msgstr ""
+
+#: core/constants.py:70
+msgid "Cancel Existing Authorization"
+msgstr ""
+
+#: core/constants.py:74
+msgid "Return or Credit"
+msgstr ""
+
+#: core/constants.py:75
+msgid "Time-out Reversal for Return or Credit"
+msgstr ""
+
+#: core/constants.py:76
+msgid "Void Sale"
+msgstr ""
+
+#: core/constants.py:77
+msgid "Void Return"
+msgstr ""
+
+#: core/constants.py:107 core/constants.py:112
+msgid "English (US)"
+msgstr ""
+
+#: core/constants.py:108
+msgid "English (CA)"
+msgstr ""
+
+#: core/constants.py:109
+msgid "French (CA)"
+msgstr ""
+
+#: core/constants.py:127 core/constants.py:132
+msgid "Rent"
+msgstr ""
+
+#: core/constants.py:128 core/constants.py:133
+msgid "Own"
+msgstr ""
+
+#: core/constants.py:129
+msgid "Other"
+msgstr ""
+
+#: core/constants.py:140
+msgid "Old Age Security Card"
+msgstr ""
+
+#: core/constants.py:141
+msgid "Driver’s License"
+msgstr ""
+
+#: core/constants.py:142
+msgid "Provincial ID"
+msgstr ""
+
+#: core/constants.py:143
+msgid "Canadian Passport"
+msgstr ""
+
+#: core/constants.py:144
+msgid "Certificate of Citizenship or Naturalization"
+msgstr ""
+
+#: core/constants.py:145
+msgid "Certificate of Indian Status"
+msgstr ""
+
+#: core/constants.py:146
+msgid "Canadian Citizen Form 1000 or 1442"
+msgstr ""
+
+#: core/constants.py:157
+msgid "Web"
+msgstr ""
+
+#: core/constants.py:158
+msgid "Point of Sale"
+msgstr ""
+
+#: core/constants.py:167
+msgid "Pre-qualification Approved"
+msgstr ""
+
+#: core/constants.py:168
+msgid "Pre-qualification Not Approved"
+msgstr ""
+
+#: core/constants.py:169 core/constants.py:175
+msgid "System Error"
+msgstr ""
+
+#: core/constants.py:170 core/constants.py:176
+msgid "Down for Maintenance"
+msgstr ""
+
+#: core/constants.py:173
+msgid "Pre-screen Approved"
+msgstr ""
+
+#: core/constants.py:174
+msgid "Pre-screen Not Approved"
+msgstr ""
+
+#: core/constants.py:200
+msgid "Offer Closed"
+msgstr ""
+
+#: core/constants.py:201
+msgid "Offer Accepted"
+msgstr ""
+
+#: core/constants.py:202
+msgid "Offer Rejected"
+msgstr ""
+
+#: core/constants.py:203
+msgid "Offer Presented By PLCCA SDK"
+msgstr ""
+
+#: core/fields.py:58
+msgid "Social Insurance number"
+msgstr ""
+
+#: core/fields.py:94
+msgid "Canadian province"
+msgstr ""
+
+#: core/fields.py:114
+msgid "Canadian postal code"
+msgstr ""
+
+#: dashboard/forms.py:46
+msgid "Selected language is not valid for the selected region."
+msgstr ""
+
+#: dashboard/forms.py:115 dashboard/forms.py:137 dashboard/tables.py:162
+#: models.py:267 models.py:326
+#: templates/wfrs/dashboard/application_detail.html:302
+#: templates/wfrs/dashboard/prequal_detail.html:62
+#: templates/wfrs/dashboard/prequal_detail.html:133
+#: templates/wfrs/dashboard/transfer_detail.html:84
+msgid "Status"
+msgstr ""
+
+#: dashboard/forms.py:115 dashboard/forms.py:137
+msgid "All Statuses"
+msgstr ""
+
+#: dashboard/forms.py:116
+msgid "Applicant Name"
+msgstr ""
+
+#: dashboard/forms.py:117
+msgid "Applicant Email Address"
+msgstr ""
+
+#: dashboard/forms.py:118
+msgid "Applicant Address"
+msgstr ""
+
+#: dashboard/forms.py:119
+msgid "Applicant Phone Number"
+msgstr ""
+
+#: dashboard/forms.py:120 dashboard/forms.py:138
+msgid "Submitted After"
+msgstr ""
+
+#: dashboard/forms.py:121 dashboard/forms.py:139
+msgid "Submitted Before"
+msgstr ""
+
+#: dashboard/forms.py:122 dashboard/tables.py:40
+msgid "Submitted By"
+msgstr ""
+
+#: dashboard/forms.py:131 templates/wfrs/dashboard/application_list.html:43
+#: templates/wfrs/dashboard/application_list.html:57
+#: templates/wfrs/dashboard/application_list.html:81
+#: templates/wfrs/dashboard/prequal_list.html:39
+#: templates/wfrs/dashboard/prequal_list.html:53
+#: templates/wfrs/dashboard/prequal_list.html:77
+msgid "Search"
+msgstr ""
+
+#: dashboard/forms.py:134
+msgid "Customer Initiated?"
+msgstr ""
+
+#: dashboard/tables.py:18
+msgid "Main Applicant Name"
+msgstr ""
+
+#: dashboard/tables.py:22
+msgid "Secondary Applicant Name"
+msgstr ""
+
+#: dashboard/tables.py:30 dashboard/tables.py:148 models.py:60
+msgid "Merchant Name"
+msgstr ""
+
+#: dashboard/tables.py:33 models.py:373
+msgid "Application Source"
+msgstr ""
+
+#: dashboard/tables.py:36 models.py:377
+msgid "Owner"
+msgstr ""
+
+#: dashboard/tables.py:44 models.py:363 models.py:633
+#: templates/wfrs/dashboard/prequal_detail.html:195
+msgid "Application Status"
+msgstr ""
+
+#: dashboard/tables.py:47 templates/wfrs/dashboard/application_detail.html:40
+msgid "Resulting Account Number"
+msgstr ""
+
+#: dashboard/tables.py:51 templates/wfrs/dashboard/application_detail.html:44
+msgid "Requested Value"
+msgstr ""
+
+#: dashboard/tables.py:55 models.py:572
+#: templates/wfrs/dashboard/application_detail.html:303
+msgid "Credit Limit"
+msgstr ""
+
+#: dashboard/tables.py:59 dashboard/tables.py:181
+#: templates/wfrs/dashboard/prequal_detail.html:229
+msgid "Order Total"
+msgstr ""
+
+#: dashboard/tables.py:63 dashboard/tables.py:185
+#: templates/wfrs/dashboard/prequal_detail.html:235
+msgid "Time until Order Placement (Minutes)"
+msgstr ""
+
+#: dashboard/tables.py:67 dashboard/tables.py:189
+#: templates/wfrs/dashboard/prequal_detail.html:241
+msgid "Order Merchant Name"
+msgstr ""
+
+#: dashboard/tables.py:70 dashboard/tables.py:122 dashboard/tables.py:192
+#: models.py:210
+msgid "Created On"
+msgstr ""
+
+#: dashboard/tables.py:74
+msgid "Last Modified On"
+msgstr ""
+
+#: dashboard/tables.py:78
+msgid "Actions"
+msgstr ""
+
+#: dashboard/tables.py:107 templates/wfrs/dashboard/transfer_detail.html:38
+msgid "Account Number"
+msgstr ""
+
+#: dashboard/tables.py:109 models.py:199
+#: templates/wfrs/dashboard/transfer_detail.html:42
+msgid "Order"
+msgstr ""
+
+#: dashboard/tables.py:113 templates/wfrs/dashboard/transfer_detail.html:54
+msgid "User"
+msgstr ""
+
+#: dashboard/tables.py:116 templates/wfrs/dashboard/transfer_detail.html:64
+msgid "Amount"
+msgstr ""
+
+#: dashboard/tables.py:117 templates/wfrs/dashboard/transfer_detail.html:68
+msgid "Type"
+msgstr ""
+
+#: dashboard/tables.py:118 models.py:320
+#: templates/wfrs/dashboard/transfer_detail.html:72
+msgid "Ticket Number"
+msgstr ""
+
+#: dashboard/tables.py:119 models.py:95 models.py:322
+#: templates/wfrs/dashboard/plan_delete.html:32
+#: templates/wfrs/dashboard/plan_list.html:37
+msgid "Plan Number"
+msgstr ""
+
+#: dashboard/tables.py:120 models.py:325
+#: templates/wfrs/dashboard/transfer_detail.html:80
+msgid "Authorization Number"
+msgstr ""
+
+#: dashboard/tables.py:145 templates/wfrs/dashboard/prequal_detail.html:34
+msgid "UUID"
+msgstr ""
+
+#: dashboard/tables.py:158 templates/wfrs/dashboard/application_detail.html:88
+#: templates/wfrs/dashboard/application_detail.html:216
+msgid "Address"
+msgstr ""
+
+#: dashboard/tables.py:165
+msgid "Pre-Qual Credit Limit"
+msgstr ""
+
+#: dashboard/tables.py:169 models.py:575
+#: templates/wfrs/dashboard/prequal_detail.html:153
+msgid "Customer Response"
+msgstr ""
+
+#: dashboard/tables.py:172
+msgid "SDK Application Result"
+msgstr ""
+
+#: dashboard/tables.py:175
+msgid "Merchant Number"
+msgstr ""
+
+#: dashboard/tables.py:178 templates/wfrs/dashboard/prequal_detail.html:44
+msgid "Customer Initiated"
+msgstr ""
+
+#: dashboard/tables.py:196
+msgid "Reported On"
+msgstr ""
+
+#: dashboard/views.py:103 dashboard/views.py:153
+msgid "Apply for a Credit Line (Wells Fargo)"
+msgstr ""
+
+#: dashboard/views.py:250
+msgid "Credit Application Search Results"
+msgstr ""
+
+#: dashboard/views.py:281
+#, python-format
+msgid "Application contains “%(text)s”"
+msgstr ""
+
+#: dashboard/views.py:287
+#, python-format
+msgid "Status is “%(status)s”"
+msgstr ""
+
+#: dashboard/views.py:292
+#, python-format
+msgid "Applicant name contains “%(name)s”"
+msgstr ""
+
+#: dashboard/views.py:297
+#, python-format
+msgid "Applicant email contains “%(email)s”"
+msgstr ""
+
+#: dashboard/views.py:302
+#, python-format
+msgid "Applicant address contains “%(address)s”"
+msgstr ""
+
+#: dashboard/views.py:307
+#, python-format
+msgid "Phone number contains “%(phone)s”"
+msgstr ""
+
+#: dashboard/views.py:312
+#, python-format
+msgid "Application submitted after %(date)s"
+msgstr ""
+
+#: dashboard/views.py:317
+#, python-format
+msgid "Application submitted before %(date)s"
+msgstr ""
+
+#: dashboard/views.py:325
+#, python-format
+msgid "Application owned by “%(name)s”"
+msgstr ""
+
+#: dashboard/views.py:332 dashboard/views.py:335
+#, python-format
+msgid "Application submitted by “%(name)s”"
+msgstr ""
+
+#: dashboard/views.py:361 templates/wfrs/dashboard/transfer_detail.html:16
+#: templates/wfrs/dashboard/transfer_list.html:9
+#: templates/wfrs/dashboard/transfer_list.html:18
+#: templates/wfrs/dashboard/transfer_list.html:25
+msgid "Transfers"
+msgstr ""
+
+#: dashboard/views.py:400
+msgid "Pre-Qualification Search Results"
+msgstr ""
+
+#: dashboard/views.py:401 models.py:504
+msgid "Pre-Qualification Requests"
+msgstr ""
+
+#: dashboard/views.py:431
+#, python-format
+msgid "Request contains “%(text)s”"
+msgstr ""
+
+#: dashboard/views.py:437
+#, python-format
+msgid "Customer Initiated is “%(text)s”"
+msgstr ""
+
+#: dashboard/views.py:442
+#, python-format
+msgid "First name is “%(text)s”"
+msgstr ""
+
+#: dashboard/views.py:447
+#, python-format
+msgid "Last name is “%(text)s”"
+msgstr ""
+
+#: dashboard/views.py:452
+#, python-format
+msgid "Status is “%(text)s”"
+msgstr ""
+
+#: dashboard/views.py:457
+#, python-format
+msgid "Created after %(text)s"
+msgstr ""
+
+#: dashboard/views.py:462
+#, python-format
+msgid "Created before %(text)s"
+msgstr ""
+
+#: dashboard/widgets.py:41
+msgid "Years"
+msgstr ""
+
+#: dashboard/widgets.py:42
+msgid "Months"
+msgstr ""
+
+#: dashboard/widgets.py:70
+msgid "No"
+msgstr ""
+
+#: dashboard/widgets.py:71
+msgid "Yes"
+msgstr ""
+
+#: models.py:61
+msgid "WFRS API Username"
+msgstr ""
+
+#: models.py:62
+msgid "WFRS API Password"
+msgstr ""
+
+#: models.py:63
+msgid "WFRS API Merchant Number"
+msgstr ""
+
+#: models.py:65
+msgid "Priority Order"
+msgstr ""
+
+#: models.py:69 models.py:70 models.py:313 models.py:495
+msgid "API Credentials"
+msgstr ""
+
+#: models.py:99 templates/wfrs/dashboard/benefit_delete.html:33
+#: templates/wfrs/dashboard/benefit_list.html:38
+#: templates/wfrs/dashboard/plan_delete.html:36
+#: templates/wfrs/dashboard/plan_list.html:40
+msgid "Description"
+msgstr ""
+
+#: models.py:100
+msgid "Fine Print Superscript"
+msgstr ""
+
+#: models.py:101
+msgid "Annual percentage rate (0.0 – 100.0)"
+msgstr ""
+
+#: models.py:105 templates/wfrs/dashboard/plan_delete.html:44
+#: templates/wfrs/dashboard/plan_list.html:39
+msgid "Term Length (months)"
+msgstr ""
+
+#: models.py:106
+msgid "Minimum Product Price for Plan Availability Advertising"
+msgstr ""
+
+#: models.py:111
+msgid "Is Advertising Enabled for Plan?"
+msgstr ""
+
+#: models.py:112
+msgid "Is Default Plan?"
+msgstr ""
+
+#: models.py:113
+msgid "Allow new credit applications when user is eligible for this plan?"
+msgstr ""
+
+#: models.py:117 templates/wfrs/dashboard/transfer_detail.html:76
+msgid "Financing Plan"
+msgstr ""
+
+#: models.py:118 templates/wfrs/dashboard/plan_list.html:26
+#: templates/wfrs/dashboard/plan_list.html:33
+msgid "Financing Plans"
+msgstr ""
+
+#: models.py:134
+#, python-format
+msgid "%(description)s (plan number %(number)s)"
+msgstr ""
+
+#: models.py:150 templates/wfrs/dashboard/application_detail.html:68
+#: templates/wfrs/dashboard/application_detail.html:196
+#: templates/wfrs/dashboard/benefit_delete.html:29
+#: templates/wfrs/dashboard/benefit_list.html:37
+msgid "Name"
+msgstr ""
+
+#: models.py:155
+msgid "Financing Plan Benefit"
+msgstr ""
+
+#: models.py:156
+msgid "Financing Plan Benefits"
+msgstr ""
+
+#: models.py:167
+msgid "Financing is available for your order"
+msgstr ""
+
+#: models.py:170
+#, python-format
+msgid "Financing was available for your order: %s"
+msgstr ""
+
+#: models.py:179
+#, python-format
+msgid "Causes the following Wells Fargo financing plans to be available: %s"
+msgstr ""
+
+#: models.py:197
+msgid "Fraud Screen Type"
+msgstr ""
+
+#: models.py:202
+msgid "Reference"
+msgstr ""
+
+#: models.py:203
+msgid "Decision"
+msgstr ""
+
+#: models.py:204
+msgid "Transaction was rejected"
+msgstr ""
+
+#: models.py:205
+msgid "Transaction was accepted"
+msgstr ""
+
+#: models.py:206
+msgid "Error occurred while running fraud screen"
+msgstr ""
+
+#: models.py:207
+msgid "Transaction was flagged for manual review"
+msgstr ""
+
+#: models.py:209 models.py:327 models.py:570
+#: templates/wfrs/dashboard/prequal_detail.html:137
+#: templates/wfrs/dashboard/transfer_detail.html:88
+msgid "Message"
+msgstr ""
+
+#: models.py:211
+msgid "Modified On"
+msgstr ""
+
+#: models.py:215
+msgid "Fraud Screen Result"
+msgstr ""
+
+#: models.py:216
+msgid "Fraud Screen Results"
+msgstr ""
+
+#: models.py:224
+msgid "Last 4 digits of account number"
+msgstr ""
+
+#: models.py:246
+msgid "Account number must be 16 digits long"
+msgstr ""
+
+#: models.py:262
+msgid "Pre-Qualification Source"
+msgstr ""
+
+#: models.py:272
+msgid "Phone Number"
+msgstr ""
+
+#: models.py:275
+msgid "Account Credit Limit"
+msgstr ""
+
+#: models.py:276
+msgid "Current Account Balance"
+msgstr ""
+
+#: models.py:277
+msgid "Current Available Credit"
+msgstr ""
+
+#: models.py:279 templates/wfrs/dashboard/application_detail.html:306
+msgid "Last Payment Date"
+msgstr ""
+
+#: models.py:280 templates/wfrs/dashboard/application_detail.html:307
+msgid "Last Payment Amount"
+msgstr ""
+
+#: models.py:282 templates/wfrs/dashboard/application_detail.html:308
+msgid "Payment Due Date"
+msgstr ""
+
+#: models.py:283
+msgid "Payment Due on Account"
+msgstr ""
+
+#: models.py:290
+msgid "Account Inquiry Result"
+msgstr ""
+
+#: models.py:291
+msgid "Account Inquiry Results"
+msgstr ""
+
+#. Translators: Assemble name pieces into full name
+#: models.py:296
+#, python-format
+msgid "%(first_name)s %(middle_initial)s %(last_name)s"
+msgstr ""
+
+#: models.py:308
+msgid "Requesting User"
+msgstr ""
+
+#: models.py:319
+msgid "Transaction Type"
+msgstr ""
+
+#: models.py:328
+msgid "Disclosure"
+msgstr ""
+
+#: models.py:329
+msgid "Created"
+msgstr ""
+
+#: models.py:330
+msgid "Modified"
+msgstr ""
+
+#: models.py:369 templates/wfrs/dashboard/prequal_detail.html:40
+msgid "Merchant"
+msgstr ""
+
+#: models.py:370
+msgid "Which merchant account submitted this application?"
+msgstr ""
+
+#: models.py:373
+msgid "Website"
+msgstr ""
+
+#: models.py:374
+msgid "Where/how is user applying? E.g. Website, Call Center, In-Store, etc."
+msgstr ""
+
+#: models.py:378
+msgid ""
+"Select the user user who is applying and who will own (be the primary user "
+"of) this account."
+msgstr ""
+
+#: models.py:384
+msgid "Submitting User"
+msgstr ""
+
+#: models.py:385
+msgid ""
+"Select the user who filled out and submitted the credit application (not "
+"always the same as the user who is applying for credit)."
+msgstr ""
+
+#: models.py:473 templates/wfrs/dashboard/prequal_detail.html:54
+msgid "Locale"
+msgstr ""
+
+#: models.py:478 templates/wfrs/dashboard/prequal_detail.html:58
+msgid "Entry Point"
+msgstr ""
+
+#: models.py:482
+msgid "Check was deliberately initiated by customer action"
+msgstr ""
+
+#: models.py:492 templates/wfrs/dashboard/prequal_detail.html:120
+msgid "Phone"
+msgstr ""
+
+#: models.py:503
+msgid "Pre-Qualification Request"
+msgstr ""
+
+#: models.py:567
+msgid "Transaction Status"
+msgstr ""
+
+#: models.py:571 templates/wfrs/dashboard/prequal_detail.html:141
+msgid "Offer Indicator"
+msgstr ""
+
+#: models.py:573 models.py:630 templates/wfrs/dashboard/prequal_detail.html:149
+msgid "Unique Response ID"
+msgstr ""
+
+#: models.py:574
+msgid "Application URL"
+msgstr ""
+
+#: models.py:585
+msgid "Date customer response was reported to Wells Fargo."
+msgstr ""
+
+#: models.py:590
+msgid "Pre-Qualification Response"
+msgstr ""
+
+#: models.py:591
+msgid "Pre-Qualification Responses"
+msgstr ""
+
+#: models.py:626
+msgid "PreQualification Response"
+msgstr ""
+
+#: models.py:638
+msgid "Pre-Qualification SDK Application Result"
+msgstr ""
+
+#: models.py:639
+msgid "Pre-Qualification SDK Application Results"
+msgstr ""
+
+#: templates/dashboard/users/detail.html:9
+msgid "Orders"
+msgstr ""
+
+#: templates/dashboard/users/detail.html:10
+msgid "Addresses"
+msgstr ""
+
+#: templates/dashboard/users/detail.html:11
+msgid "Reviews"
+msgstr ""
+
+#: templates/dashboard/users/detail.html:23
+msgid "View All Owned Applications"
+msgstr ""
+
+#: templates/dashboard/users/detail.html:24
+msgid "View All Submitted Applications"
+msgstr ""
+
+#: templates/wfrs/api/prequal-redirect-approved.html:4
+msgid "Application Approved"
+msgstr ""
+
+#: templates/wfrs/api/prequal-redirect-approved.html:7
+msgid "Your Wells Fargo application was approved."
+msgstr ""
+
+#: templates/wfrs/api/prequal-redirect-approved.html:9
+#, python-format
+msgid ""
+"\n"
+"                Your account number is %(account_number)s.\n"
+"            "
+msgstr ""
+
+#: templates/wfrs/api/prequal-redirect-approved.html:14
+#, python-format
+msgid ""
+"\n"
+"                Your credit limit is %(credit_limit)s.\n"
+"            "
+msgstr ""
+
+#: templates/wfrs/api/prequal-redirect-not-approved.html:4
+msgid "Application Not Approved"
+msgstr ""
+
+#: templates/wfrs/api/prequal-redirect-not-approved.html:7
+msgid "Your Wells Fargo application was not approved."
+msgstr ""
+
+#: templates/wfrs/dashboard/_application_row_actions.html:3
+msgid "View"
+msgstr ""
+
+#: templates/wfrs/dashboard/_application_row_order_delay.html:5
+#: templates/wfrs/dashboard/_prequal_row_order_delay.html:5
+#, python-format
+msgid ""
+"Order placed on %(placed_on)s, %(time_diff)s after initial credit "
+"application."
+msgstr ""
+
+#: templates/wfrs/dashboard/_application_row_type.html:4
+msgid "US Individual"
+msgstr ""
+
+#: templates/wfrs/dashboard/_application_row_type.html:6
+msgid "US Joint"
+msgstr ""
+
+#: templates/wfrs/dashboard/_application_row_type.html:8
+msgid "CA Individual"
+msgstr ""
+
+#: templates/wfrs/dashboard/_application_row_type.html:10
+msgid "CA Joint"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:9
+#: templates/wfrs/dashboard/select_application.html:9
+msgid "Region information"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:17
+#: templates/wfrs/dashboard/application_base.html:117
+msgid "Back"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:26
+msgid "Applicant #1"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:37
+msgid "Applicant #1: Address"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:47
+msgid "Applicant #1: Assets"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:56
+msgid "Applicant #1: Employment"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:68
+msgid "Applicant #2"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:79
+msgid "Applicant #2: Address"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:89
+msgid "Applicant #2: Employment"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:100
+msgid "Other Information"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:112
+msgid "Review & Submit"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:115
+msgid ""
+"Please verify all of the above information is accurate before submitting."
+msgstr ""
+
+#: templates/wfrs/dashboard/application_base.html:118
+#: templates/wfrs/dashboard/form_base.html:56
+#: templates/wfrs/dashboard/select_application.html:18
+msgid "Continue"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:7
+#: templates/wfrs/dashboard/application_detail.html:20
+#: templates/wfrs/dashboard/application_detail.html:25
+msgid "Credit Application Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:8
+#: templates/wfrs/dashboard/application_list.html:9
+#: templates/wfrs/dashboard/benefit_delete.html:6
+#: templates/wfrs/dashboard/benefit_form.html:11
+#: templates/wfrs/dashboard/benefit_list.html:7
+#: templates/wfrs/dashboard/form_base.html:7
+#: templates/wfrs/dashboard/form_base.html:16
+#: templates/wfrs/dashboard/plan_delete.html:6
+#: templates/wfrs/dashboard/plan_delete.html:15
+#: templates/wfrs/dashboard/plan_form.html:11
+#: templates/wfrs/dashboard/plan_form.html:21
+#: templates/wfrs/dashboard/plan_list.html:7
+#: templates/wfrs/dashboard/prequal_detail.html:7
+#: templates/wfrs/dashboard/prequal_list.html:9
+#: templates/wfrs/dashboard/transfer_detail.html:7
+#: templates/wfrs/dashboard/transfer_list.html:9
+msgid "Wells Fargo"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:15
+#: templates/wfrs/dashboard/application_list.html:16
+#: templates/wfrs/dashboard/benefit_delete.html:12
+#: templates/wfrs/dashboard/benefit_form.html:18
+#: templates/wfrs/dashboard/benefit_list.html:14
+#: templates/wfrs/dashboard/form_base.html:13
+#: templates/wfrs/dashboard/plan_delete.html:12
+#: templates/wfrs/dashboard/plan_form.html:18
+#: templates/wfrs/dashboard/plan_list.html:14
+#: templates/wfrs/dashboard/prequal_detail.html:13
+#: templates/wfrs/dashboard/prequal_list.html:16
+#: templates/wfrs/dashboard/transfer_detail.html:13
+#: templates/wfrs/dashboard/transfer_list.html:16
+msgid "Dashboard"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:32
+msgid "General"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:36
+msgid "Email Address"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:48
+#: templates/wfrs/dashboard/prequal_detail.html:66
+msgid "IP Address"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:52
+#: templates/wfrs/dashboard/prequal_detail.html:70
+#: templates/wfrs/dashboard/prequal_detail.html:161
+#: templates/wfrs/dashboard/prequal_detail.html:199
+#: templates/wfrs/dashboard/transfer_detail.html:97
+msgid "Created Date"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:56
+#: templates/wfrs/dashboard/prequal_detail.html:74
+#: templates/wfrs/dashboard/prequal_detail.html:165
+#: templates/wfrs/dashboard/prequal_detail.html:203
+#: templates/wfrs/dashboard/transfer_detail.html:101
+msgid "Modified Date"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:64
+msgid "Main Applicant"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:83
+#: templates/wfrs/dashboard/application_detail.html:211
+msgid "Social Security Number / Social Insurance Number"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:91
+#: templates/wfrs/dashboard/application_detail.html:219
+msgid "Line 1"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:95
+#: templates/wfrs/dashboard/application_detail.html:223
+msgid "Line 2"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:107
+#: templates/wfrs/dashboard/application_detail.html:235
+#: templates/wfrs/dashboard/prequal_detail.html:116
+msgid "Postal Code"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:112
+#: templates/wfrs/dashboard/application_detail.html:240
+msgid "Contact"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:124
+msgid "Residence"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:144
+#: templates/wfrs/dashboard/application_detail.html:248
+msgid "Employment"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:163
+#: templates/wfrs/dashboard/application_detail.html:267
+msgid "Employer Phone"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:168
+#: templates/wfrs/dashboard/application_detail.html:272
+msgid "Photo ID"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:179
+#: templates/wfrs/dashboard/application_detail.html:283
+msgid "Driver's License Province"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:192
+msgid "Secondary Applicant"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:295
+msgid "Account Inquiries"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:300
+msgid "Inquiry Date/Time"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:301
+msgid "Inquiry Account Number"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:304
+msgid "Balance"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:305
+msgid "Open to Buy"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:309
+msgid "Payment Due Amount"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_detail.html:329
+msgid "No account inquiries currently exist for this Credit Application"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:30
+msgid "Apply for Credit Line"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:34
+msgid "Export Applications"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:57
+#: templates/wfrs/dashboard/application_list.html:81
+#: templates/wfrs/dashboard/prequal_list.html:53
+#: templates/wfrs/dashboard/prequal_list.html:77
+msgid "Searching..."
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:58
+#: templates/wfrs/dashboard/prequal_list.html:54
+msgid "Reset"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:59
+#: templates/wfrs/dashboard/application_list.html:67
+#: templates/wfrs/dashboard/prequal_list.html:55
+#: templates/wfrs/dashboard/prequal_list.html:63
+msgid "Advanced Search"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:80
+#: templates/wfrs/dashboard/prequal_list.html:76
+msgid "Close"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:90
+msgid "Filters:"
+msgstr ""
+
+#: templates/wfrs/dashboard/application_list.html:101
+msgid "No applications found."
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_delete.html:6
+#: templates/wfrs/dashboard/benefit_delete.html:17
+#: templates/wfrs/dashboard/benefit_delete.html:22
+msgid "Delete plan group?"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_delete.html:15
+#: templates/wfrs/dashboard/benefit_form.html:21
+msgid "Wells Fargo Plan Groups"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_delete.html:39
+msgid "Are you sure you want to delete this plan group?"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_delete.html:42
+#: templates/wfrs/dashboard/plan_delete.html:53
+msgid "Deleting..."
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_delete.html:42
+#: templates/wfrs/dashboard/benefit_list.html:49
+#: templates/wfrs/dashboard/plan_delete.html:53
+#: templates/wfrs/dashboard/plan_list.html:63
+msgid "Delete"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_delete.html:42
+#: templates/wfrs/dashboard/benefit_form.html:46
+#: templates/wfrs/dashboard/plan_delete.html:53
+#: templates/wfrs/dashboard/plan_form.html:49
+msgid "or"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_delete.html:43
+#: templates/wfrs/dashboard/benefit_form.html:47
+#: templates/wfrs/dashboard/plan_delete.html:54
+#: templates/wfrs/dashboard/plan_form.html:50
+msgid "cancel"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_form.html:7
+#: templates/wfrs/dashboard/benefit_form.html:24
+msgid "Edit plan group"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_form.html:9
+#: templates/wfrs/dashboard/benefit_list.html:24
+msgid "Create new plan group"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_form.html:26
+msgid "New plan group"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_form.html:33
+msgid "Edit plan groups"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_form.html:35
+msgid "New plan groups"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_form.html:46
+#: templates/wfrs/dashboard/plan_form.html:49
+msgid "Saving..."
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_form.html:46
+#: templates/wfrs/dashboard/plan_form.html:49
+msgid "Save"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_list.html:7
+#: templates/wfrs/dashboard/benefit_list.html:16
+msgid "Plan Groups"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_list.html:26
+#: templates/wfrs/dashboard/benefit_list.html:33
+msgid "Financing Plan Groups"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_list.html:48
+#: templates/wfrs/dashboard/plan_list.html:62
+msgid "Edit"
+msgstr ""
+
+#: templates/wfrs/dashboard/benefit_list.html:55
+msgid "No plan groups found."
+msgstr ""
+
+#: templates/wfrs/dashboard/form_base.html:29
+msgid "Please correct the errors below."
+msgstr ""
+
+#: templates/wfrs/dashboard/form_base.html:49
+msgid "Form"
+msgstr ""
+
+#: templates/wfrs/dashboard/form_base.html:55
+#: templates/wfrs/dashboard/select_application.html:17
+msgid "Cancel"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_delete.html:6
+#: templates/wfrs/dashboard/plan_delete.html:20
+#: templates/wfrs/dashboard/plan_delete.html:25
+msgid "Delete plan?"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_delete.html:40
+#: templates/wfrs/dashboard/plan_list.html:38
+msgid "APR"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_delete.html:50
+msgid "Are you sure you want to delete this plan?"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_form.html:7
+#: templates/wfrs/dashboard/plan_form.html:27
+#: templates/wfrs/dashboard/plan_form.html:36
+msgid "Edit plan"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_form.html:9
+msgid "Create new plan"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_form.html:29
+#: templates/wfrs/dashboard/plan_form.html:38
+msgid "New plan"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_list.html:7
+#: templates/wfrs/dashboard/plan_list.html:16
+msgid "Plans"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_list.html:24
+msgid "Create new financing plan"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_list.html:41
+msgid "Product Price Threshold"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_list.html:42
+msgid "Advertising Enabled"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_list.html:43
+msgid "Is Default"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_list.html:44
+msgid "Allow New Credit Applications"
+msgstr ""
+
+#: templates/wfrs/dashboard/plan_list.html:69
+msgid "No plans found."
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:7
+#: templates/wfrs/dashboard/prequal_detail.html:16
+#: templates/wfrs/dashboard/prequal_list.html:9
+#: templates/wfrs/dashboard/prequal_list.html:18
+#: templates/wfrs/dashboard/prequal_list.html:26
+msgid "Pre-Qualification Inquiries"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:18
+#: templates/wfrs/dashboard/prequal_detail.html:23
+msgid "Pre-Qualification Inquiry Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:30
+msgid "Pre-Qualification Request Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:47
+msgid "Yes (PREQUAL)"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:49
+msgid "No (PRESCREEN)"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:80
+msgid "Pre-Qualification Customer Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:128
+msgid "Pre-Qualification Response Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:145
+msgid "Pre-Qualified Credit Limit"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:157
+msgid "Reported Date"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:171
+msgid "Pre-qualified offer was not returned by Wells Fargo for this consumer."
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:178
+msgid "SDK Credit Application Results"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:183
+msgid "Application ID"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:209
+msgid "This consumer did not complete the Wells Fargo Credit Application."
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:216
+msgid "Resulting Order Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:221
+msgid "Order Number"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_detail.html:249
+msgid "This consumer did not place an order."
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_list.html:30
+msgid "Export Results"
+msgstr ""
+
+#: templates/wfrs/dashboard/prequal_list.html:97
+msgid "No pre-qualification requests found."
+msgstr ""
+
+#: templates/wfrs/dashboard/transfer_detail.html:7
+#: templates/wfrs/dashboard/transfer_detail.html:18
+#: templates/wfrs/dashboard/transfer_detail.html:23
+msgid "Transfer Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/transfer_detail.html:30
+msgid "Details"
+msgstr ""
+
+#: templates/wfrs/dashboard/transfer_detail.html:34
+msgid "Merchant Reference"
+msgstr ""
+
+#: templates/wfrs/dashboard/transfer_detail.html:92
+msgid "Legal Disclosure"
+msgstr ""
+
+#: templates/wfrs/dashboard/transfer_list.html:34
+msgid "No transfers found."
+msgstr ""
+
+#: templatetags/wfrs_filters.py:12
+#, python-format
+msgid "%(years)s years, %(months)s months"
+msgstr ""

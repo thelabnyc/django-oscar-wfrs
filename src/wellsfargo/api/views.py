@@ -4,6 +4,7 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
+from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 from rest_framework.reverse import reverse_lazy
 from rest_framework import views, generics, status, serializers
@@ -120,7 +121,7 @@ class EstimatedPaymentView(views.APIView):
 
         if not principal_price or principal_price <= 0:
             data = {
-                'price': 'Submitted price parameter was not valid.',
+                'price': _('Submitted price parameter was not valid.'),
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
@@ -294,11 +295,11 @@ class PreQualificationCustomerResponseView(views.APIView):
     def post(self, request):
         prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
         if not prequal_request_id:
-            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+            raise serializers.ValidationError(_('No pre-qualification response was found for this session.'))
         try:
             prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
         except PreQualificationResponse.DoesNotExist:
-            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+            raise serializers.ValidationError(_('No pre-qualification response was found for this session.'))
         serializer = PreQualificationResponseSerializer(
             instance=prequal_response,
             data=request.data,
@@ -312,11 +313,11 @@ class PreQualificationCustomerRedirectView(views.APIView):
     def get(self, request):
         prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
         if not prequal_request_id:
-            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+            raise serializers.ValidationError(_('No pre-qualification response was found for this session.'))
         try:
             prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
         except PreQualificationResponse.DoesNotExist:
-            raise serializers.ValidationError('No pre-qualification response was found for this session.')
+            raise serializers.ValidationError(_('No pre-qualification response was found for this session.'))
 
         # Check if the application was approved
         if request.GET.get('A') != PREQUAL_REDIRECT_APP_APPROVED:

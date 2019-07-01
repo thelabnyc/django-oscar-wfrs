@@ -44,9 +44,9 @@
                     <th>{% trans "Customer Initiated" %}</th>
                     <td>
                         {% if object.customer_initiated %}
-                            Yes (PREQUAL)
+                            {% trans "Yes (PREQUAL)" %}
                         {% else %}
-                            No (PRESCREEN)
+                            {% trans "No (PRESCREEN)" %}
                         {% endif %}
                     </td>
                 </tr>

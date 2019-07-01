@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext_lazy as _
 from oscar.defaults import *  # noqa
 from oscarbluelight.defaults import *  # NOQA
 from oscar import OSCAR_MAIN_TEMPLATE_DIR, get_core_apps
@@ -21,6 +22,12 @@ USE_TZ = True
 TIME_ZONE = 'America/New_York'
 USE_I18N = True
 USE_L10N = True
+LANGUAGE_CODE = 'en-us'
+LANGUAGES = (
+    ('en-us', _('English')),
+    ('es', _('Spanish')),
+)
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -75,6 +82,7 @@ LOGGING = {
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -100,6 +108,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
                 'oscar.apps.search.context_processors.search_form',
                 'oscar.apps.promotions.context_processors.promotions',
                 'oscar.apps.checkout.context_processors.checkout',
@@ -182,9 +191,10 @@ OSCAR_LINE_STATUS_PIPELINE = {
 
 
 # Oscar
-OSCAR_SHOP_NAME = "WFRS Sandbox"
+OSCAR_SHOP_NAME = _("WFRS Sandbox")
 OSCAR_ALLOW_ANON_CHECKOUT = True
 OSCAR_DEFAULT_CURRENCY = 'USD'
+OSCARAPI_BLOCK_ADMIN_API_ACCESS = False
 
 
 # Disable real emails
@@ -197,27 +207,27 @@ OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     'children': [
         # Wells Fargo Retail Services Views
         {
-            'label': 'Apply for a Credit Line (Wells Fargo)',
+            'label': _('Apply for a Credit Line (Wells Fargo)'),
             'url_name': 'wfrs-apply-step1',
         },
         {
-            'label': 'Financing Plans',
+            'label': _('Financing Plans'),
             'url_name': 'wfrs-plan-list',
         },
         {
-            'label': 'Financing Plan Groups',
+            'label': _('Financing Plan Groups'),
             'url_name': 'wfrs-benefit-list',
         },
         {
-            'label': 'Credit Applications',
+            'label': _('Credit Applications'),
             'url_name': 'wfrs-application-list',
         },
         {
-            'label': 'Transfers',
+            'label': _('Transfers'),
             'url_name': 'wfrs-transfer-list',
         },
         {
-            'label': 'Pre-Qualification Requests',
+            'label': _('Pre-Qualification Requests'),
             'url_name': 'wfrs-prequal-list',
         },
     ]
@@ -238,7 +248,7 @@ API_ENABLED_PAYMENT_METHODS = [
 
 # Custom benefits
 BLUELIGHT_BENEFIT_CLASSES += [  # NOQA
-    ('wellsfargo.models.FinancingPlanBenefit', 'Activate Wells Fargo Plan Number Group'),
+    ('wellsfargo.models.FinancingPlanBenefit', _('Activate Wells Fargo Plan Number Group')),
 ]
 
 
