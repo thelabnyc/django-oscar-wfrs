@@ -534,6 +534,43 @@ class PreQualificationRequest(models.Model):
         return get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_REJECTED, self.customer_initiated)
 
 
+    @property
+    def merchant_name(self):
+        return self.credentials.name if self.credentials else None
+
+
+    @property
+    def merchant_num(self):
+        return self.credentials.merchant_num if self.credentials else None
+
+
+    @property
+    def credit_limit(self):
+        resp = getattr(self, 'response', None)
+        if resp is None:
+            return None
+        return resp.credit_limit
+
+
+    @property
+    def customer_response(self):
+        resp = getattr(self, 'response', None)
+        if resp is None:
+            return None
+        return resp.customer_response
+
+
+    @property
+    def sdk_application_result(self):
+        resp = getattr(self, 'response', None)
+        if resp is None:
+            return None
+        app_result = getattr(resp, 'sdk_application_result', None)
+        if app_result is None:
+            return None
+        return app_result.application_status
+
+
     @cached_property
     def resulting_order(self):
         resp = getattr(self, 'response', None)
@@ -547,6 +584,42 @@ class PreQualificationRequest(models.Model):
                              .order_by('date_placed')\
                              .first()
         return order
+
+
+    @property
+    def order_total(self):
+        return self.resulting_order.total_incl_tax if self.resulting_order else None
+
+
+    @property
+    def order_date_placed(self):
+        return self.resulting_order.date_placed if self.resulting_order else None
+
+
+    @cached_property
+    def order_merchant_name(self):
+        Transaction = get_model('payment', 'Transaction')
+        order = self.resulting_order
+        if not order:
+            return None
+        transfers = []
+        for source in order.sources.filter(source_type__name='Wells Fargo').all():
+            for transaction in source.transactions.filter(txn_type=Transaction.AUTHORISE).all():
+                transfer = TransferMetadata.get_by_oscar_transaction(transaction)
+                if transfer:
+                    transfers.append(transfer)
+        if len(transfers) <= 0:
+            return None
+        credentials = transfers[0].credentials
+        return credentials.name if credentials else None
+
+
+    @property
+    def response_reported_datetime(self):
+        resp = getattr(self, 'response', None)
+        if resp is None:
+            return None
+        return resp.reported_datetime
 
 
     def get_signed_id(self):

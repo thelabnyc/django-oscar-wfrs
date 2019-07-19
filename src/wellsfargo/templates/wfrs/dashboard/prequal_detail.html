@@ -216,25 +216,25 @@
                 <h2>{% trans "Resulting Order Details" %}</h2>
             </div>
             <table class="table table-bordered">
-                {% if object.response and object.response.customer_order %}
+                {% if object.resulting_order %}
                     <tr>
                         <th>{% trans "Order Number" %}</th>
                         <td>
-                            <a href="{% url 'dashboard:order-detail' number=object.response.customer_order.number %}">
-                                {{ object.response.customer_order.number }}
+                            <a href="{% url 'dashboard:order-detail' number=object.resulting_order.number %}">
+                                {{ object.resulting_order.number }}
                             </a>
                         </td>
                     </tr>
                     <tr>
                         <th>{% trans "Order Total" %}</th>
                         <td>
-                            {{ object.response.customer_order.total_excl_tax | currency }}
+                            {{ object.resulting_order.total_excl_tax | currency }}
                         </td>
                     </tr>
                     <tr>
                         <th>{% trans "Time until Order Placement (Minutes)" %}</th>
                         <td>
-                            {{ object.response.customer_order.date_placed | timesinceminutes:object.created_datetime }}
+                            {{ object.resulting_order.date_placed | timesinceminutes:object.created_datetime }}
                         </td>
                     </tr>
                     <tr>

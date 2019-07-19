@@ -139,7 +139,7 @@ class TransferMetadataIndexTable(DashboardTable):
 
 
 
-class PreQualificationIndexTable(DashboardTable):
+class PreQualificationTable(DashboardTable):
     uuid = LinkColumn('wfrs-prequal-detail',
         args=[A('uuid')],
         verbose_name=_('UUID'),
@@ -158,14 +158,14 @@ class PreQualificationIndexTable(DashboardTable):
         verbose_name=_('Address'),
         template_name='wfrs/dashboard/_prequal_row_address.html',
         orderable=False)
-    response_status_name = Column(
+    status_name = Column(
         verbose_name=_('Status'),
         orderable=False)
-    response_credit_limit = TemplateColumn(
+    credit_limit = TemplateColumn(
         verbose_name=_('Pre-Qual Credit Limit'),
         template_name='wfrs/dashboard/_prequal_row_credit_limit.html',
         orderable=False)
-    response_customer_response = Column(
+    customer_response = Column(
         verbose_name=_('Customer Response'),
         orderable=False)
     sdk_application_result = Column(
@@ -204,9 +204,9 @@ class PreQualificationIndexTable(DashboardTable):
             'first_name',
             'last_name',
             'address',
-            'response_status_name',
-            'response_credit_limit',
-            'response_customer_response',
+            'status_name',
+            'credit_limit',
+            'customer_response',
             'sdk_application_result',
             'merchant_num',
             'customer_initiated',

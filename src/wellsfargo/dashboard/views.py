@@ -1,8 +1,10 @@
 from urllib.parse import urlencode
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.search import SearchVector
 from django.core.exceptions import ValidationError
 from django.urls import reverse, reverse_lazy
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
@@ -14,7 +16,11 @@ from haystack.query import SearchQuerySet
 from haystack.inputs import AutoQuery
 from ..connector import actions
 from ..core.exceptions import CreditApplicationPending, CreditApplicationDenied
-from ..core.constants import get_credit_app_status_name, get_prequal_trans_status_name
+from ..core.constants import (
+    get_credit_app_status_name,
+    get_prequal_trans_status_name,
+    PREQUAL_TRANS_STATUS_REJECTED,
+)
 from ..models import (
     FinancingPlan,
     FinancingPlanBenefit,
@@ -33,7 +39,7 @@ from .forms import (
     PreQualSearchForm,
     get_application_form_class,
 )
-from .tables import CreditApplicationIndexTable, TransferMetadataIndexTable, PreQualificationIndexTable
+from .tables import CreditApplicationIndexTable, TransferMetadataIndexTable, PreQualificationTable
 
 
 DEFAULT_APPLICATION = USCreditApp
@@ -383,7 +389,7 @@ class TransferMetadataDetailView(generic.DetailView):
 class PreQualificationListView(CSVDownloadableTableMixin, SingleTableView):
     template_name = "wfrs/dashboard/prequal_list.html"
     form_class = PreQualSearchForm
-    table_class = PreQualificationIndexTable
+    table_class = PreQualificationTable
     context_table_name = 'prequal_requests'
     filter_descrs = []
 
@@ -408,7 +414,7 @@ class PreQualificationListView(CSVDownloadableTableMixin, SingleTableView):
 
 
     def get_queryset(self):
-        qs = SearchQuerySet().models(PreQualificationRequest)
+        qs = PreQualificationRequest.objects.get_queryset()
         # Default ordering
         if not self.request.GET.get('sort'):
             qs = qs.order_by('-created_datetime', '-id')
@@ -427,28 +433,40 @@ class PreQualificationListView(CSVDownloadableTableMixin, SingleTableView):
         # Basic search
         search_text = data.get('search_text')
         if search_text:
-            qs = qs.filter(text=AutoQuery(search_text))
+            qs = qs.annotate(text=SearchVector(
+                'first_name',
+                'last_name',
+                'line1',
+                'city',
+                'state',
+                'postcode',
+                'phone',
+            ))
+            qs = qs.filter(text=search_text)
             self.filter_descrs.append(_('Request contains “%(text)s”') % dict(text=search_text))
 
         # Advanced Search
         customer_initiated = data.get('customer_initiated')
         if customer_initiated is not None:
-            qs = qs.filter(customer_initiated__exact=str(customer_initiated).lower())
+            qs = qs.filter(customer_initiated=customer_initiated)
             self.filter_descrs.append(_('Customer Initiated is “%(text)s”') % dict(text=customer_initiated))
 
         first_name = data.get('first_name')
         if first_name:
-            qs = qs.filter(first_name__fuzzy=first_name)
+            qs = qs.filter(first_name__search=first_name)
             self.filter_descrs.append(_('First name is “%(text)s”') % dict(text=first_name))
 
         last_name = data.get('last_name')
         if last_name:
-            qs = qs.filter(last_name__fuzzy=last_name)
+            qs = qs.filter(last_name__search=last_name)
             self.filter_descrs.append(_('Last name is “%(text)s”') % dict(text=last_name))
 
         status = data.get('status')
         if status:
-            qs = qs.filter(response_status=status)
+            if status == PREQUAL_TRANS_STATUS_REJECTED:
+                qs = qs.filter(Q(response__status=status) | Q(response__isnull=True))
+            else:
+                qs = qs.filter(response__status=status)
             self.filter_descrs.append(_('Status is “%(text)s”') % dict(text=get_prequal_trans_status_name(status)))
 
         created_date_from = data.get('created_date_from')
