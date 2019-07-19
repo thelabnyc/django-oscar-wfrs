@@ -344,6 +344,14 @@ class TransferMetadata(AccountNumberMixin, models.Model):
     def status_name(self):
         return dict(TRANS_STATUSES).get(self.status)
 
+    @property
+    def financing_plan_number(self):
+        return self.financing_plan.plan_number if self.financing_plan else None
+
+    @cached_property
+    def order(self):
+        return self.get_order()
+
     def get_oscar_transaction(self):
         Transaction = get_model('payment', 'Transaction')
         try:

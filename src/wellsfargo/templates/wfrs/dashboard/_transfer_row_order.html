@@ -1,6 +1,6 @@
 {% spaceless %}
-    {% if record.order_number %}
-        <a href="{% url 'dashboard:order-detail' number=record.order_number %}">{{ record.order_number }}</a>
+    {% if record.order.number %}
+        <a href="{% url 'dashboard:order-detail' number=record.order.number %}">{{ record.order.number }}</a>
     {% else %}
         —
     {% endif %}

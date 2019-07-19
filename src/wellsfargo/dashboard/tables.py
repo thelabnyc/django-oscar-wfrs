@@ -102,7 +102,7 @@ class CreditApplicationIndexTable(DashboardTable):
 
 
 
-class TransferMetadataIndexTable(DashboardTable):
+class TransferMetadataTable(DashboardTable):
     merchant_reference = LinkColumn('wfrs-transfer-detail', args=[A('merchant_reference')])
     masked_account_number = Column(verbose_name=_('Account Number'))
     order = TemplateColumn(
@@ -114,7 +114,7 @@ class TransferMetadataIndexTable(DashboardTable):
         template_name='wfrs/dashboard/_transfer_row_user.html',
         order_by=('user_full_name', 'user_username'))
     amount = Column(verbose_name=_('Amount'))
-    type_code_name = Column(verbose_name=_('Type'))
+    type_name = Column(verbose_name=_('Type'))
     ticket_number = Column(verbose_name=_('Ticket Number'))
     financing_plan_number = Column(verbose_name=_('Plan Number'))
     auth_number = Column(verbose_name=_('Authorization Number'))
@@ -130,7 +130,7 @@ class TransferMetadataIndexTable(DashboardTable):
             'order',
             'user',
             'amount',
-            'type_code_name',
+            'type_name',
             'ticket_number',
             'financing_plan_number',
             'auth_number',

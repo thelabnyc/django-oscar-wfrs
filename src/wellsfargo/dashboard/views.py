@@ -39,7 +39,7 @@ from .forms import (
     PreQualSearchForm,
     get_application_form_class,
 )
-from .tables import CreditApplicationIndexTable, TransferMetadataIndexTable, PreQualificationTable
+from .tables import CreditApplicationIndexTable, TransferMetadataTable, PreQualificationTable
 
 
 DEFAULT_APPLICATION = USCreditApp
@@ -359,7 +359,7 @@ class CreditApplicationDetailView(generic.DetailView):
 
 class TransferMetadataListView(SingleTableView):
     template_name = "wfrs/dashboard/transfer_list.html"
-    table_class = TransferMetadataIndexTable
+    table_class = TransferMetadataTable
     context_table_name = 'transfers'
 
     def get_table(self, **kwargs):
@@ -368,7 +368,7 @@ class TransferMetadataListView(SingleTableView):
         return table
 
     def get_queryset(self):
-        qs = SearchQuerySet().models(TransferMetadata)
+        qs = TransferMetadata.objects.get_queryset()
         # Default ordering
         if not self.request.GET.get('sort'):
             qs = qs.order_by('-created_datetime')
