@@ -8,10 +8,16 @@ from django.contrib.postgres.fields import citext
 from django.utils.functional import cached_property
 from django_pgviews.signals import view_synced
 from django_pgviews import view as pg
+from .apps import (
+    USCreditApp,
+    USJointCreditApp,
+    CACreditApp,
+    CAJointCreditApp,
+)
 
 
 
-def _build_credit_app_query(app_type_code, app_table_name, is_joint):
+def _build_credit_app_query(AppModel, is_joint):
     joint_columns = """
         '' as "joint_first_name",
         '' as "joint_last_name",
@@ -146,27 +152,27 @@ def _build_credit_app_query(app_type_code, app_table_name, is_joint):
             ON s.id = a.submitting_user_id
     """
     query = query_template.format(
-        app_type_code=app_type_code,
+        app_type_code=AppModel.APP_TYPE_CODE,
         joint_columns=joint_columns.strip(),
         name_vector=name_vector.strip(),
         address_vector=address_vector.strip(),
         phone_vector=phone_vector.strip(),
         text_vector=text_vector.strip(),
-        app_table_name=app_table_name,
+        app_table_name=AppModel._meta.db_table,
         user_table_name=get_user_model()._meta.db_table,
     )
-    return query
+    return query.strip()
 
 
 
 CREDIT_APP_INDEX_SQL = f"""
-{_build_credit_app_query('us-individual', 'wellsfargo_uscreditapp', False)}
+{_build_credit_app_query(USCreditApp, False)}
 UNION
-{_build_credit_app_query('us-joint', 'wellsfargo_usjointcreditapp', True)}
+{_build_credit_app_query(USJointCreditApp, True)}
 UNION
-{_build_credit_app_query('ca-individual', 'wellsfargo_cacreditapp', False)}
+{_build_credit_app_query(CACreditApp, False)}
 UNION
-{_build_credit_app_query('ca-join', 'wellsfargo_cajointcreditapp', True)}
+{_build_credit_app_query(CAJointCreditApp, True)}
 """
 
 
@@ -267,7 +273,6 @@ class CreditAppIndex(pg.MaterializedView):
 
     @cached_property
     def object(self):
-        from .models import USCreditApp, USJointCreditApp, CACreditApp, CAJointCreditApp
         models = {
             USCreditApp.APP_TYPE_CODE: USCreditApp,
             USJointCreditApp.APP_TYPE_CODE: USJointCreditApp,
