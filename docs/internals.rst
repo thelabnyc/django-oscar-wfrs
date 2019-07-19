@@ -11,7 +11,7 @@ Packages
 =======================  =============================================================================================
 Package Name             Description
 =======================  =============================================================================================
-wellsfargo               Top level package container. Contains files that django and haystack expect to be in specific
+wellsfargo               Top level package container. Contains files that Django expect to be in specific
                          spots (models.py, search_indexes.py, etc).
 wellsfargo.api           Django Rest Framework based API exposing actions like credit applications and financing plan discover.
 wellsfargo.connector     Wrapper for talking to the WFRS SOAP API.

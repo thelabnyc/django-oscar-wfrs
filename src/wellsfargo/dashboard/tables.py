@@ -6,6 +6,7 @@ import pytz
 DashboardTable = get_class('dashboard.tables', 'DashboardTable')
 
 
+
 class TZAwareDateTimeColumn(DateTimeColumn):
     def render(self, record, table, value, bound_column, **kwargs):
         if value and not value.tzinfo:
@@ -13,7 +14,8 @@ class TZAwareDateTimeColumn(DateTimeColumn):
         return super().render(record, table, value, bound_column, **kwargs)
 
 
-class CreditApplicationIndexTable(DashboardTable):
+
+class CreditApplicationTable(DashboardTable):
     main_applicant_name = TemplateColumn(
         verbose_name=_('Main Applicant Name'),
         template_name='wfrs/dashboard/_application_row_main_applicant_name.html',
@@ -40,7 +42,7 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Submitted By'),
         template_name='wfrs/dashboard/_application_row_submitting_user.html',
         order_by=('submitting_user_full_name', 'submitting_user_username'))
-    status_name = Column(
+    status = Column(
         verbose_name=_('Application Status'),
         orderable=False)
     account_number = TemplateColumn(
@@ -63,8 +65,9 @@ class CreditApplicationIndexTable(DashboardTable):
         verbose_name=_('Time until Order Placement (Minutes)'),
         template_name='wfrs/dashboard/_application_row_order_delay.html',
         orderable=False)
-    order_merchant_name = Column(
+    order_merchant_name = TemplateColumn(
         verbose_name=_('Order Merchant Name'),
+        template_name='wfrs/dashboard/_application_row_order_merchant_name.html',
         orderable=False)
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
@@ -88,7 +91,7 @@ class CreditApplicationIndexTable(DashboardTable):
             'application_source',
             'user',
             'submitting_user',
-            'status_name',
+            'status',
             'account_number',
             'purchase_price',
             'credit_limit',

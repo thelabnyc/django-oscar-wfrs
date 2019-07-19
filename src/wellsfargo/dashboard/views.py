@@ -12,8 +12,6 @@ from django.utils.html import strip_tags
 from django.views import generic
 from django_tables2 import SingleTableView
 from oscar.core.compat import UnicodeCSVWriter
-from haystack.query import SearchQuerySet
-from haystack.inputs import AutoQuery
 from ..connector import actions
 from ..core.exceptions import CreditApplicationPending, CreditApplicationDenied
 from ..core.constants import (
@@ -30,6 +28,7 @@ from ..models import (
     CAJointCreditApp,
     TransferMetadata,
     PreQualificationRequest,
+    CreditAppIndex,
 )
 from .forms import (
     ApplicationSelectionForm,
@@ -39,7 +38,7 @@ from .forms import (
     PreQualSearchForm,
     get_application_form_class,
 )
-from .tables import CreditApplicationIndexTable, TransferMetadataTable, PreQualificationTable
+from .tables import CreditApplicationTable, TransferMetadataTable, PreQualificationTable
 
 
 DEFAULT_APPLICATION = USCreditApp
@@ -239,7 +238,7 @@ class FinancingPlanBenefitDeleteView(generic.DeleteView):
 class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
     template_name = "wfrs/dashboard/application_list.html"
     form_class = ApplicationSearchForm
-    table_class = CreditApplicationIndexTable
+    table_class = CreditApplicationTable
     context_table_name = 'applications'
     filter_descrs = []
 
@@ -264,7 +263,7 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
 
 
     def get_queryset(self):
-        qs = SearchQuerySet().models(*APPLICATION_MODELS.values())
+        qs = CreditAppIndex.objects.get_queryset()
         # Default ordering
         if not self.request.GET.get('sort'):
             qs = qs.order_by('-created_datetime')
@@ -283,7 +282,7 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
         # Basic search
         search_text = data.get('search_text')
         if search_text:
-            qs = qs.filter(text=AutoQuery(search_text))
+            qs = qs.filter(text=search_text)
             self.filter_descrs.append(_('Application contains “%(text)s”') % dict(text=search_text))
 
         # Advanced search
@@ -309,7 +308,7 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
 
         phone = data.get('phone')
         if phone:
-            qs = qs.filter(phone__exact=phone)
+            qs = qs.filter(phone=phone)
             self.filter_descrs.append(_('Phone number contains “%(phone)s”') % dict(phone=phone))
 
         created_date_from = data.get('created_date_from')
@@ -321,8 +320,6 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
         if created_date_to:
             qs = qs.filter(created_datetime__lt=created_date_to)
             self.filter_descrs.append(_('Application submitted before %(date)s') % dict(date=created_date_to.strftime('%c')))
-
-        submitted_by = data.get('submitted_by')
 
         user_id = data.get('user_id')
         if user_id:
@@ -337,7 +334,7 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
             qs = qs.filter(submitting_user_id=submitting_user_id)
             self.filter_descrs.append(_('Application submitted by “%(name)s”') % dict(name=user.get_full_name()))
         elif submitted_by:
-            qs = qs.filter(submitting_user_full_name=submitted_by)
+            qs = qs.filter(submitting_user_full_name__search=submitted_by)
             self.filter_descrs.append(_('Application submitted by “%(name)s”') % dict(name=submitted_by))
 
         return qs

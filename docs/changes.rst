@@ -6,7 +6,7 @@ Changelog
 0.19.0 *work in progress*
 ------------------
 - Drop support for Oscar 1.5
-- Use PostgreSQL full-text search (instead of Haystack) for Pre-Qualification data
+- Use PostgreSQL full-text search (instead of Haystack) for all indexes (credit applications, transfers, and pre-qualification data)
 
 0.18.0
 ------------------

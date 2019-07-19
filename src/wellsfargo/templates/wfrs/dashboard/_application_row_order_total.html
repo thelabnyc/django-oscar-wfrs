@@ -1,4 +1,10 @@
 {% spaceless %}
     {% load currency_filters %}
-    {{ record.order_total | currency | default:'—' }}
+    {% with record.object.get_first_order as order %}
+        {% if order %}
+            {{ order.total_incl_tax | currency | default:'—' }}
+        {% else %}
+            —
+        {% endif %}
+    {% endwith %}
 {% endspaceless %}

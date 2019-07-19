@@ -13,13 +13,13 @@ packages = find_packages('src')
 
 install_requires = [
     'cryptography>=2.1.4',
-    'django-haystack>=2.6.1',
+    'django-ipware>=2.1.0',
     'django-localflavor>=2.0',
     'django-oscar-api-checkout>=0.5.1',
     'django-oscar-api>=1.5.0',
     'django-oscar-bluelight>=0.10.0',
     'django-oscar>=1.6.0,<2.0.0',
-    'django-ipware>=2.1.0',
+    'django-pgviews>=0.5.5',
     'djangorestframework>=3.9.0',
     'instrumented-soap>=1.2.0',
 ]
@@ -30,7 +30,6 @@ extras_require = {
     ],
     'development': [
         'coverage>=4.4.2',
-        'elasticsearch>=1.9.0,<2.0.0',
         'flake8>=3.5.0',
         'psycopg2cffi>=2.7.7',
         'PyYAML>=3.12',

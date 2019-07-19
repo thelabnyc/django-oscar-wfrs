@@ -440,6 +440,22 @@ class CreditAppCommonMixin(models.Model):
         return self._first_order_cache
 
 
+    def get_first_order_merchant(self):
+        Transaction = get_model('payment', 'Transaction')
+        order = self.get_first_order()
+        if not order:
+            return None
+        transfers = []
+        for source in order.sources.filter(source_type__name='Wells Fargo').all():
+            for transaction in source.transactions.filter(txn_type=Transaction.AUTHORISE).all():
+                transfer = TransferMetadata.get_by_oscar_transaction(transaction)
+                if transfer:
+                    transfers.append(transfer)
+        if len(transfers) <= 0:
+            return None
+        return transfers[0].credentials
+
+
 
 class USCreditApp(CreditAppCommonMixin, USCreditAppMixin, BaseCreditAppMixin):
     APP_TYPE_CODE = 'us-individual'
@@ -718,3 +734,8 @@ class PreQualificationSDKApplicationResult(models.Model):
     class Meta:
         verbose_name = _('Pre-Qualification SDK Application Result')
         verbose_name_plural = _('Pre-Qualification SDK Application Results')
+
+
+
+# Define PostgreSQL Views
+from .model_views import *  # NOQA

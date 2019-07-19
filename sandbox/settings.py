@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
+    'django_pgviews',
     'widget_tweaks',
     'rest_framework',
     'oscarapi',
@@ -133,12 +134,9 @@ DATABASES = {
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://elasticsearch:9200/',
-        'INDEX_NAME': 'haystack',
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 CACHES = {
     'default': {

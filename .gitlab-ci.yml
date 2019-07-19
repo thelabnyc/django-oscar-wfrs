@@ -8,7 +8,6 @@ stages:
 
 services:
   - postgres:latest
-  - elasticsearch:1
 
 cache:
   key: "$CI_PROJECT_NAME"
