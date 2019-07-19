@@ -3,6 +3,17 @@
 Changelog
 =========
 
+0.19.0 *work in progress*
+------------------
+- Drop support for Oscar 1.5
+- Use PostgreSQL full-text search (instead of Haystack) for Pre-Qualification data
+
+0.18.0
+------------------
+- Internationalization
+- Add PreQual request data into PreQualificationResponseSerializer serializer
+- Add view to allow resuming a PreQual offer from a different session
+
 0.17.0
 ------------------
 - Make payment methods create separate ``payment.Source`` objects per Reference number (`!24 <https://gitlab.com/thelabnyc/django-oscar/django-oscar-wfrs/merge_requests/24>`_).
