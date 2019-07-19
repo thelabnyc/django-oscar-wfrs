@@ -7,7 +7,6 @@ from .models import (
     USJointCreditApp,
     CACreditApp,
     CAJointCreditApp,
-    PreQualificationRequest,
 )
 
 
