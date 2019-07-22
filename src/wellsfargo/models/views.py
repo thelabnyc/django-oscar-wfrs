@@ -165,15 +165,12 @@ def _build_credit_app_query(AppModel, is_joint):
 
 
 
-CREDIT_APP_INDEX_SQL = f"""
-{_build_credit_app_query(USCreditApp, False)}
-UNION
-{_build_credit_app_query(USJointCreditApp, True)}
-UNION
-{_build_credit_app_query(CACreditApp, False)}
-UNION
-{_build_credit_app_query(CAJointCreditApp, True)}
-"""
+CREDIT_APP_INDEX_SQL = "\nUNION\n".join([
+    _build_credit_app_query(USCreditApp, False),
+    _build_credit_app_query(USJointCreditApp, True),
+    _build_credit_app_query(CACreditApp, False),
+    _build_credit_app_query(CAJointCreditApp, True),
+])
 
 
 CREDIT_APP_INDEX_INDEXES = [
