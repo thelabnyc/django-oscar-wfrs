@@ -237,13 +237,13 @@ class CreditAppIndex(pg.MaterializedView):
     user_username = citext.CICharField(max_length=150, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=True, blank=True, related_name='+',
-        on_delete=models.CASCADE)
+        on_delete=models.DO_NOTHING)
 
     submitting_user_full_name = citext.CICharField(max_length=200)
     submitting_user_username = citext.CICharField(max_length=150, null=True)
     submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=True, blank=True, related_name='+',
-        on_delete=models.CASCADE)
+        on_delete=models.DO_NOTHING)
 
     name = SearchVectorField()
     address = SearchVectorField()
