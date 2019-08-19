@@ -251,8 +251,14 @@ def submit_credit_application(app, current_user=None):
     if resp.transactionStatus not in (CREDIT_APP_APPROVED, CREDIT_APP_DECISION_DELAYED):
         raise CreditApplicationDenied(_('Credit Application was denied by Wells Fargo.'))
 
+    # If the app status is approved, call signal handler
+    if resp.transactionStatus == CREDIT_APP_APPROVED:
+        # fire wfrs app approved signal
+        wfrs_app_approved.send(sender=app.__class__, app=app)
+
     # Save the suffix of the account number
     app.account_number = resp.wfAccountNumber
+
     app.save()
 
     # Record an account inquiry
@@ -275,10 +281,6 @@ def submit_credit_application(app, current_user=None):
         pending = CreditApplicationPending(_('Credit Application is approval is pending.'))
         pending.inquiry = result
         raise pending
-
-    if resp.transactionStatus == CREDIT_APP_APPROVED:
-        # fire wfrs app approved signal
-        wfrs_app_approved.send(sender=app.__class__, app=app, result=result)
 
     return result
 
