@@ -278,7 +278,7 @@ def submit_credit_application(app, current_user=None):
 
     if resp.transactionStatus == CREDIT_APP_APPROVED:
         # fire wfrs app approved signal
-        wfrs_app_approved.send(sender=self.__class__, app=app, result=result)
+        wfrs_app_approved.send(sender=app.__class__, app=app, result=result)
 
     return result
 
