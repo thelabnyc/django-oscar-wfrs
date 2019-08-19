@@ -16,6 +16,7 @@ from ..core.constants import (
     OTB_SUCCESS,
 )
 from ..core.exceptions import TransactionDenied, CreditApplicationPending, CreditApplicationDenied
+from ..core.signals import wfrs_app_approved
 from ..models import APICredentials, TransferMetadata, AccountInquiryResult, FinancingPlan, PreQualificationResponse
 from ..settings import (
     WFRS_TRANSACTION_WSDL,
@@ -274,6 +275,10 @@ def submit_credit_application(app, current_user=None):
         pending = CreditApplicationPending(_('Credit Application is approval is pending.'))
         pending.inquiry = result
         raise pending
+
+    if resp.transactionStatus == CREDIT_APP_APPROVED:
+        # fire wfrs app approved signal
+        wfrs_app_approved.send(sender=self.__class__, app=app, result=result)
 
     return result
 
