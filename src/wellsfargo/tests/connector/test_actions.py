@@ -94,8 +94,9 @@ class CreditInquiryTest(BaseTest):
 
 
 class CreditApplicationTest(BaseTest):
+    @mock.patch('wellsfargo.core.signals.wfrs_app_approved.send')
     @mock.patch('soap.get_transport')
-    def test_us_submit_single(self, get_transport):
+    def test_us_submit_single(self, get_transport, wfrs_app_approved):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_successful)
 
         app = self._build_us_single_credit_app('999999990')
@@ -115,10 +116,12 @@ class CreditApplicationTest(BaseTest):
         self.assertEqual(resp.last_payment_amount, None)
         self.assertEqual(resp.payment_due_date, None)
         self.assertEqual(resp.payment_due_amount, None)
+        self.assertTrue(wfrs_app_approved.call_count > 0)
 
 
+    @mock.patch('wellsfargo.core.signals.wfrs_app_approved.send')
     @mock.patch('soap.get_transport')
-    def test_us_submit_joint(self, get_transport):
+    def test_us_submit_joint(self, get_transport, wfrs_app_approved):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_successful)
 
         app = self._build_us_joint_credit_app('999999990', '999999990')
@@ -138,6 +141,7 @@ class CreditApplicationTest(BaseTest):
         self.assertEqual(resp.last_payment_amount, None)
         self.assertEqual(resp.payment_due_date, None)
         self.assertEqual(resp.payment_due_amount, None)
+        self.assertTrue(wfrs_app_approved.call_count > 0)
 
 
     @mock.patch('soap.get_transport')
@@ -156,12 +160,15 @@ class CreditApplicationTest(BaseTest):
             actions.submit_credit_application(app)
 
 
+
+    @mock.patch('wellsfargo.core.signals.wfrs_app_approved.send')
     @mock.patch('soap.get_transport')
-    def test_submit_denied(self, get_transport):
+    def test_submit_denied(self, get_transport, wfrs_app_approved):
         get_transport.return_value = self._build_transport_with_reply(responses.credit_app_denied)
         app = self._build_us_single_credit_app('999999994')
         with self.assertRaises(CreditApplicationDenied):
             actions.submit_credit_application(app)
+        self.assertFalse(wfrs_app_approved.call_count > 0)
 
 
     @mock.patch('soap.get_transport')
