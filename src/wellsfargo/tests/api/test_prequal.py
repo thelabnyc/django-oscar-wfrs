@@ -221,6 +221,19 @@ class PreQualificationRequestTest(BaseTest):
         response = self.client.get(url)
         self.assertRedirects(response, '/my-redirect/', fetch_redirect_response=False)
 
+        # Resume should work with a full next_url
+        hostname = "testsite.com"
+        prequal_request = PreQualificationRequest.objects.first()
+        url = prequal_request.get_resume_offer_url(next_url="http://{hostname}/my-redirect/".format(hostname=hostname))
+        response = self.client.get(url, SERVER_NAME=hostname)
+        self.assertRedirects(response, "http://{hostname}/my-redirect/".format(hostname=hostname), fetch_redirect_response=False)
+
+        # Full next_url to another site fails
+        prequal_request = PreQualificationRequest.objects.first()
+        url = prequal_request.get_resume_offer_url(next_url='http://not-my-site.com/my-redirect/')
+        response = self.client.get(url)
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
+
         # Fetch the response data
         url = reverse('wfrs-api-prequal-sdk-response')
         response = self.client.get(url)
