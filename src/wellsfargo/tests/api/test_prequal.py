@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from rest_framework import status
 from rest_framework.reverse import reverse
 from wellsfargo.tests.base import BaseTest
@@ -195,6 +197,8 @@ class PreQualificationRequestTest(BaseTest):
             'credit_limit': '7500.00',
             'response_id': 'ABC123',
         }
+
+
         response = self.client.post(url, data, format='json', REMOTE_ADDR=self.ip_address)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['status'], 'A')
@@ -220,6 +224,21 @@ class PreQualificationRequestTest(BaseTest):
         url = prequal_request.get_resume_offer_url(next_url='/my-redirect/')
         response = self.client.get(url)
         self.assertRedirects(response, '/my-redirect/', fetch_redirect_response=False)
+
+        # Resume should work with a full next_url
+        hostname = "testsite.com"
+        prequal_request = PreQualificationRequest.objects.first()
+        url = prequal_request.get_resume_offer_url(next_url=f'http://{hostname}/my-redirect/')
+        response = self.client.get(url, SERVER_NAME=hostname)
+        self.assertRedirects(response, f'http://{hostname}/my-redirect/', fetch_redirect_response=False)
+
+        # Full next_url to another site fails
+        prequal_request = PreQualificationRequest.objects.first()
+        url = prequal_request.get_resume_offer_url(next_url=f'http://not-my-site.com/my-redirect/')
+        response = self.client.get(url)
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
+
+
 
         # Fetch the response data
         url = reverse('wfrs-api-prequal-sdk-response')
