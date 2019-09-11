@@ -39,8 +39,6 @@ from .exceptions import CreditApplicationPending
 from ..utils import list_plans_for_basket, calculate_monthly_payments
 import decimal
 
-
-
 INQUIRY_SESSION_KEY = 'wfrs-acct-inquiry-id'
 PREQUAL_SESSION_KEY = 'wfrs-prequal-request-id'
 
