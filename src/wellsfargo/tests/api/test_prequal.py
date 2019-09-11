@@ -224,9 +224,9 @@ class PreQualificationRequestTest(BaseTest):
         # Resume should work with a full next_url
         hostname = "testsite.com"
         prequal_request = PreQualificationRequest.objects.first()
-        url = prequal_request.get_resume_offer_url(next_url=f'http://{hostname}/my-redirect/')
+        url = prequal_request.get_resume_offer_url(next_url="http://{hostname}/my-redirect/".format(hostname=hostname))
         response = self.client.get(url, SERVER_NAME=hostname)
-        self.assertRedirects(response, f'http://{hostname}/my-redirect/', fetch_redirect_response=False)
+        self.assertRedirects(response, "http://{hostname}/my-redirect/".format(hostname=hostname), fetch_redirect_response=False)
 
         # Full next_url to another site fails
         prequal_request = PreQualificationRequest.objects.first()
