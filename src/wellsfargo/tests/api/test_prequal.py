@@ -230,7 +230,7 @@ class PreQualificationRequestTest(BaseTest):
 
         # Full next_url to another site fails
         prequal_request = PreQualificationRequest.objects.first()
-        url = prequal_request.get_resume_offer_url(next_url=f'http://not-my-site.com/my-redirect/')
+        url = prequal_request.get_resume_offer_url(next_url='http://not-my-site.com/my-redirect/')
         response = self.client.get(url)
         self.assertRedirects(response, '/', fetch_redirect_response=False)
 
