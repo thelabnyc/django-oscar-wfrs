@@ -39,6 +39,11 @@ from .exceptions import CreditApplicationPending
 from ..utils import list_plans_for_basket, calculate_monthly_payments
 import decimal
 
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 INQUIRY_SESSION_KEY = 'wfrs-acct-inquiry-id'
 PREQUAL_SESSION_KEY = 'wfrs-prequal-request-id'
 
@@ -209,7 +214,7 @@ class PreQualificationResumeView(generics.GenericAPIView):
         redirect_url = self.request.GET.get('next', '/')
         redirect_url_is_safe = is_safe_url(
             url=redirect_url,
-            allowed_hosts=set(request.get_host()),
+            allowed_hosts=set((request.get_host(),)),
             require_https=request.is_secure())
         if not redirect_url_is_safe:
             redirect_url = '/'
