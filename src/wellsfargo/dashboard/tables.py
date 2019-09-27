@@ -1,10 +1,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django_tables2 import Column, TemplateColumn, DateTimeColumn, LinkColumn, A
-from oscar.core.loading import get_class
+from oscar.apps.dashboard.tables import DashboardTable
 import pytz
-
-DashboardTable = get_class('dashboard.tables', 'DashboardTable')
-
 
 
 class TZAwareDateTimeColumn(DateTimeColumn):

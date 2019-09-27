@@ -3,7 +3,7 @@ from oscar.test.factories import create_order
 from soap.tests import SoapTest
 from wellsfargo.fraud import screen_transaction, WFRS_FRAUD_PROTECTION
 from wellsfargo.tests import responses
-import mock
+from unittest import mock
 
 
 

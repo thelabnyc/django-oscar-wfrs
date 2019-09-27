@@ -2,14 +2,14 @@ from django.urls import reverse
 from wellsfargo.models import USCreditApp
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses
-import mock
+from unittest import mock
 
 
 class ApplicationSelectionViewTest(BaseTest):
     def test_unauthorized(self):
         url = reverse('wfrs-apply-step1')
         resp = self.client.get(url)
-        self.assertRedirects(resp, '/accounts/login/?next={}'.format(url))
+        self.assertRedirects(resp, '/dashboard/login/?next={}'.format(url))
 
 
     def test_get(self):
@@ -77,7 +77,7 @@ class CreditApplicationViewTest(BaseTest):
     def test_unauthorized(self):
         url = reverse('wfrs-apply-step2', args=('US', 'E', 'I'))
         resp = self.client.get(url)
-        self.assertRedirects(resp, '/accounts/login/?next={}'.format(url))
+        self.assertRedirects(resp, '/dashboard/login/?next={}'.format(url))
 
 
     def test_get(self):

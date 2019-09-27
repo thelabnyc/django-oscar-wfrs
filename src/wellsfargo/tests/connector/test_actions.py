@@ -11,7 +11,7 @@ from wellsfargo.core.constants import (
 from wellsfargo.models import FinancingPlan, PreQualificationRequest, PreQualificationResponse
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses
-import mock
+from unittest import mock
 
 
 class SubmitTransactionTest(BaseTest):

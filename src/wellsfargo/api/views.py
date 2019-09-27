@@ -21,6 +21,7 @@ from ..models import (
     PreQualificationSDKApplicationResult,
     AccountInquiryResult,
 )
+from ..utils import list_plans_for_basket, calculate_monthly_payments
 from .serializers import (
     AppSelectionSerializer,
     USCreditAppSerializer,
@@ -36,7 +37,6 @@ from .serializers import (
     PreQualificationSDKApplicationResultSerializer,
 )
 from .exceptions import CreditApplicationPending
-from ..utils import list_plans_for_basket, calculate_monthly_payments
 import decimal
 
 INQUIRY_SESSION_KEY = 'wfrs-acct-inquiry-id'

@@ -1,9 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 from oscar.defaults import *  # noqa
 from oscarbluelight.defaults import *  # NOQA
-from oscar import OSCAR_MAIN_TEMPLATE_DIR, get_core_apps
-from oscarbluelight import BLUELIGHT_TEMPLATE_DIR
-from wellsfargo import WFRS_TEMPLATE_DIR
 from psycopg2cffi import compat
 import os
 
@@ -28,8 +25,8 @@ LANGUAGES = (
     ('es', _('Spanish')),
 )
 
-
 INSTALLED_APPS = [
+    # Core Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,22 +36,57 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
-    'django_pgviews',
-    'widget_tweaks',
-    'rest_framework',
-    'oscarapi',
-    'oscarapicheckout',
-    'oscarbluelight',
-    'wellsfargo',
-] + get_core_apps([
-    'basket',
-    'order',
-    'oscarbluelight.dashboard.offers',
-    'oscarbluelight.dashboard.vouchers',
-    'oscarbluelight.offer',
-    'oscarbluelight.voucher',
-])
 
+    # Oscar Plugins
+    'wellsfargo',
+    'wellsfargo.api',
+    'wellsfargo.dashboard',
+    'oscarbluelight',
+    'oscarapicheckout',
+    'oscarapi',
+
+    # django-oscar
+    'oscar',
+    'oscar.apps.analytics',
+    'oscar.apps.checkout',
+    'oscar.apps.address',
+    'oscar.apps.shipping',
+    'oscar.apps.catalogue',
+    'oscar.apps.catalogue.reviews',
+    'oscar.apps.partner',
+    'basket',  # 'oscar.apps.basket',
+    'oscar.apps.payment',
+    'oscarbluelight.offer',  # 'oscar.apps.offer',
+    'order',  # 'oscar.apps.order',
+    'oscar.apps.customer',
+    'oscar.apps.search',
+    'oscarbluelight.voucher',  # 'oscar.apps.voucher',
+    'oscar.apps.wishlists',
+    'oscar.apps.dashboard',
+    'oscar.apps.dashboard.reports',
+    'oscar.apps.dashboard.users',
+    'oscar.apps.dashboard.orders',
+    'oscar.apps.dashboard.catalogue',
+    'oscarbluelight.dashboard.offers',  # 'oscar.apps.dashboard.offers',
+    'oscar.apps.dashboard.partners',
+    'oscar.apps.dashboard.pages',
+    'oscar.apps.dashboard.ranges',
+    'oscar.apps.dashboard.reviews',
+    'oscarbluelight.dashboard.vouchers',  # 'oscar.apps.dashboard.vouchers',
+    'oscar.apps.dashboard.communications',
+    'oscar.apps.dashboard.shipping',
+
+    # 3rd-party apps that oscar depends on
+    'widget_tweaks',
+    'haystack',
+    'treebeard',
+    'sorl.thumbnail',
+    'django_tables2',
+
+    # 3rd-party apps depend on
+    'rest_framework',
+    'django_pgviews',
+]
 
 LOGGING = {
     'version': 1,
@@ -79,7 +111,6 @@ LOGGING = {
     }
 }
 
-
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -92,15 +123,11 @@ MIDDLEWARE = (
     'oscar.apps.basket.middleware.BasketMiddleware',
 )
 
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
-            WFRS_TEMPLATE_DIR,
-            BLUELIGHT_TEMPLATE_DIR,
-            OSCAR_MAIN_TEMPLATE_DIR,
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -111,7 +138,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
                 'oscar.apps.search.context_processors.search_form',
-                'oscar.apps.promotions.context_processors.promotions',
                 'oscar.apps.checkout.context_processors.checkout',
                 'oscar.apps.customer.notifications.context_processors.notifications',
                 'oscar.core.context_processors.metadata',
@@ -119,7 +145,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 DATABASES = {
     'default': {
@@ -145,7 +170,6 @@ CACHES = {
     }
 }
 
-
 AUTHENTICATION_BACKENDS = (
     'oscar.apps.customer.auth_backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
@@ -158,7 +182,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
 
-
 # Order Status Pipeline
 # Needed by oscarapicheckout
 ORDER_STATUS_PENDING = 'Pending'
@@ -168,7 +191,6 @@ ORDER_STATUS_AUTHORIZED = 'Authorized'
 # Other statuses
 ORDER_STATUS_SHIPPED = 'Shipped'
 ORDER_STATUS_CANCELED = 'Canceled'
-
 
 OSCAR_INITIAL_ORDER_STATUS = ORDER_STATUS_PENDING
 OSCARAPI_INITIAL_ORDER_STATUS = ORDER_STATUS_PENDING
@@ -187,17 +209,14 @@ OSCAR_LINE_STATUS_PIPELINE = {
     ORDER_STATUS_CANCELED: (),
 }
 
-
 # Oscar
 OSCAR_SHOP_NAME = _("WFRS Sandbox")
 OSCAR_ALLOW_ANON_CHECKOUT = True
 OSCAR_DEFAULT_CURRENCY = 'USD'
 OSCARAPI_BLOCK_ADMIN_API_ACCESS = False
 
-
 # Disable real emails
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-
 
 OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     'label': 'Wells Fargo',
@@ -231,7 +250,6 @@ OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     ]
 })
 
-
 # Configure payment methods
 API_ENABLED_PAYMENT_METHODS = [
     {
@@ -248,7 +266,6 @@ API_ENABLED_PAYMENT_METHODS = [
 BLUELIGHT_BENEFIT_CLASSES += [  # NOQA
     ('wellsfargo.models.FinancingPlanBenefit', _('Activate Wells Fargo Plan Number Group')),
 ]
-
 
 # WFRS
 WFRS_SECURITY = {

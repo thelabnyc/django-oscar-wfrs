@@ -21,6 +21,7 @@ Transaction = get_model('payment', 'Transaction')
 Source = get_model('payment', 'Source')
 
 
+
 class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
     account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16)
     financing_plan = serializers.PrimaryKeyRelatedField(queryset=FinancingPlan.objects.get_queryset())
@@ -43,11 +44,11 @@ class WellsFargoPaymentMethodSerializer(PaymentMethodSerializer):
         self.fields['financing_plan'].queryset = FinancingPlan.objects.filter(id__in=[p.id for p in plans])
 
 
+
 class WellsFargo(PaymentMethod):
     name = 'Wells Fargo'
     code = 'wells-fargo'
     serializer_class = WellsFargoPaymentMethodSerializer
-
 
     def void_existing_payment(self, request, order, method_key, state_to_void):
         # Perform the default action

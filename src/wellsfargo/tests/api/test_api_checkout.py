@@ -10,7 +10,7 @@ from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests.test_fraud import patch_fraud_protection
 from wellsfargo.tests import responses
 from requests.exceptions import Timeout
-import mock
+from unittest import mock
 
 ConditionalOffer = get_model('offer', 'ConditionalOffer')
 Condition = get_model('offer', 'Condition')
