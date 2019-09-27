@@ -1,27 +1,30 @@
 from django.conf.urls import url
-from oscar.core.application import Application
-
-from .views import (
-    SelectCreditAppView,
-    USCreditAppView,
-    USJointCreditAppView,
-    CACreditAppView,
-    CAJointCreditAppView,
-    FinancingPlanView,
-    EstimatedPaymentView,
-    UpdateAccountInquiryView,
-    SubmitAccountInquiryView,
-    PreQualificationResumeView,
-    PreQualificationRequestView,
-    PreQualificationSDKResponseView,
-    PreQualificationCustomerResponseView,
-    PreQualificationCustomerRedirectView,
-    PreQualificationSDKApplicationResultView,
-)
+from oscar.core.application import OscarConfig
 
 
-class WFRSAPIApplication(Application):
+class WFRSAPIConfig(OscarConfig):
+    name = 'wellsfargo.api'
+    label = 'wellsfargo_api'
+    namespace = 'wellsfargo_api'
+
     def get_urls(self):
+        from .views import (
+            SelectCreditAppView,
+            USCreditAppView,
+            USJointCreditAppView,
+            CACreditAppView,
+            CAJointCreditAppView,
+            FinancingPlanView,
+            EstimatedPaymentView,
+            UpdateAccountInquiryView,
+            SubmitAccountInquiryView,
+            PreQualificationResumeView,
+            PreQualificationRequestView,
+            PreQualificationSDKResponseView,
+            PreQualificationCustomerResponseView,
+            PreQualificationCustomerRedirectView,
+            PreQualificationSDKApplicationResultView,
+        )
         urlpatterns = [
             url(r'^apply/$', SelectCreditAppView.as_view(), name='wfrs-api-apply-select'),
 
@@ -52,6 +55,3 @@ class WFRSAPIApplication(Application):
                 name='wfrs-api-prequal-app-complete'),
         ]
         return self.post_process_urls(urlpatterns)
-
-
-application = WFRSAPIApplication()

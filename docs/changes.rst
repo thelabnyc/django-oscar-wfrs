@@ -3,7 +3,12 @@
 Changelog
 =========
 
-0.19.0 *work in progress*
+0.20.0
+------------------
+- Add support for django-oscar 2.x.
+- Drop support for django-oscar 1.x.
+
+0.19.0
 ------------------
 - Drop support for Oscar 1.5
 - Use PostgreSQL full-text search (instead of Haystack) for all indexes (credit applications, transfers, and pre-qualification data)

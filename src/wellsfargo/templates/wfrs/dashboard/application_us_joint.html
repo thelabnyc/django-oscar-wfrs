@@ -1,18 +1,18 @@
 {% extends 'wfrs/dashboard/application_us_single.html' %}
 
 {% block joint_personal_fields %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_ssn %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_cell_phone %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_ssn %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_cell_phone %}
 {% endblock %}
 
 {% block joint_addr_fields %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_address_state %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_address_postcode %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_address_state %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_address_postcode %}
 {% endblock %}
 
 {% block joint_employment_fields %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_occupation %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_employer_name %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_employer_phone %}
-    {% include 'dashboard/partials/form_field.html' with field=form.joint_time_at_employer %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_occupation %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_employer_name %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_employer_phone %}
+    {% include 'oscar/dashboard/partials/form_field.html' with field=form.joint_time_at_employer %}
 {% endblock %}

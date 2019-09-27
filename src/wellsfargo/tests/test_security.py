@@ -1,5 +1,5 @@
 from django.test import TestCase
-from mock import patch
+from unittest.mock import patch
 from wellsfargo.security import (
     encrypt_account_number,
     decrypt_account_number,

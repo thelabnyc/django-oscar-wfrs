@@ -1,4 +1,4 @@
-{% extends 'dashboard/layout.html' %}
+{% extends 'oscar/dashboard/layout.html' %}
 {% load i18n %}
 {% load currency_filters %}
 {% load widget_tweaks %}
@@ -67,7 +67,7 @@
                             <div class="container-fluid">
                                 {% for field in form %}
                                     {% if 'search_text' not in field.id_for_label %}
-                                        {% include "dashboard/partials/form_field.html" with field=field style='horizontal' %}
+                                        {% include "oscar/dashboard/partials/form_field.html" with field=field style='horizontal' %}
                                     {% endif %}
                                 {% endfor %}
                             </div>

@@ -1,1 +1,1 @@
-default_app_config = 'basket.config.BasketConfig'
+default_app_config = 'basket.apps.BasketConfig'

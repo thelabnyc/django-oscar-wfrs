@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses
-import mock
+from unittest import mock
 from wellsfargo.models import PreQualificationRequest
 
 
