@@ -58,7 +58,7 @@ TRANS_TYPE_AUTH = '5'
 TRANS_TYPE_CANCEL_AUTH = '7'
 # TRANS_TYPE_CHARGE = '3' # TODO: handle charges
 # TRANS_TYPE_AUTH_AND_CHARGE = '1'
-# TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL = '2'
+TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL = '2'
 TRANS_TYPE_RETURN_CREDIT = '4'
 TRANS_TYPE_RETURN_CREDIT_TIMEOUT_REVERSAL = '9'
 TRANS_TYPE_VOID_SALE = 'VS'
@@ -70,7 +70,7 @@ TRANS_TYPES = (
     (TRANS_TYPE_CANCEL_AUTH, _('Cancel Existing Authorization')),
     # (TRANS_TYPE_CHARGE, _('Charge for Previous Authorization')), # TODO: handle charges
     # (TRANS_TYPE_AUTH_AND_CHARGE, _('Authorize and Charge')),
-    # (TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL, _('Time-out Reversal for Previous "Authorization and Charge"')),
+    (TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL, _('Time-out Reversal for Previous "Authorization and Charge"')),
     (TRANS_TYPE_RETURN_CREDIT, _('Return or Credit')),
     (TRANS_TYPE_RETURN_CREDIT_TIMEOUT_REVERSAL, _('Time-out Reversal for Return or Credit')),
     (TRANS_TYPE_VOID_SALE, _('Void Sale')),

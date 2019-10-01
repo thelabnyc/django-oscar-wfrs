@@ -6,7 +6,11 @@ from oscarapicheckout.methods import PaymentMethod, PaymentMethodSerializer
 from oscarapicheckout.states import Complete, Declined
 from requests.exceptions import Timeout, ConnectionError
 from .connector import actions
-from .core.constants import TRANS_DECLINED, TRANS_TYPE_AUTH, TRANS_TYPE_CANCEL_AUTH
+from .core.constants import (
+    TRANS_DECLINED,
+    TRANS_TYPE_AUTH,
+    TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL,
+)
 from .core.structures import TransactionRequest
 from .core import exceptions
 from .utils import list_plans_for_basket
@@ -65,7 +69,7 @@ class WellsFargo(PaymentMethod):
             account_number=transfer_meta.account_number,
             plan_number=transfer_meta.financing_plan.plan_number,
             amount=state_to_void.amount,
-            type_code=TRANS_TYPE_CANCEL_AUTH)
+            type_code=TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL)
         current_user = request.user if request.user and request.user.is_authenticated else None
         try:
             actions.submit_transaction(cancel_trans_request, current_user=current_user, transaction_uuid=None, persist=False)
@@ -88,7 +92,7 @@ class WellsFargo(PaymentMethod):
             account_number=account_number,
             plan_number=financing_plan.plan_number,
             amount=amount,
-            type_code=TRANS_TYPE_CANCEL_AUTH)
+            type_code=TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL)
 
         # If Fraud Screening is enabled, run it and see if the transaction passes muster.
         fraud_response = screen_transaction(request, order)
