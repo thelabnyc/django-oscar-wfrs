@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from oscar.core.loading import get_model
-from oscar.models.fields import PhoneNumberField
+from oscar.models.fields import PhoneNumberField, NullCharField
 from ..core.constants import (
     EN_US,
     PREQUAL_LOCALE_CHOICES,
@@ -49,6 +49,8 @@ class PreQualificationRequest(models.Model):
     postcode = USZipCodeField(_("Postcode"))
     phone = PhoneNumberField(_("Phone"))
     ip_address = models.GenericIPAddressField(null=True, blank=True)
+    merchant_name = NullCharField(_('Merchant Name'), max_length=200)
+    merchant_num = NullCharField(_('Merchant Number'), max_length=200)
     credentials = models.ForeignKey(APICredentials,
         verbose_name=_("API Credentials"),
         related_name='prequal_requests',
@@ -90,16 +92,6 @@ class PreQualificationRequest(models.Model):
         if response:
             return response.status_name
         return get_prequal_trans_status_name(PREQUAL_TRANS_STATUS_REJECTED, self.customer_initiated)
-
-
-    @property
-    def merchant_name(self):
-        return self.credentials.name if self.credentials else None
-
-
-    @property
-    def merchant_num(self):
-        return self.credentials.merchant_num if self.credentials else None
 
 
     @property
@@ -241,7 +233,7 @@ class PreQualificationResponse(models.Model):
     @property
     def full_application_url(self):
         # Take the given base URL and append a query param with the last 10 digits of the merchant account number
-        merchant_num = self.request.credentials.merchant_num[-10:]
+        merchant_num = self.request.merchant_num[-10:]
         return "{base_url}&mn={merchant_num}".format(
             base_url=self.application_url,
             merchant_num=merchant_num)

@@ -313,6 +313,8 @@ def check_pre_qualification_status(prequal_request, return_url=None, current_use
     data.phone = _format_phone(prequal_request.phone)
 
     # Save the credentials used to make the request
+    prequal_request.merchant_name = creds.name
+    prequal_request.merchant_num = creds.merchant_num
     prequal_request.credentials = creds
     prequal_request.save()
 

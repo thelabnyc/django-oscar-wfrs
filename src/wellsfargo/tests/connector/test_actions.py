@@ -239,6 +239,8 @@ class CheckPreQualificationAccountStatusTest(BaseTest):
         request.state = 'NY'
         request.postcode = '10001'
         request.phone = '+1 (212) 209-1333'
+        request.merchant_name = self.credentials.name
+        request.merchant_num = self.credentials.merchant_num
         request.credentials = self.credentials
         request.save()
 
@@ -287,6 +289,8 @@ class CheckPreQualificationAccountStatusTest(BaseTest):
         request.state = 'NY'
         request.postcode = '10001'
         request.phone = '+1 (212) 209-1333'
+        request.merchant_name = self.credentials.name
+        request.merchant_num = self.credentials.merchant_num
         request.credentials = self.credentials
         request.save()
 
@@ -319,6 +323,8 @@ class CheckPreQualificationAccountStatusTest(BaseTest):
         request.state = 'NY'
         request.postcode = '10001'
         request.phone = '+1 (212) 209-1333'
+        request.merchant_name = self.credentials.name
+        request.merchant_num = self.credentials.merchant_num
         request.credentials = self.credentials
         request.save()
 

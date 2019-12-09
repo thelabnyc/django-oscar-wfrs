@@ -154,6 +154,8 @@ class PreQualificationRequestTest(BaseTest):
             'postcode': '10001',
             'status': 'A',
             'credit_limit': '7500.00',
+            'merchant_name': 'Default SDK',
+            'merchant_num': '000000000001234',
             'response_id': 'ABC123',
         }
         response = self.client.post(url, data, format='json', REMOTE_ADDR=self.ip_address)
@@ -193,6 +195,8 @@ class PreQualificationRequestTest(BaseTest):
             'postcode': '10001',
             'status': 'A',
             'credit_limit': '7500.00',
+            'merchant_name': 'Default SDK',
+            'merchant_num': '000000000001234',
             'response_id': 'ABC123',
         }
         response = self.client.post(url, data, format='json', REMOTE_ADDR=self.ip_address)
@@ -250,7 +254,7 @@ class PreQualificationRequestTest(BaseTest):
         self.assertEqual(response.data['message'], '')
         self.assertEqual(response.data['credit_limit'], '7500.00')
         self.assertEqual(response.data['customer_response'], 'SDKPRESENTED')
-        self.assertEqual(response.data['full_application_url'], '&mn=1111111111')
+        self.assertEqual(response.data['full_application_url'], '&mn=0000001234')
         self.assertEqual(response.data['offer_indicator'], '')
         self.assertEqual(response.data['response_id'], 'ABC123')
         self.assertEqual(response.data['sdk_application_result'], None)

@@ -16,7 +16,6 @@ from ..core.constants import (
 )
 from ..core import exceptions as core_exceptions
 from ..models import (
-    APICredentials,
     FinancingPlan,
     USCreditApp,
     USJointCreditApp,
@@ -218,7 +217,10 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
         model = PreQualificationRequest
         read_only_fields = (
             'uuid',
+            'merchant_name',
+            'merchant_num',
             'credentials',
+            'ip_address',
             'created_datetime',
             'modified_datetime',
         )
@@ -320,19 +322,25 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
             'city',
             'state',
             'postcode',
+            'merchant_name',
+            'merchant_num',
             'status',
             'credit_limit',
             'response_id',
         )
+        extra_kwargs = {
+            'merchant_name': {
+                'required': True,
+                'allow_null': False,
+            },
+            'merchant_num': {
+                'required': True,
+                'allow_null': False,
+            },
+        }
 
 
     def save(self):
-        request = self.context['request']
-
-        request_user = None
-        if request.user and request.user.is_authenticated:
-            request_user = request.user
-        creds = APICredentials.get_credentials(request_user)
         request = PreQualificationRequest()
         request.customer_initiated = self.validated_data.get('customer_initiated', False)
         request.email = self.validated_data.get('email')
@@ -344,10 +352,11 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
         request.city = self.validated_data['city']
         request.state = self.validated_data['state']
         request.postcode = self.validated_data['postcode']
-        request.credentials = creds
         request.ip_address, _ = get_client_ip(self.context['request'])
+        request.merchant_name = self.validated_data['merchant_name']
+        request.merchant_num = self.validated_data['merchant_num']
+        request.credentials = None  # Set credentials to None since this request was made client-side via the WFRS PLCCA SDK
         request.save()
-
         if self.validated_data['response_id']:
             response = PreQualificationResponse()
             response.request = request

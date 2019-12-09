@@ -15,6 +15,7 @@ from ..core.constants import (
     PREQUAL_REDIRECT_APP_APPROVED,
 )
 from ..models import (
+    SDKMerchantNum,
     PreQualificationRequest,
     PreQualificationResponse,
     FinancingPlan,
@@ -194,6 +195,15 @@ class SubmitAccountInquiryView(generics.GenericAPIView):
         # Return the results
         response_ser = self.get_serializer_class()(instance=result, context={'request': request})
         return Response(response_ser.data)
+
+
+class PreQualificationSDKMerchantNumView(generics.GenericAPIView):
+    def get(self, request):
+        creds = SDKMerchantNum.get_credentials(request.user)
+        return Response({
+            'merchant_name': creds.name,
+            'merchant_num': creds.merchant_num,
+        })
 
 
 class PreQualificationResumeView(generics.GenericAPIView):

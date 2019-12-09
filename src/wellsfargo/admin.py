@@ -20,6 +20,11 @@ class APICredentialsAdmin(admin.ModelAdmin):
     list_display = ['priority', 'username', 'merchant_num', 'user_group']
 
 
+@admin.register(models.SDKMerchantNum)
+class SDKMerchantNumAdmin(admin.ModelAdmin):
+    list_display = ['priority', 'merchant_num', 'user_group']
+
+
 @admin.register(models.FinancingPlan)
 class FinancingPlanAdmin(admin.ModelAdmin):
     list_display = ['plan_number', 'description', 'apr', 'term_months']
