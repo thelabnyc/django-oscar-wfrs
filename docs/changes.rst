@@ -3,6 +3,10 @@
 Changelog
 =========
 
+1.0.0
+------------------
+- Remove StatsD metrics
+
 0.20.0
 ------------------
 - Add support for django-oscar 2.x.
