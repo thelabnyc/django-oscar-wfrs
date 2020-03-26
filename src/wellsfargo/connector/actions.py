@@ -8,18 +8,28 @@ from ..core.constants import (
     CREDIT_APP_FORMAT_ERROR,
     CREDIT_APP_WFF_ERROR,
     INQUIRY_SUCCESS,
-    TRANS_APPROVED,
+    # TRANS_APPROVED,
     TRANS_TYPE_INQUIRY,
     TRANS_TYPE_APPLY,
     EN_US,
     PREQUAL_CUSTOMER_RESP_NONE,
     OTB_SUCCESS,
 )
-from ..core.exceptions import TransactionDenied, CreditApplicationPending, CreditApplicationDenied
+from ..core.exceptions import (
+    # TransactionDenied,
+    CreditApplicationPending,
+    CreditApplicationDenied,
+)
 from ..core.signals import wfrs_app_approved
-from ..models import APICredentials, TransferMetadata, AccountInquiryResult, FinancingPlan, PreQualificationResponse
+from ..models import (
+    APICredentials,
+    # TransferMetadata,
+    AccountInquiryResult,
+    # FinancingPlan,
+    PreQualificationResponse,
+)
 from ..settings import (
-    WFRS_TRANSACTION_WSDL,
+    # WFRS_TRANSACTION_WSDL,
     WFRS_INQUIRY_WSDL,
     WFRS_CREDIT_APP_WSDL,
     WFRS_PRE_QUAL_WSDL,
@@ -34,60 +44,60 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def submit_transaction(trans_request, current_user=None, transaction_uuid=None, persist=True):
-    client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
-    type_name = _find_namespaced_name(client, 'Transaction')
-    request = client.factory.create(type_name)
+# def submit_transaction(trans_request, current_user=None, transaction_uuid=None, persist=True):
+#     client = soap.get_client(WFRS_TRANSACTION_WSDL, 'WFRS')
+#     type_name = _find_namespaced_name(client, 'Transaction')
+#     request = client.factory.create(type_name)
 
-    # If a uuid was given, use that instead of generating a new one. This allows tracing fraud responses through to transactions.
-    request.uuid = transaction_uuid if transaction_uuid else uuid.uuid1()
+#     # If a uuid was given, use that instead of generating a new one. This allows tracing fraud responses through to transactions.
+#     request.uuid = transaction_uuid if transaction_uuid else uuid.uuid1()
 
-    creds = APICredentials.get_credentials(current_user)
-    request.userName = creds.username
-    request.setupPassword = creds.password
-    request.merchantNumber = creds.merchant_num
+#     creds = APICredentials.get_credentials(current_user)
+#     request.userName = creds.username
+#     request.setupPassword = creds.password
+#     request.merchantNumber = creds.merchant_num
 
-    request.transactionCode = trans_request.type_code
-    request.localeString = trans_request.locale
-    request.accountNumber = trans_request.account_number
-    request.planNumber = trans_request.plan_number
-    request.amount = _as_decimal(trans_request.amount)
-    request.authorizationNumber = trans_request.auth_number
-    request.ticketNumber = trans_request.ticket_number
+#     request.transactionCode = trans_request.type_code
+#     request.localeString = trans_request.locale
+#     request.accountNumber = trans_request.account_number
+#     request.planNumber = trans_request.plan_number
+#     request.amount = _as_decimal(trans_request.amount)
+#     request.authorizationNumber = trans_request.auth_number
+#     request.ticketNumber = trans_request.ticket_number
 
-    # Submit
-    resp = client.service.submitTransaction(request)
+#     # Submit
+#     resp = client.service.submitTransaction(request)
 
-    # Persist transaction data and WF specific metadata
-    transfer = TransferMetadata()
-    transfer.user = trans_request.user
-    transfer.credentials = creds
-    transfer.account_number = resp.accountNumber
-    transfer.merchant_reference = resp.uuid
-    transfer.amount = _as_decimal(resp.amount)
-    transfer.type_code = resp.transactionCode
-    transfer.ticket_number = resp.ticketNumber
-    transfer.financing_plan = FinancingPlan.objects.filter(plan_number=resp.planNumber).first()
-    transfer.auth_number = resp.authorizationNumber
-    transfer.status = resp.transactionStatus
-    transfer.message = resp.transactionMessage
-    transfer.disclosure = resp.disclosure or ''
-    if persist:
-        transfer.save()
+#     # Persist transaction data and WF specific metadata
+#     transfer = TransferMetadata()
+#     transfer.user = trans_request.user
+#     transfer.credentials = creds
+#     transfer.account_number = resp.accountNumber
+#     transfer.merchant_reference = resp.uuid
+#     transfer.amount = _as_decimal(resp.amount)
+#     transfer.type_code = resp.transactionCode
+#     transfer.ticket_number = resp.ticketNumber
+#     transfer.financing_plan = FinancingPlan.objects.filter(plan_number=resp.planNumber).first()
+#     transfer.auth_number = resp.authorizationNumber
+#     transfer.status = resp.transactionStatus
+#     transfer.message = resp.transactionMessage
+#     transfer.disclosure = resp.disclosure or ''
+#     if persist:
+#         transfer.save()
 
-    # Check for faults
-    if resp.faults:
-        for fault in resp.faults:
-            logger.info(fault.faultDetailString)
-            raise ValidationError(fault.faultDetailString)
+#     # Check for faults
+#     if resp.faults:
+#         for fault in resp.faults:
+#             logger.info(fault.faultDetailString)
+#             raise ValidationError(fault.faultDetailString)
 
-    # Check for approval
-    if resp.transactionStatus != TRANS_APPROVED:
-        exc = TransactionDenied('%s: %s' % (resp.transactionStatus, resp.transactionMessage))
-        exc.status = resp.transactionStatus
-        raise exc
+#     # Check for approval
+#     if resp.transactionStatus != TRANS_APPROVED:
+#         exc = TransactionDenied('%s: %s' % (resp.transactionStatus, resp.transactionMessage))
+#         exc.status = resp.transactionStatus
+#         raise exc
 
-    return transfer
+#     return transfer
 
 
 def submit_inquiry(account_number, current_user=None, locale=EN_US):

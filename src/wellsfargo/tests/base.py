@@ -2,6 +2,10 @@ from datetime import date
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from soap.tests import SoapTest
+from wellsfargo.core.constants import (
+    TRANS_DECLINED,
+    TRANS_APPROVED,
+)
 from wellsfargo.models import USCreditApp, USJointCreditApp, APICredentials
 
 
@@ -26,6 +30,40 @@ class BaseTest(SoapTest, APITestCase):
             user_group=None,
             priority=1)
         return super().setUp()
+
+
+    def mock_get_api_token_request(self, rmock):
+        rmock.post('https://api-sandbox.wellsfargo.com/token', json={
+            "access_token": "16a05f65dd41569af67dbdca7ea4da4d",
+            "scope": "",
+            "token_type": "Bearer",
+            "expires_in": 79900,
+        })
+
+
+    def mock_successful_transaction_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization',
+            json={
+                "client-request-id": "c17381a3-22fa-4463-8b0a-a3c18f6c4a44",
+                "status_message": "APPROVED: 123434",
+                "transaction_status": TRANS_APPROVED,
+                "plan_number": "9999",
+                "ticket_number": "123444",
+                "disclosure": "REGULAR TERMS WITH REGULAR PAYMENTS. THE REGULAR RATE IS 28.99%.",
+                "authorization_number": "000000",
+                "transaction_type": "AUTHORIZATION",
+                "account_number": "9999999999999991",
+                "amount": "2159.99"
+            },
+            **kwargs)
+
+
+    def mock_declined_transaction_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization',
+            json={
+                "transaction_status": TRANS_DECLINED,
+            },
+            **kwargs)
 
 
     def _build_us_single_credit_app(self, main_ssn):

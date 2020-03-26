@@ -33,6 +33,7 @@ extras_require = {
         'flake8>=3.5.0',
         'psycopg2cffi>=2.7.7',
         'PyYAML>=3.12',
+        'requests-mock>=1.7.0',
         'sorl-thumbnail>=11.04',
         'sphinx-rtd-theme>=0.4.3',
         'sphinx>=1.6.5',

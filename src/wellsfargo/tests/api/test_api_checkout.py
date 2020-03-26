@@ -5,12 +5,12 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from oscar.core.loading import get_model
 from oscar.test import factories
+from wellsfargo.core.constants import TRANS_APPROVED
 from wellsfargo.models import FinancingPlan, FinancingPlanBenefit, FraudScreenResult
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests.test_fraud import patch_fraud_protection
-from wellsfargo.tests import responses
 from requests.exceptions import Timeout
-from unittest import mock
+import requests_mock
 
 ConditionalOffer = get_model('offer', 'ConditionalOffer')
 Condition = get_model('offer', 'Condition')
@@ -45,13 +45,11 @@ class CheckoutTest(BaseTest):
             end_datetime=timezone.now() + timedelta(days=1))
 
 
-    @mock.patch('soap.get_transport')
-    def test_checkout_authd(self, get_transport):
+    @requests_mock.Mocker()
+    def test_checkout_authd(self, rmock):
         """Full checkout process using minimal api calls"""
-
-        def gt():
-            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
-        get_transport.side_effect = gt
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_transaction_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 
@@ -73,13 +71,11 @@ class CheckoutTest(BaseTest):
         self.assertEqual(fraud_result.message, 'Transaction accepted.')
 
 
-    @mock.patch('soap.get_transport')
-    def test_checkout_trans_declined(self, get_transport):
+    @requests_mock.Mocker()
+    def test_checkout_trans_declined(self, rmock):
         """Full checkout process using minimal api calls"""
-
-        def gt():
-            return self._build_transport_with_reply(responses.transaction_denied, pattern='wellsfargo.com')
-        get_transport.side_effect = gt
+        self.mock_get_api_token_request(rmock)
+        self.mock_declined_transaction_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 
@@ -95,17 +91,40 @@ class CheckoutTest(BaseTest):
 
 
 
-    @mock.patch('soap.get_transport')
-    def test_checkout_with_authorization_timeout(self, get_transport):
+    @requests_mock.Mocker()
+    def test_checkout_with_authorization_timeout(self, rmock):
         """Test checkout where the first call to WFRS times out, but the second succeeds."""
-        context = { 'i': 0 }
+        self.mock_get_api_token_request(rmock)
 
-        def gt():
-            context['i'] += 1
-            if context['i'] <= 1:
-                raise Timeout()
-            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
-        get_transport.side_effect = gt
+        # Make the first auth request timeout, but the second succeed
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization',
+            [
+                {
+                    'exc': Timeout,
+                },
+                {
+                    'json': {
+                        "client-request-id": "c17381a3-22fa-4463-8b0a-a3c18f6c4a44",
+                        "status_message": "APPROVED: 123434",
+                        "transaction_status": TRANS_APPROVED,
+                        "plan_number": "9999",
+                        "ticket_number": "123444",
+                        "disclosure": "REGULAR TERMS WITH REGULAR PAYMENTS. THE REGULAR RATE IS 28.99%.",
+                        "authorization_number": "000000",
+                        "transaction_type": "AUTHORIZATION",
+                        "account_number": "9999999999999991",
+                        "amount": "2159.99"
+                    },
+                },
+            ],
+        )
+
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/timeout-authorization-charge',
+            json={
+                "transaction_status": TRANS_APPROVED,
+                "transaction_type": "TIMEOUT-AUTHORIZATION-CHARGE",
+            },
+        )
 
         self.client.login(username='joe', password='schmoe')
 
@@ -126,17 +145,22 @@ class CheckoutTest(BaseTest):
         self.assertEqual(fraud_result.decision, FraudScreenResult.DECISION_ACCEPT)
         self.assertEqual(fraud_result.message, 'Transaction accepted.')
 
+        called_urls = [r.url for r in rmock.request_history]
+        self.assertEqual(called_urls, [
+            'https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization',
+            'https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/timeout-authorization-charge',
+            'https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization',
+        ])
+
 
     @patch_fraud_protection('wellsfargo.fraud.dummy.DummyFraudProtection',
         decision=FraudScreenResult.DECISION_REJECT,
         message='Rejected transaction.')
-    @mock.patch('soap.get_transport')
-    def test_checkout_fraud_rejection(self, get_transport):
+    @requests_mock.Mocker()
+    def test_checkout_fraud_rejection(self, rmock):
         """Full checkout process using minimal api calls"""
-
-        def gt():
-            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
-        get_transport.side_effect = gt
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_transaction_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 
@@ -161,13 +185,11 @@ class CheckoutTest(BaseTest):
     @patch_fraud_protection('wellsfargo.fraud.dummy.DummyFraudProtection',
         decision=FraudScreenResult.DECISION_REVIEW,
         message='Transaction flagged for manual review.')
-    @mock.patch('soap.get_transport')
-    def test_checkout_fraud_review_flag(self, get_transport):
+    @requests_mock.Mocker()
+    def test_checkout_fraud_review_flag(self, rmock):
         """Full checkout process using minimal api calls"""
-
-        def gt():
-            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
-        get_transport.side_effect = gt
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_transaction_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 
@@ -189,13 +211,11 @@ class CheckoutTest(BaseTest):
         self.assertEqual(fraud_result.message, 'Transaction flagged for manual review.')
 
 
-    @mock.patch('soap.get_transport')
-    def test_checkout_anon(self, get_transport):
+    @requests_mock.Mocker()
+    def test_checkout_anon(self, rmock):
         """Full checkout process using minimal api calls"""
-
-        def gt():
-            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
-        get_transport.side_effect = gt
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_transaction_request(rmock)
 
         # Should be successful
         basket_id = self._prepare_basket()
@@ -208,13 +228,11 @@ class CheckoutTest(BaseTest):
         self.assertEqual(resp.data['payment_method_states']['wells-fargo']['amount'], '10.00')
 
 
-    @mock.patch('soap.get_transport')
-    def test_checkout_bad_plan_number(self, get_transport):
+    @requests_mock.Mocker()
+    def test_checkout_bad_plan_number(self, rmock):
         """Full checkout process using minimal api calls"""
-
-        def gt():
-            return self._build_transport_with_reply(responses.transaction_successful, pattern='wellsfargo.com')
-        get_transport.side_effect = gt
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_transaction_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 

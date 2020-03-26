@@ -2,64 +2,72 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from wellsfargo.connector import actions
-from wellsfargo.core.exceptions import CreditApplicationPending, CreditApplicationDenied, TransactionDenied
-from wellsfargo.core.structures import TransactionRequest
+from wellsfargo.core.exceptions import (
+    CreditApplicationPending,
+    CreditApplicationDenied,
+    # TransactionDenied,
+)
+# from wellsfargo.core.structures import TransactionRequest
 from wellsfargo.core.constants import (
     PREQUAL_TRANS_STATUS_APPROVED,
     PREQUAL_CUSTOMER_RESP_ACCEPT,
 )
-from wellsfargo.models import FinancingPlan, PreQualificationRequest, PreQualificationResponse
+from wellsfargo.models import (
+    # FinancingPlan,
+    PreQualificationRequest,
+    PreQualificationResponse,
+)
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses
 from unittest import mock
 
 
-class SubmitTransactionTest(BaseTest):
-    @mock.patch('soap.get_transport')
-    def test_submit_transaction_success(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
+# class SubmitTransactionTest(BaseTest):
+#     @mock.patch('soap.get_transport')
+#     def test_submit_transaction_success(self, get_transport):
+#         get_transport.return_value = self._build_transport_with_reply(responses.transaction_successful)
 
-        plan = FinancingPlan.objects.create(plan_number='1001', description='', apr=0, term_months=0)
+#         plan = FinancingPlan.objects.create(plan_number='1001', description='', apr=0, term_months=0)
 
-        # Authorize a change against the credit line
-        request = TransactionRequest()
-        request.user = self.joe
-        request.account_number = '9999999999999991'
-        request.plan_number = plan.plan_number
-        request.amount = Decimal('2159.99')
-        request.ticket_number = 'D1234567890'
-        transfer = actions.submit_transaction(request)
+#         # Authorize a change against the credit line
+#         request = TransactionRequest()
+#         request.user = self.joe
+#         request.account_number = '9999999999999991'
+#         request.plan_number = plan.plan_number
+#         request.amount = Decimal('2159.99')
+#         request.ticket_number = 'D1234567890'
+#         transfer = actions.submit_transaction(request)
 
-        # Should return a valid transfer object
-        self.assertEqual(transfer.user, self.joe)
-        self.assertEqual(transfer.credentials, self.credentials)
-        self.assertEqual(transfer.merchant_reference, '6f9c34ae-2153-11e6-a8c1-0242ac110003')
-        self.assertEqual(transfer.amount, Decimal('2159.99'))
-        self.assertEqual(transfer.type_code, '5')
-        self.assertEqual(transfer.ticket_number, 'D1234567890')
-        self.assertEqual(transfer.financing_plan.plan_number, 1001)
-        self.assertEqual(transfer.auth_number, '000000')
-        self.assertEqual(transfer.status, 'A1')
-        self.assertTrue(transfer.message.startswith('APPROVED'))
-        self.assertTrue(transfer.disclosure.startswith('(DEMO) REGULAR TERMS'))
+#         # Should return a valid transfer object
+#         self.assertEqual(transfer.user, self.joe)
+#         self.assertEqual(transfer.credentials, self.credentials)
+#         self.assertEqual(transfer.merchant_reference, '6f9c34ae-2153-11e6-a8c1-0242ac110003')
+#         self.assertEqual(transfer.amount, Decimal('2159.99'))
+#         self.assertEqual(transfer.type_code, '5')
+#         self.assertEqual(transfer.ticket_number, 'D1234567890')
+#         self.assertEqual(transfer.financing_plan.plan_number, 1001)
+#         self.assertEqual(transfer.auth_number, '000000')
+#         self.assertEqual(transfer.status, 'A1')
+#         self.assertTrue(transfer.message.startswith('APPROVED'))
+#         self.assertTrue(transfer.disclosure.startswith('(DEMO) REGULAR TERMS'))
 
 
-    @mock.patch('soap.get_transport')
-    def test_submit_transaction_denied(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.transaction_denied)
+#     @mock.patch('soap.get_transport')
+#     def test_submit_transaction_denied(self, get_transport):
+#         get_transport.return_value = self._build_transport_with_reply(responses.transaction_denied)
 
-        plan = FinancingPlan.objects.create(plan_number='1001', description='', apr=0, term_months=0)
+#         plan = FinancingPlan.objects.create(plan_number='1001', description='', apr=0, term_months=0)
 
-        # Authorize a change against the credit line
-        request = TransactionRequest()
-        request.user = self.joe
-        request.account_number = '9999999999999990'
-        request.plan_number = plan.plan_number
-        request.amount = Decimal('2159.99')
-        request.ticket_number = 'D1234567890'
+#         # Authorize a change against the credit line
+#         request = TransactionRequest()
+#         request.user = self.joe
+#         request.account_number = '9999999999999990'
+#         request.plan_number = plan.plan_number
+#         request.amount = Decimal('2159.99')
+#         request.ticket_number = 'D1234567890'
 
-        with self.assertRaises(TransactionDenied):
-            actions.submit_transaction(request)
+#         with self.assertRaises(TransactionDenied):
+#             actions.submit_transaction(request)
 
 
 

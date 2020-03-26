@@ -1,4 +1,4 @@
-from decimal import ROUND_UP
+from decimal import Decimal, ROUND_UP, InvalidOperation
 from .models import FinancingPlanBenefit
 
 
@@ -29,3 +29,10 @@ def calculate_monthly_payments(principal, term_months, apr):
     payment = principal * (interest * (1 + interest) ** term_months) / ((1 + interest) ** term_months - 1)
 
     return payment.quantize(principal, rounding=ROUND_UP)
+
+
+def as_decimal(string):
+    try:
+        return Decimal(string).quantize(Decimal('.01'))
+    except (TypeError, InvalidOperation):
+        return Decimal('0.00')
