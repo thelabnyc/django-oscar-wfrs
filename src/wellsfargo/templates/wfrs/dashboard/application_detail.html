@@ -316,12 +316,7 @@
                             <td>{{ inquiry.masked_account_number }}</td>
                             <td>{{ inquiry.get_status_display }}</td>
                             <td>{{ inquiry.credit_limit | currency | default:"-" }}</td>
-                            <td>{{ inquiry.balance | currency | default:"-" }}</td>
-                            <td>{{ inquiry.open_to_buy | currency | default:"-" }}</td>
-                            <td>{{ inquiry.last_payment_date | default:"-" }}</td>
-                            <td>{{ inquiry.last_payment_amount | currency | default:"-" }}</td>
-                            <td>{{ inquiry.payment_due_date | default:"-" }}</td>
-                            <td>{{ inquiry.payment_due_amount | currency | default:"-" }}</td>
+                            <td>{{ inquiry.available_credit | currency | default:"-" }}</td>
                         </tr>
                     {% empty %}
                         <tr>

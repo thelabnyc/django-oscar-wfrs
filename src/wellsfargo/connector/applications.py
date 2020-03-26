@@ -1,0 +1,156 @@
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.utils.translation import gettext as _
+from ..core.constants import (
+    CREDIT_APP_APPROVED,
+    CREDIT_APP_PENDING,
+)
+from ..core.signals import wfrs_app_approved
+from ..core.exceptions import (
+    CreditApplicationDenied,
+    CreditApplicationPending,
+)
+from ..models import (
+    APICredentials,
+    AccountInquiryResult,
+)
+from ..utils import as_decimal
+from .client import WFRSGatewayAPIClient
+import uuid
+import re
+
+
+def format_date(date):
+    return date.strftime('%Y-%m-%d') if date else None
+
+
+def format_phone(number):
+    if number:
+        return str(number.national_number)
+    return None
+
+
+def format_ssn(number):
+    return re.sub(r'[^0-9]+', '', number) if number else None
+
+
+def remove_null_dict_keys(value):
+    keys = list(value.keys())
+    for key in keys:
+        if type(value[key]) == dict:
+            value[key] = remove_null_dict_keys(value[key])
+        elif value[key] is None or value[key] == "":
+            value.pop(key, None)
+    return value
+
+
+class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
+
+    def __init__(self, current_user=None):
+        self.current_user = current_user
+
+
+    def submit_credit_application(self, credit_app):
+        creds = APICredentials.get_credentials(self.current_user)
+        # Submit transaction to WFRS
+        main_applicant = {
+            "first_name": credit_app.main_applicant.first_name,
+            "last_name": credit_app.main_applicant.last_name,
+            "middle_initial": credit_app.main_applicant.middle_initial,
+            "date_of_birth": format_date(credit_app.main_applicant.date_of_birth),
+            "ssn": format_ssn(credit_app.main_applicant.ssn),
+            "annual_income": credit_app.main_applicant.annual_income,
+            "email_address": credit_app.main_applicant.email_address,
+            "mobile_phone": format_phone(credit_app.main_applicant.mobile_phone),
+            "home_phone": format_phone(credit_app.main_applicant.home_phone),
+            "work_phone": format_phone(credit_app.main_applicant.work_phone),
+            "employer_name": credit_app.main_applicant.employer_name,
+            "housing_status": credit_app.main_applicant.housing_status,
+            "address": {
+                "address_line_1": credit_app.main_applicant.address.address_line_1,
+                "address_line_2": credit_app.main_applicant.address.address_line_2,
+                "city": credit_app.main_applicant.address.city,
+                "state_code": credit_app.main_applicant.address.state_code,
+                "postal_code": credit_app.main_applicant.address.postal_code,
+            },
+        }
+        request_data = {
+            "merchant_number": creds.merchant_num,
+            "transaction_code": credit_app.transaction_code,
+            "application_id": credit_app.application_id,
+            "consent_date": credit_app.consent_date,
+            "requested_credit_limit": credit_app.requested_credit_limit,
+            "language_preference": credit_app.language_preference,
+            "salesperson": credit_app.salesperson,
+            "main_applicant": main_applicant,
+        }
+        # Add joint applicant (if there is one)
+        if credit_app.joint_applicant:
+            request_data["joint_applicant"] = {
+                "first_name": credit_app.joint_applicant.first_name,
+                "last_name": credit_app.joint_applicant.last_name,
+                "middle_initial": credit_app.joint_applicant.middle_initial,
+                "date_of_birth": format_date(credit_app.joint_applicant.date_of_birth),
+                "ssn": format_ssn(credit_app.joint_applicant.ssn),
+                "annual_income": credit_app.joint_applicant.annual_income,
+                "email_address": credit_app.joint_applicant.email_address,
+                "mobile_phone": format_phone(credit_app.joint_applicant.mobile_phone),
+                "home_phone": format_phone(credit_app.joint_applicant.home_phone),
+                "work_phone": format_phone(credit_app.joint_applicant.work_phone),
+                "employer_name": credit_app.joint_applicant.employer_name,
+                "housing_status": credit_app.joint_applicant.housing_status,
+                "address": {
+                    "address_line_1": credit_app.joint_applicant.address.address_line_1,
+                    "address_line_2": credit_app.joint_applicant.address.address_line_2,
+                    "city": credit_app.joint_applicant.address.city,
+                    "state_code": credit_app.joint_applicant.address.state_code,
+                    "postal_code": credit_app.joint_applicant.address.postal_code,
+                },
+            }
+        # Filter out null keys
+        request_data = remove_null_dict_keys(request_data)
+        # Submit application
+        resp = self.api_post('/credit-cards/private-label/new-accounts/v2/applications',
+            client_request_id=uuid.uuid4(),
+            json=request_data)
+        resp_data = resp.json()
+
+        if resp.status_code == 400:
+            errors = [e.get('description') for e in resp_data.get('errors', [])]
+            exc = ValidationError(message=errors)
+            raise exc
+        resp.raise_for_status()
+
+        # If the status is not either Approved or Pending, it must be denied
+        if resp_data['application_status'] not in (CREDIT_APP_APPROVED, CREDIT_APP_PENDING):
+            raise CreditApplicationDenied(_('Credit Application was denied by Wells Fargo.'))
+
+        # If the app status is approved, call signal handler
+        if resp_data['application_status'] == CREDIT_APP_APPROVED:
+            # Fire wfrs app approved signal
+            wfrs_app_approved.send(sender=credit_app.__class__, app=credit_app)
+
+        # Save the suffix of the account number
+        credit_app.account_number = resp_data['credit_card_number']
+        credit_app.save()
+
+        # Record an account inquiry
+        result = AccountInquiryResult()
+        result.credit_app = credit_app
+        result.prequal_response_source = None
+        result.account_number = resp_data['credit_card_number']
+        result.first_name = credit_app.main_applicant.first_name
+        result.middle_initial = credit_app.main_applicant.middle_initial
+        result.last_name = credit_app.main_applicant.last_name
+        result.phone_number = credit_app.main_applicant.home_phone
+        result.address = credit_app.main_applicant.address.address_line_1
+        result.credit_limit = as_decimal(resp_data['credit_line'])
+        result.available_credit = as_decimal(resp_data['credit_line'])
+        result.save()
+
+        # Check if application approval is pending
+        if resp_data['application_status'] == CREDIT_APP_PENDING:
+            pending = CreditApplicationPending(_('Credit Application is approval is pending.'))
+            pending.inquiry = result
+            raise pending
+
+        return result

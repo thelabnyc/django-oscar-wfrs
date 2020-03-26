@@ -41,7 +41,6 @@ class WFRSGatewayAPIClientTest(TestCase):
                         'PLCCA-Transactions-Void-Sale',
                         'PLCCA-Transactions-Timeout-Return',
                         'PLCCA-Account-Details',
-                        'PLCCA-SDK-logs',
                     ]),
                 ],
             })

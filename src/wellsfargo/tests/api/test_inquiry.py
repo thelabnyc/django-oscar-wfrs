@@ -26,12 +26,7 @@ class CreditLineInquiryTest(BaseTest):
         self.assertEqual(response.data['phone_number'], '+15559998888')
         self.assertEqual(response.data['address'], '123 First Street')
         self.assertEqual(response.data['credit_limit'], '5000.00')
-        self.assertEqual(response.data['balance'], '0.00')
-        self.assertEqual(response.data['open_to_buy'], '5000.00')
-        self.assertEqual(response.data['last_payment_date'], None)
-        self.assertEqual(response.data['last_payment_amount'], '0.00')
-        self.assertEqual(response.data['payment_due_date'], None)
-        self.assertEqual(response.data['payment_due_amount'], '0.00')
+        self.assertEqual(response.data['available_credit'], '5000.00')
 
 
 

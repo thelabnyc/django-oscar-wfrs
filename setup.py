@@ -19,7 +19,6 @@ install_requires = [
     'django-oscar-api>=2.0.0',
     'django-oscar-bluelight>=0.14.0b1',
     'django-oscar>=2.0.0',
-    'django-pgviews>=0.5.5',
     'djangorestframework>=3.9.0',
     'instrumented-soap>=1.2.0',
 ]

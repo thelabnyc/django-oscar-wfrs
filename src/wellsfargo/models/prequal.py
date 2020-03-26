@@ -7,8 +7,6 @@ from django.utils.functional import cached_property
 from oscar.core.loading import get_model
 from oscar.models.fields import PhoneNumberField, NullCharField
 from ..core.constants import (
-    EN_US,
-    PREQUAL_LOCALE_CHOICES,
     ENTRY_POINT_WEB,
     ENTRY_POINT_CHOICES,
     PREQUAL_TRANS_STATUS_APPROVED,
@@ -28,10 +26,6 @@ import urllib.parse
 
 
 class PreQualificationRequest(models.Model):
-    locale = models.CharField(_('Locale'),
-        max_length=_max_len(PREQUAL_LOCALE_CHOICES),
-        choices=PREQUAL_LOCALE_CHOICES,
-        default=EN_US)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     entry_point = models.CharField(_('Entry Point'),
         max_length=_max_len(ENTRY_POINT_CHOICES),
@@ -66,11 +60,6 @@ class PreQualificationRequest(models.Model):
         indexes = [
             models.Index(fields=['-created_datetime', '-id']),
         ]
-
-
-    @property
-    def locale_name(self):
-        return dict(PREQUAL_LOCALE_CHOICES).get(self.locale, self.locale)
 
 
     @property

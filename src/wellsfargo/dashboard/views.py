@@ -1,53 +1,33 @@
 from urllib.parse import urlencode
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchVector
-from django.core.exceptions import ValidationError
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
 from django.views import generic
 from django_tables2 import SingleTableView
 from oscar.core.compat import UnicodeCSVWriter
-from ..connector import actions
-from ..core.exceptions import CreditApplicationPending, CreditApplicationDenied
 from ..core.constants import (
-    get_credit_app_status_name,
     get_prequal_trans_status_name,
     PREQUAL_TRANS_STATUS_REJECTED,
 )
 from ..models import (
     FinancingPlan,
     FinancingPlanBenefit,
-    USCreditApp,
-    USJointCreditApp,
-    CACreditApp,
-    CAJointCreditApp,
+    CreditApplication,
     TransferMetadata,
     PreQualificationRequest,
-    CreditAppIndex,
 )
 from .forms import (
-    ApplicationSelectionForm,
     FinancingPlanForm,
     FinancingPlanBenefitForm,
     ApplicationSearchForm,
     PreQualSearchForm,
-    get_application_form_class,
 )
 from .tables import CreditApplicationTable, TransferMetadataTable, PreQualificationTable
-
-
-DEFAULT_APPLICATION = USCreditApp
-APPLICATION_MODELS = {
-    USCreditApp.APP_TYPE_CODE: USCreditApp,
-    USJointCreditApp.APP_TYPE_CODE: USJointCreditApp,
-    CACreditApp.APP_TYPE_CODE: CACreditApp,
-    CAJointCreditApp.APP_TYPE_CODE: CAJointCreditApp,
-}
 
 
 class CSVDownloadableTableMixin(object):
@@ -90,82 +70,6 @@ class CSVDownloadableTableMixin(object):
             writer.writerow(row_values[:-1])
 
         return response
-
-
-
-class ApplicationSelectionView(generic.FormView):
-    template_name = 'wfrs/dashboard/select_application.html'
-    form_class = ApplicationSelectionForm
-
-
-    def form_valid(self, form):
-        url = reverse('wfrs-apply-step2', kwargs=form.cleaned_data)
-        return HttpResponseRedirect(url)
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _('Apply for a Credit Line (Wells Fargo)')
-        return context
-
-
-
-class CreditApplicationView(generic.FormView):
-    success_url = reverse_lazy('wfrs-application-list')
-
-
-    def get(self, request, region, language, app_type):
-        self._init_form(region, language, app_type)
-        return super().get(request, region, language, app_type)
-
-
-    def post(self, request, region, language, app_type):
-        self._init_form(region, language, app_type)
-        form = self.get_form()
-        if form.is_valid():
-            # Save application
-            app = form.save()
-            app.submitting_user = request.user
-            app.save()
-
-            # Submit application
-            try:
-                result = actions.submit_credit_application(app, current_user=request.user)
-                # Update resulting account number
-                app.account_number = result.account_number
-                app.save()
-                return self.form_valid(app)
-            except CreditApplicationPending:
-                messages.add_message(request, messages.ERROR, _('Credit Application approval is pending'))
-                return self.form_valid()
-            except CreditApplicationDenied:
-                messages.add_message(request, messages.ERROR, _('Credit Application was denied by Wells Fargo'))
-            except ValidationError as e:
-                messages.add_message(request, messages.ERROR, e.message)
-        return self.form_invalid(form)
-
-
-    def form_valid(self, application=None):
-        if application:
-            url = reverse('wfrs-application-detail', args=(application.APP_TYPE_CODE, application.pk))
-        else:
-            url = reverse('wfrs-application-list')
-        return HttpResponseRedirect(url)
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _('Apply for a Credit Line (Wells Fargo)')
-        return context
-
-    def _init_form(self, region, language, app_type):
-        self.initial = {
-            'region': region,
-            'language': language,
-            'app_type': app_type,
-        }
-        self.form_class = get_application_form_class(region, app_type)
-        self.template_name = self.form_class.dashboard_template
 
 
 
@@ -263,7 +167,7 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
 
 
     def get_queryset(self):
-        qs = CreditAppIndex.objects.get_queryset()
+        qs = CreditApplication.objects.get_queryset()
         # Default ordering
         if not self.request.GET.get('sort'):
             qs = qs.order_by('-created_datetime')
@@ -289,7 +193,7 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
         status = data.get('status')
         if status:
             qs = qs.filter(status=status)
-            self.filter_descrs.append(_('Status is “%(status)s”') % dict(status=get_credit_app_status_name(status)))
+            self.filter_descrs.append(_('Status is “%(status)s”') % dict(status=status))
 
         name = data.get('name')
         if name:
@@ -347,10 +251,7 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
 
 class CreditApplicationDetailView(generic.DetailView):
     template_name = "wfrs/dashboard/application_detail.html"
-
-    def get_queryset(self):
-        app_type = self.kwargs.get('app_type')
-        return APPLICATION_MODELS.get(app_type, DEFAULT_APPLICATION).objects.all()
+    queryset = CreditApplication.objects.all()
 
 
 

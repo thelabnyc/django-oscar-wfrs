@@ -1,7 +1,7 @@
 from django import template
 from django.utils.translation import ugettext_lazy as _
 from django_tables2 import RequestConfig
-from ..models import CreditAppIndex
+from ..models import CreditApplication
 from ..dashboard.tables import CreditApplicationTable
 
 register = template.Library()
@@ -9,7 +9,7 @@ register = template.Library()
 
 @register.simple_tag
 def get_credit_apps_owned_by_user(user):
-    return CreditAppIndex.objects.filter(user=user).all()
+    return CreditApplication.objects.filter(user=user).all()
 
 
 @register.simple_tag(takes_context=True)

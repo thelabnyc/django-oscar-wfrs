@@ -1,9 +1,9 @@
 from decimal import Decimal
-from .constants import EN_US, TRANS_TYPE_AUTH
+from .constants import TRANS_TYPE_AUTH
 
 
 class TransactionRequest(object):
-    locale = EN_US
+    locale = 'en_US'
     type_code = TRANS_TYPE_AUTH
     auth_number = '000000'
     user = None

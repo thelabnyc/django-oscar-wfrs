@@ -1,22 +1,30 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-from django.contrib.contenttypes.models import ContentType
+from django.core.validators import (
+    MinLengthValidator,
+    MaxLengthValidator,
+    MinValueValidator,
+    MaxValueValidator,
+)
 from django.utils.translation import ugettext_lazy as _
+from localflavor.us.models import (
+    USStateField,
+    USZipCodeField,
+)
 from oscar.core.loading import get_model
-from oscar.models.fields import PhoneNumberField
+from oscar.models.fields import PhoneNumberField, NullCharField
 from ..core.constants import (
     CREDIT_APP_STATUSES,
-    INQUIRY_STATUSES,
+    HOUSING_STATUSES,
+    CREDIT_APP_TRANS_CODES,
+    CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_ONLINE,
+    LANGUAGES,
+    ENGLISH,
 )
-from ..core.applications import (
-    USCreditAppMixin,
-    BaseCreditAppMixin,
-    USJointCreditAppMixin,
-    BaseJointCreditAppMixin,
-    CACreditAppMixin,
-    CAJointCreditAppMixin,
+from ..core.fields import (
+    USSocialSecurityNumberField,
+    DateOfBirthField,
 )
 from .mixins import AccountNumberMixin
 from .creds import APICredentials
@@ -25,85 +33,170 @@ from .utils import _max_len
 
 
 
-class AccountInquiryResult(AccountNumberMixin, models.Model):
-    credit_app_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
-    credit_app_id = models.PositiveIntegerField(null=True, blank=True)
-    credit_app_source = GenericForeignKey('credit_app_type', 'credit_app_id')
-
-    prequal_response_source = models.ForeignKey('wellsfargo.PreQualificationResponse',
-        verbose_name=_("Pre-Qualification Source"),
-        related_name='account_inquiries',
-        null=True, blank=True,
-        on_delete=models.SET_NULL)
-
-    status = models.CharField(_("Status"), choices=INQUIRY_STATUSES, max_length=2)
-
-    first_name = models.CharField(_("First Name"), max_length=50)
-    middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
-    last_name = models.CharField(_("Last Name"), max_length=50)
-    phone_number = PhoneNumberField(_("Phone Number"))
-    address = models.CharField(_("Address Line 1"), max_length=100)
-
-    credit_limit = models.DecimalField(_("Account Credit Limit"), decimal_places=2, max_digits=12)
-    balance = models.DecimalField(_("Current Account Balance"), decimal_places=2, max_digits=12)
-    open_to_buy = models.DecimalField(_("Current Available Credit"), decimal_places=2, max_digits=12)
-
-    last_payment_date = models.DateField(_("Last Payment Date"), null=True)
-    last_payment_amount = models.DecimalField(_("Last Payment Amount"), decimal_places=2, max_digits=12, null=True)
-
-    payment_due_date = models.DateField(_("Payment Due Date"), null=True)
-    payment_due_amount = models.DecimalField(_("Payment Due on Account"), decimal_places=2, max_digits=12, null=True)
-
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    modified_datetime = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ('-created_datetime', '-id')
-        verbose_name = _('Account Inquiry Result')
-        verbose_name_plural = _('Account Inquiry Results')
-
-    @property
-    def full_name(self):
-        # Translators: Assemble name pieces into full name
-        return _('%(first_name)s %(middle_initial)s %(last_name)s') % dict(
-            first_name=self.first_name,
-            middle_initial=self.middle_initial,
-            last_name=self.last_name)
+class CreditApplicationAddress(models.Model):
+    address_line_1 = models.CharField(_("Address Line 1"),
+        max_length=26,
+        help_text=_("The street address line 1. This cannot contain a PO Box."))
+    address_line_2 = NullCharField(_("Address Line 2"),
+        max_length=26,
+        help_text=_("The street address line 2."))
+    city = models.CharField(_("City"),
+        max_length=18,
+        help_text=_("The city component of the address."))
+    state_code = USStateField(_("State"),
+        help_text=_("The two-letter US state code component of the address."))
+    postal_code = USZipCodeField(_("Postcode"),
+        validators=[MinLengthValidator(5), MaxLengthValidator(5)],
+        help_text=_("US ZIP Code."))
 
 
 
-class CreditAppCommonMixin(models.Model):
+class CreditApplicationApplicant(models.Model):
+    first_name = models.CharField(_("First Name"),
+        max_length=15,
+        help_text=_("The applicant’s first name."))
+    last_name = models.CharField(_("Last Name"),
+        max_length=20,
+        help_text=_("The applicant’s last name."))
+    middle_initial = NullCharField(_("Middle Initial"),
+        max_length=1,
+        help_text=_("The applicant’s middle initial."))
+    date_of_birth = DateOfBirthField(_("Date of Birth"),
+        help_text=_("The applicant’s date of birth."))
+    ssn = USSocialSecurityNumberField(_("Social Security Number"),
+        help_text=_("The applicant’s Social Security Number."))
+    annual_income = models.IntegerField(_("Annual Income"),
+        validators=[MinValueValidator(0), MaxValueValidator(999999)],
+        help_text=_("The applicant’s annual income."))
+    email_address = models.EmailField(_("Email"),
+        max_length=50,
+        null=True,
+        blank=True,
+        validators=[MinLengthValidator(7)],
+        help_text=_("The applicant’s email address."))
+    home_phone = PhoneNumberField(_("Home Phone"),
+        help_text=_("The applicant’s home phone number."))
+    mobile_phone = PhoneNumberField(_("Mobile Phone"),
+        null=True,
+        blank=True,
+        help_text=_("The applicant’s mobile phone number."))
+    work_phone = PhoneNumberField(_("Work Phone"),
+        null=True,
+        blank=True,
+        help_text=_("The applicant’s work phone number."))
+    employer_name = NullCharField(_("Employer Name"),
+        max_length=30,
+        help_text=_("The name of the applicant’s employer."))
+    housing_status = NullCharField(_("Housing Status"),
+        max_length=_max_len(HOUSING_STATUSES),
+        choices=HOUSING_STATUSES,
+        help_text=_("The applicant’s housing status."))
+    address = models.ForeignKey(CreditApplicationAddress,
+        verbose_name=_("Address"),
+        related_name='+',
+        on_delete=models.CASCADE,
+        help_text=_("The applicant’s address."))
+
+
+
+class CreditApplication(AccountNumberMixin, models.Model):
+    transaction_code = models.CharField(_('Transaction Code'),
+        max_length=_max_len(CREDIT_APP_TRANS_CODES),
+        choices=CREDIT_APP_TRANS_CODES,
+        default=CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_ONLINE,
+        help_text=_("Indicates where the transaction takes place."))
+    reservation_number = NullCharField(_('Reservation Number'),
+        max_length=20,
+        help_text=_("The unique code that correlates with the user’s reservation."))
+    application_id = NullCharField(_('Prequalified Application ID'),
+        max_length=8,
+        help_text=_("An 8-character alphanumeric ID identifying the application."))
+    consent_date = models.DateField(_('Consent Date'),
+        null=True,
+        blank=True,
+        help_text=_('The date when the applicant consented to forward their personal details.'))
+    requested_credit_limit = models.IntegerField(_("Requested Credit Limit"),
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0), MaxValueValidator(99999)],
+        help_text=_("This denotes the total price value of the items that the applicant’s shopping cart."))
+    language_preference = models.CharField(_('Language Preference'),
+        max_length=_max_len(LANGUAGES),
+        choices=LANGUAGES,
+        default=ENGLISH,
+        help_text=_("The main applicant’s language preference values"))
+    salesperson = NullCharField(_("Sales Person ID"),
+        max_length=10,
+        help_text=_("Alphanumeric value associated with the salesperson."))
+
+    # Main applicant data
+    main_applicant = models.ForeignKey(CreditApplicationApplicant,
+        verbose_name=_("Main Applicant"),
+        related_name='+',
+        on_delete=models.CASCADE,
+        help_text=_("The main applicant’s personal details."))
+    joint_applicant = models.ForeignKey(CreditApplicationApplicant,
+        verbose_name=_("Joint Applicant"),
+        null=True,
+        blank=True,
+        related_name='+',
+        on_delete=models.CASCADE,
+        help_text=_("The joint applicant’s details."))
+
+    # Submit Status
     status = models.CharField(_('Application Status'),
         max_length=_max_len(CREDIT_APP_STATUSES),
         choices=CREDIT_APP_STATUSES,
-        default='')
+        default='',
+        help_text=_("Application Status"))
+
+    # Internal Metadata
     credentials = models.ForeignKey(APICredentials,
         null=True, blank=True,
         verbose_name=_("Merchant"),
         help_text=_("Which merchant account submitted this application?"),
         related_name='+',
         on_delete=models.SET_NULL)
-    application_source = models.CharField(_("Application Source"), default=_('Website'), max_length=25,
+    application_source = models.CharField(_("Application Source"),
+        default=_('Website'),
+        max_length=25,
         help_text=_("Where/how is user applying? E.g. Website, Call Center, In-Store, etc."))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_("Owner"),
         help_text=_("Select the user user who is applying and who will own (be the primary user of) this account."),
         related_name='+',
         on_delete=models.SET_NULL)
-    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(_("Submitting User's IP Address"),
+        null=True,
+        blank=True,
+        help_text=_("Submitting User's IP Address"))
     submitting_user = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         verbose_name=_("Submitting User"),
         help_text=_("Select the user who filled out and submitted the credit application (not always the same as the user who is applying for credit)."),
         related_name='+',
         on_delete=models.SET_NULL)
-    inquiries = GenericRelation(AccountInquiryResult,
-        content_type_field='credit_app_type',
-        object_id_field='credit_app_id')
+    created_datetime = models.DateTimeField(_("Created Date/Time"),
+        auto_now_add=True)
+    modified_datetime = models.DateTimeField(_("Modified Date/Time"),
+        auto_now=True)
 
     class Meta:
-        abstract = True
+        verbose_name = _("Wells Fargo Credit Application")
+        verbose_name_plural = _("Wells Fargo Credit Applications")
+
+
+    @property
+    def is_joint(self):
+        return False
+
+
+    @property
+    def full_name(self):
+        return "%s %s" % (self.main_applicant.first_name, self.main_applicant.last_name)
 
 
     def get_inquiries(self):
@@ -162,36 +255,39 @@ class CreditAppCommonMixin(models.Model):
 
 
 
-class USCreditApp(CreditAppCommonMixin, USCreditAppMixin, BaseCreditAppMixin):
-    APP_TYPE_CODE = 'us-individual'
+class AccountInquiryResult(AccountNumberMixin, models.Model):
+    credit_app = models.ForeignKey(CreditApplication,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True)
+
+    prequal_response_source = models.ForeignKey('wellsfargo.PreQualificationResponse',
+        verbose_name=_("Pre-Qualification Source"),
+        related_name='account_inquiries',
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
+
+    first_name = models.CharField(_("First Name"), max_length=50)
+    middle_initial = models.CharField(_("Middle Initial"), null=True, blank=True, max_length=1)
+    last_name = models.CharField(_("Last Name"), max_length=50)
+    phone_number = PhoneNumberField(_("Phone Number"))
+    address = models.CharField(_("Address Line 1"), max_length=100)
+
+    credit_limit = models.DecimalField(_("Account Credit Limit"), decimal_places=2, max_digits=12)
+    available_credit = models.DecimalField(_("Current Available Credit"), decimal_places=2, max_digits=12)
+
+    created_datetime = models.DateTimeField(auto_now_add=True)
+    modified_datetime = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = _('US Individual Credit Application')
-        verbose_name_plural = _('US Individual Credit Applications')
+        ordering = ('-created_datetime', '-id')
+        verbose_name = _('Account Inquiry Result')
+        verbose_name_plural = _('Account Inquiry Results')
 
-
-
-class USJointCreditApp(CreditAppCommonMixin, USJointCreditAppMixin, BaseJointCreditAppMixin):
-    APP_TYPE_CODE = 'us-joint'
-
-    class Meta:
-        verbose_name = _('US Joint Credit Application')
-        verbose_name_plural = _('US Joint Credit Applications')
-
-
-
-class CACreditApp(CreditAppCommonMixin, CACreditAppMixin, BaseCreditAppMixin):
-    APP_TYPE_CODE = 'ca-individual'
-
-    class Meta:
-        verbose_name = _('CA Individual Credit Application')
-        verbose_name_plural = _('CA Individual Credit Applications')
-
-
-
-class CAJointCreditApp(CreditAppCommonMixin, CAJointCreditAppMixin, BaseJointCreditAppMixin):
-    APP_TYPE_CODE = 'ca-joint'
-
-    class Meta:
-        verbose_name = _('CA Joint Credit Application')
-        verbose_name_plural = _('CA Joint Credit Applications')
+    @property
+    def full_name(self):
+        # Translators: Assemble name pieces into full name
+        return _('%(first_name)s %(middle_initial)s %(last_name)s') % dict(
+            first_name=self.first_name,
+            middle_initial=self.middle_initial,
+            last_name=self.last_name)

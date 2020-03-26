@@ -1,18 +1,25 @@
 from datetime import date
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from rest_framework.test import APITestCase
 from soap.tests import SoapTest
 from wellsfargo.core.constants import (
     TRANS_DECLINED,
     TRANS_APPROVED,
 )
-from wellsfargo.models import USCreditApp, USJointCreditApp, APICredentials
+from wellsfargo.models import (
+    CreditApplicationAddress,
+    CreditApplicationApplicant,
+    CreditApplication,
+    APICredentials,
+)
 
 
 class BaseTest(SoapTest, APITestCase):
     fixtures = ['wfrs-test']
 
     def setUp(self):
+        cache.clear()
         self.joe = User.objects.create_user(
             username='joe',
             password='schmoe',
@@ -66,57 +73,95 @@ class BaseTest(SoapTest, APITestCase):
             **kwargs)
 
 
-    def _build_us_single_credit_app(self, main_ssn):
-        app = USCreditApp()
-        app.user = self.joe
-        app.region = 'US'
-        app.language = 'E'
-        app.purchase_price = 2000
-        app.app_type = 'I'
-        app.main_first_name = 'Joe'
-        app.main_last_name = 'Schmoe'
-        app.main_date_of_birth = date(1991, 1, 1)
-        app.main_address_line1 = '123 Evergreen Terrace'
-        app.main_address_city = 'Springfield'
-        app.main_home_value = '200000'
-        app.main_mortgage_balance = '50000'
-        app.main_annual_income = '150000'
-        app.email = 'foo@example.com'
-        app.main_ssn = main_ssn
-        app.main_address_state = 'NY'
-        app.main_address_postcode = '10001'
-        app.main_home_phone = '+1 (212) 209-1333'
-        app.main_employer_phone = '+1 (212) 209-1333'
+    def mock_successful_credit_app_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/applications',
+            json={
+                "client-request-id": "13391af9-0d04-4162-b84d-ab8080ec93fc",
+                "transaction_code": "A6",
+                "application_status": "APPROVED",
+                "merchant_number": "1111111111111111",
+                "credit_card_number": "9999999999999999",
+                "credit_card_last_four": "9999",
+                "credit_line": "7500.0"
+            },
+            **kwargs)
+
+
+    def mock_denied_credit_app_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/applications',
+            json={
+                "client-request-id": "13391af9-0d04-4162-b84d-ab8080ec93fc",
+                "application_status": "DENIED",
+            },
+            **kwargs)
+
+
+    def mock_pending_credit_app_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/applications',
+            json={
+                "client-request-id": "13391af9-0d04-4162-b84d-ab8080ec93fc",
+                "transaction_code": "A6",
+                "application_status": "PENDING",
+                "merchant_number": "1111111111111111",
+                "credit_card_number": "9999999999999999",
+                "credit_card_last_four": "9999",
+                "credit_line": "7500.0"
+            },
+            **kwargs)
+
+
+    def _build_single_credit_app(self, main_ssn):
+        main_applicant_address = CreditApplicationAddress.objects.create(
+            address_line_1='123 Evergreen Terrace',
+            address_line_2='',
+            city='Springfield',
+            state_code='NY',
+            postal_code='10001',
+        )
+        main_applicant = CreditApplicationApplicant.objects.create(
+            first_name='Joe',
+            last_name='Schmoe',
+            middle_initial='',
+            date_of_birth=date(1991, 1, 1),
+            ssn=main_ssn,
+            annual_income=150_000,
+            email_address='foo@example.com',
+            home_phone='+1 (212) 209-1333',
+            mobile_phone='+1 (212) 209-1333',
+            work_phone='+1 (212) 209-1333',
+            employer_name='self',
+            housing_status='Rent',
+            address=main_applicant_address,
+        )
+        app = CreditApplication(
+            requested_credit_limit=2_000,
+            main_applicant=main_applicant,
+        )
         return app
 
-    def _build_us_joint_credit_app(self, main_ssn, joint_ssn):
-        app = USJointCreditApp()
-        app.user = self.joe
-        app.region = 'US'
-        app.language = 'E'
-        app.app_type = 'I'
-        app.main_first_name = 'Joe'
-        app.main_last_name = 'Schmoe'
-        app.main_date_of_birth = date(1991, 1, 1)
-        app.main_address_line1 = '123 Evergreen Terrace'
-        app.main_address_city = 'Springfield'
-        app.main_home_value = '200000'
-        app.main_mortgage_balance = '50000'
-        app.main_annual_income = '150000'
-        app.email = 'foo@example.com'
-        app.main_ssn = main_ssn
-        app.main_address_state = 'NY'
-        app.main_address_postcode = '10001'
-        app.main_home_phone = '+1 (212) 209-1333'
-        app.main_employer_phone = '+1 (212) 209-1333'
-        app.joint_first_name = 'Jill'
-        app.joint_last_name = 'Schmoe'
-        app.joint_date_of_birth = date(1991, 1, 1)
-        app.joint_address_line1 = '123 Evergreen Terrace'
-        app.joint_address_city = 'Springfield'
-        app.joint_annual_income = '30000'
-        app.joint_ssn = joint_ssn
-        app.joint_address_state = 'NY'
-        app.joint_address_postcode = '10001'
-        app.joint_employer_phone = '+1 (212) 209-1333'
+
+    def _build_joint_credit_app(self, main_ssn, joint_ssn):
+        app = self._build_single_credit_app(main_ssn)
+        joint_applicant_address = CreditApplicationAddress.objects.create(
+            address_line_1='123 Evergreen Terrace',
+            address_line_2='',
+            city='Springfield',
+            state_code='NY',
+            postal_code='10001',
+        )
+        app.joint_applicant = CreditApplicationApplicant.objects.create(
+            first_name='Joe',
+            last_name='Schmoe',
+            middle_initial='',
+            date_of_birth=date(1991, 1, 1),
+            ssn=joint_ssn,
+            annual_income=150_000,
+            email_address='foo@example.com',
+            home_phone='+1 (212) 209-1333',
+            mobile_phone='+1 (212) 209-1333',
+            work_phone='+1 (212) 209-1333',
+            employer_name='self',
+            housing_status='Rent',
+            address=joint_applicant_address,
+        )
         return app

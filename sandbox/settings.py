@@ -85,7 +85,6 @@ INSTALLED_APPS = [
 
     # 3rd-party apps depend on
     'rest_framework',
-    'django_pgviews',
 ]
 
 LOGGING = {
@@ -107,7 +106,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'ERROR',
+        'level': 'INFO',
     }
 }
 

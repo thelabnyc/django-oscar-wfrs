@@ -70,9 +70,9 @@ class WFRSGatewayAPIClient:
         'PLCCA-Transactions-Cancel-Authorization',
         'PLCCA-Transactions-Void-Return',
         'PLCCA-Transactions-Void-Sale',
+        'PLCCA-Transactions-Timeout-Authorization-Charge',
         'PLCCA-Transactions-Timeout-Return',
         'PLCCA-Account-Details',
-        'PLCCA-SDK-logs',
     ]
 
     cache_key = 'wfrs-gateway-api-key'
@@ -93,7 +93,7 @@ class WFRSGatewayAPIClient:
         auth = BearerTokenAuth(self.get_api_key().api_key)
         cert = (self.client_cert_path, self.priv_key_path)
         # Build headers
-        request_id = str(uuid.uuid4())
+        request_id = str(uuid.uuid4()) if client_request_id is None else str(client_request_id)
         headers = {
             'request-id': request_id,
             'gateway-company-id': self.company_id,

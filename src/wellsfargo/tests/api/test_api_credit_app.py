@@ -1,109 +1,46 @@
+from requests.exceptions import HTTPError
 from rest_framework import status
 from rest_framework.reverse import reverse
-from wellsfargo.models import USCreditApp
+from wellsfargo.models import CreditApplication
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.tests import responses
+import requests_mock
 from unittest import mock
 
 
-class CreditApplicationSelectorTest(BaseTest):
-    def test_us_i(self):
-        self.client.login(username='joe', password='schmoe')
-        url = reverse('wfrs-api-apply-select')
-        data = {
-            'region': 'US',
-            'app_type': 'I'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['url'].endswith('/apply/us-individual/'))
-
-
-    def test_us_j(self):
-        self.client.login(username='joe', password='schmoe')
-        url = reverse('wfrs-api-apply-select')
-        data = {
-            'region': 'US',
-            'app_type': 'J'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['url'].endswith('/apply/us-joint/'))
-
-
-    def test_ca_i(self):
-        self.client.login(username='joe', password='schmoe')
-        url = reverse('wfrs-api-apply-select')
-        data = {
-            'region': 'CA',
-            'app_type': 'I'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['url'].endswith('/apply/ca-individual/'))
-
-
-    def test_ca_j(self):
-        self.client.login(username='joe', password='schmoe')
-        url = reverse('wfrs-api-apply-select')
-        data = {
-            'region': 'CA',
-            'app_type': 'J'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['url'].endswith('/apply/ca-joint/'))
-
-
-    def test_mx_i(self):
-        self.client.login(username='joe', password='schmoe')
-        url = reverse('wfrs-api-apply-select')
-        data = {
-            'region': 'MX',
-            'app_type': 'I'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-    def test_anonymous(self):
-        url = reverse('wfrs-api-apply-select')
-        data = {
-            'region': 'US',
-            'app_type': 'I'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data['url'].endswith('/apply/us-individual/'))
-
-
-class USIndivCreditApplicationTest(BaseTest):
-    view_name = 'wfrs-api-apply-us-individual'
+class CreditApplicationTest(BaseTest):
+    view_name = 'wfrs-api-apply'
 
     def build_valid_request(self):
         return {
-            'region': 'US',
-            'app_type': 'I',
-            'language': 'E',
-            'purchase_price': 2000,
-            'main_ssn': '999999991',
-            'main_first_name': 'Joe',
-            'main_last_name': 'Schmoe',
-            'main_date_of_birth': '1990-01-01',
-            'email': 'foo@example.com',
-            'main_address_line1': '123 Evergreen Terrace',
-            'main_address_city': 'Springfield',
-            'main_address_state': 'NY',
-            'main_address_postcode': '10001',
-            'main_annual_income': '100000',
-            'main_home_phone': '+1 (212) 209-1333',
-            'main_employer_phone': '+1 (212) 209-1333',
+            "main_applicant": {
+                "address": {
+                    "address_line_1": "123 Evergreen Terrace",
+                    "city": "Springfield",
+                    "postal_code": "10001",
+                    "state_code": "NY"
+                },
+                "annual_income": 100000,
+                "date_of_birth": "1991-01-01",
+                "email_address": "foo@example.com",
+                "employer_name": "self",
+                "first_name": "Joe",
+                "home_phone": "+1 (212) 209-1333",
+                "housing_status": "Rent",
+                "last_name": "Schmoe",
+                "mobile_phone": "+1 (212) 209-1333",
+                "ssn": "999999991",
+                "work_phone": "+1 (212) 209-1333",
+            },
+            "merchant_number": "1111111111111111",
+            "requested_credit_limit": 2000,
         }
 
 
-    @mock.patch('soap.get_transport')
-    def test_submit_anon(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_successful)
+    @requests_mock.Mocker()
+    def test_submit_anon(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_credit_app_request(rmock)
 
         url = reverse(self.view_name)
         data = self.build_valid_request()
@@ -111,46 +48,50 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['account_number'], '9999999999999999')
         self.assertEqual(response.data['credit_limit'], '7500.00')
-        self.assertEqual(response.data['balance'], '0.00')
-        self.assertEqual(response.data['open_to_buy'], '7500.00')
+        self.assertEqual(response.data['available_credit'], '7500.00')
 
-        app = USCreditApp.objects.first()
+        app = CreditApplication.objects.first()
 
         self.assertEqual(app.user, None)
         self.assertEqual(app.submitting_user, None)
 
         # Basic Application Data
-        self.assertEqual(app.region, 'US')
-        self.assertEqual(app.app_type, 'I')
-        self.assertEqual(app.language, 'E')
-        self.assertEqual(app.purchase_price, 2000)
-        self.assertEqual(app.main_ssn, 'xxx-xx-9991')  # Model should only contain masked SSN, not full SSN.
-        self.assertEqual(app.main_first_name, 'Joe')
-        self.assertEqual(app.main_last_name, 'Schmoe')
-        self.assertEqual(app.main_date_of_birth, None)  # Model should not store Date of Birth
-        self.assertEqual(app.email, 'foo@example.com')
-        self.assertEqual(app.main_address_line1, '123 Evergreen Terrace')
-        self.assertEqual(app.main_address_city, 'Springfield')
-        self.assertEqual(app.main_address_state, 'NY')
-        self.assertEqual(app.main_address_postcode, '10001')
-        self.assertEqual(app.main_annual_income, 100000)
-        self.assertEqual(app.main_home_phone.as_e164, '+12122091333')
-        self.assertEqual(app.main_employer_phone.as_e164, '+12122091333')
+        self.assertEqual(app.requested_credit_limit, 2000)
+        self.assertEqual(app.main_applicant.ssn, 'xxx-xx-9991')  # Model should only contain masked SSN, not full SSN.
+        self.assertEqual(app.main_applicant.first_name, 'Joe')
+        self.assertEqual(app.main_applicant.last_name, 'Schmoe')
+        self.assertEqual(app.main_applicant.date_of_birth, None)  # Model should not store Date of Birth
+        self.assertEqual(app.main_applicant.email_address, 'foo@example.com')
+        self.assertEqual(app.main_applicant.home_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_applicant.mobile_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_applicant.work_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_applicant.address.address_line_1, '123 Evergreen Terrace')
+        self.assertEqual(app.main_applicant.address.address_line_2, '')
+        self.assertEqual(app.main_applicant.address.city, 'Springfield')
+        self.assertEqual(app.main_applicant.address.state_code, 'NY')
+        self.assertEqual(app.main_applicant.address.postal_code, '10001')
+        self.assertEqual(app.main_applicant.annual_income, 100000)
+        self.assertEqual(app.joint_applicant, None)
 
         # Computed properties
-        self.assertEqual(app.locale, 'en_US')
-        self.assertEqual(app.is_joint, False)
         self.assertEqual(app.full_name, 'Joe Schmoe')
 
-        # Model should store last 4 digits of resulting account number
+        # Account numbers
+        self.assertEqual(app.last4_account_number, '9999')
+        self.assertEqual(app.masked_account_number, 'xxxxxxxxxxxx9999')
+        self.assertEqual(app.account_number, '9999999999999999')
+
+        app.purge_encrypted_account_number()
+
         self.assertEqual(app.last4_account_number, '9999')
         self.assertEqual(app.masked_account_number, 'xxxxxxxxxxxx9999')
         self.assertEqual(app.account_number, 'xxxxxxxxxxxx9999')
 
 
-    @mock.patch('soap.get_transport')
-    def test_submit_authd(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_successful)
+    @requests_mock.Mocker()
+    def test_submit_authd(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_credit_app_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 
@@ -161,76 +102,91 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['account_number'], '9999999999999999')
         self.assertEqual(response.data['credit_limit'], '7500.00')
-        self.assertEqual(response.data['balance'], '0.00')
-        self.assertEqual(response.data['open_to_buy'], '7500.00')
+        self.assertEqual(response.data['available_credit'], '7500.00')
 
-        app = USCreditApp.objects.first()
+        app = CreditApplication.objects.first()
 
         self.assertEqual(app.user, self.joe)
         self.assertEqual(app.submitting_user, self.joe)
 
         # Basic Application Data
-        self.assertEqual(app.region, 'US')
-        self.assertEqual(app.app_type, 'I')
-        self.assertEqual(app.language, 'E')
-        self.assertEqual(app.purchase_price, 2000)
-        self.assertEqual(app.main_ssn, 'xxx-xx-9991')  # Model should only contain masked SSN, not full SSN.
-        self.assertEqual(app.main_first_name, 'Joe')
-        self.assertEqual(app.main_last_name, 'Schmoe')
-        self.assertEqual(app.main_date_of_birth, None)  # Model should not store Date of Birth
-        self.assertEqual(app.email, 'foo@example.com')
-        self.assertEqual(app.main_address_line1, '123 Evergreen Terrace')
-        self.assertEqual(app.main_address_city, 'Springfield')
-        self.assertEqual(app.main_address_state, 'NY')
-        self.assertEqual(app.main_address_postcode, '10001')
-        self.assertEqual(app.main_annual_income, 100000)
-        self.assertEqual(app.main_home_phone.as_e164, '+12122091333')
-        self.assertEqual(app.main_employer_phone.as_e164, '+12122091333')
+        self.assertEqual(app.requested_credit_limit, 2000)
+        self.assertEqual(app.main_applicant.ssn, 'xxx-xx-9991')  # Model should only contain masked SSN, not full SSN.
+        self.assertEqual(app.main_applicant.first_name, 'Joe')
+        self.assertEqual(app.main_applicant.last_name, 'Schmoe')
+        self.assertEqual(app.main_applicant.date_of_birth, None)  # Model should not store Date of Birth
+        self.assertEqual(app.main_applicant.email_address, 'foo@example.com')
+        self.assertEqual(app.main_applicant.home_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_applicant.mobile_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_applicant.work_phone.as_e164, '+12122091333')
+        self.assertEqual(app.main_applicant.address.address_line_1, '123 Evergreen Terrace')
+        self.assertEqual(app.main_applicant.address.address_line_2, '')
+        self.assertEqual(app.main_applicant.address.city, 'Springfield')
+        self.assertEqual(app.main_applicant.address.state_code, 'NY')
+        self.assertEqual(app.main_applicant.address.postal_code, '10001')
+        self.assertEqual(app.main_applicant.annual_income, 100000)
+        self.assertEqual(app.joint_applicant, None)
 
         # Computed properties
-        self.assertEqual(app.locale, 'en_US')
-        self.assertEqual(app.is_joint, False)
         self.assertEqual(app.full_name, 'Joe Schmoe')
 
-        # Model should store last 4 digits of resulting account number
+        # Account numbers
+        self.assertEqual(app.last4_account_number, '9999')
+        self.assertEqual(app.masked_account_number, 'xxxxxxxxxxxx9999')
+        self.assertEqual(app.account_number, '9999999999999999')
+
+        app.purge_encrypted_account_number()
+
         self.assertEqual(app.last4_account_number, '9999')
         self.assertEqual(app.masked_account_number, 'xxxxxxxxxxxx9999')
         self.assertEqual(app.account_number, 'xxxxxxxxxxxx9999')
 
 
-    def test_submit_invalid_dob(self):
+    @requests_mock.Mocker()
+    def test_submit_invalid_dob(self, rmock):
         self.client.login(username='joe', password='schmoe')
 
         url = reverse(self.view_name)
         data = self.build_valid_request()
-        data['main_date_of_birth'] = ''  # Make request invalid due to missing DOB
+        data['main_applicant']['date_of_birth'] = ''  # Make request invalid due to missing DOB
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue('main_date_of_birth' in response.data)
-        self.assertEqual(len(response.data['main_date_of_birth']), 1)
+        self.assertTrue('date_of_birth' in response.data['main_applicant'])
+        self.assertEqual(len(response.data['main_applicant']['date_of_birth']), 1)
 
 
-    @mock.patch('soap.get_transport')
-    def test_submit_invalid_ssn(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_invalid_ssn)
+    @requests_mock.Mocker()
+    def test_submit_invalid(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/applications',
+            status_code=400,
+            json={
+                "errors": [
+                    {
+                        "api_specification_url": "https://devstore.wellsfargo.com/store",
+                        "description": "'ssn' is invalid.",
+                        "error_code": "400-008",
+                        "field_name": "main_applicant.ssn"
+                    }
+                ]
+            })
 
         self.client.login(username='joe', password='schmoe')
 
         url = reverse(self.view_name)
         data = self.build_valid_request()
-        data['main_ssn'] = '999999999'  # Make request invalid due to invalid SSN
         response = self.client.post(url, data, format='json')
-
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue('non_field_errors' in response.data)
         self.assertEqual(len(response.data['non_field_errors']), 1)
-        self.assertEqual(response.data['non_field_errors'][0], 'BAD SOCIAL SECURITY NUMBER')
+        self.assertEqual(str(response.data['non_field_errors'][0]), "[\"'ssn' is invalid.\"]")
 
 
-    @mock.patch('soap.get_transport')
-    def test_submit_denied(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_denied)
+    @requests_mock.Mocker()
+    def test_submit_denied(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_denied_credit_app_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 
@@ -242,9 +198,10 @@ class USIndivCreditApplicationTest(BaseTest):
         self.assertEqual(response.data['detail'], 'Credit Application was denied by Wells Fargo')
 
 
-    @mock.patch('soap.get_transport')
-    def test_submit_pending(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.credit_app_pending)
+    @requests_mock.Mocker()
+    def test_submit_pending(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_pending_credit_app_request(rmock)
 
         self.client.login(username='joe', password='schmoe')
 

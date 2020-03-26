@@ -17,7 +17,6 @@ In your project, if you haven't already done so, follow the installation instruc
 2. `django-oscar-api <https://github.com/django-oscar/django-oscar-api>`_
 3. `django-oscar-api-checkout <https://gitlab.com/thelabnyc/django-oscar-api-checkout>`_
 4. `django-oscar-bluelight <https://gitlab.com/thelabnyc/django-oscar-bluelight>`_
-5. `django-pgviews <https://github.com/mypebble/django-pgviews#installation>`_
 
 Installing
 ----------
@@ -40,7 +39,6 @@ Add ``wellsfargo`` to your ``INSTALLED_APPS``.
         'django.contrib.sessions',
         'django.contrib.sites',
         'django.contrib.postgres',
-        'django_pgviews',
         'wellsfargo',
     ]
 

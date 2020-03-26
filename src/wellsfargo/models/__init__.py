@@ -6,4 +6,3 @@ from .plans import *  # NOQA
 from .prequal import *  # NOQA
 from .transfers import *  # NOQA
 from .utils import *  # NOQA
-from .views import *  # NOQA

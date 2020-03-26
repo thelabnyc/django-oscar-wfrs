@@ -147,6 +147,7 @@ class CheckoutTest(BaseTest):
 
         called_urls = [r.url for r in rmock.request_history]
         self.assertEqual(called_urls, [
+            'https://api-sandbox.wellsfargo.com/token',
             'https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization',
             'https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/timeout-authorization-charge',
             'https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization',

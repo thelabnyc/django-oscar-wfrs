@@ -1,25 +1,51 @@
 from django.utils.translation import ugettext_lazy as _
 
 
-CREDIT_APP_APPROVED = 'E0'
-CREDIT_APP_DECISION_DELAYED = 'E1'
-CREDIT_APP_FORMAT_ERROR = 'E2'
-CREDIT_APP_WFF_ERROR = 'E3'
-CREDIT_APP_DENIED = 'E4'
+CREDIT_APP_TRANS_CODE_DEVICE_NON_CONSUMER = 'A2'
+CREDIT_APP_TRANS_CODE_DEVICE_CONSUMER = 'AH'
+CREDIT_APP_TRANS_CODE_CREDIT_APPLICATION = 'A6'
+CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_ONLINE = 'MAH'
+CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_IN_STORE = 'MIS'
+CREDIT_APP_TRANS_CODE_ = 'B1'
+CREDIT_APP_TRANS_CODE_B2 = 'B2'
+CREDIT_APP_TRANS_CODE_B3 = 'B3'
+CREDIT_APP_TRANS_CODE_B4 = 'B4'
+CREDIT_APP_TRANS_CODES = (
+    (CREDIT_APP_TRANS_CODE_DEVICE_NON_CONSUMER, _("Applications from a non-consumer device")),
+    (CREDIT_APP_TRANS_CODE_DEVICE_CONSUMER, _("Applications from a consumer's device")),
+    (CREDIT_APP_TRANS_CODE_CREDIT_APPLICATION, _("Credit application")),
+    (CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_ONLINE, _("Merchant hosted at home, online")),
+    (CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_IN_STORE, _("Merchant hosted in store")),
+    (CREDIT_APP_TRANS_CODE_, _("Batch integrated at home")),
+    (CREDIT_APP_TRANS_CODE_B2, _("Batch get customer data")),
+    (CREDIT_APP_TRANS_CODE_B3, _("Batch merchant hosted in store")),
+    (CREDIT_APP_TRANS_CODE_B4, _("Batch merchant hosted at home")),
+)
+
+HOUSING_STATUS_RENT = 'Rent'
+HOUSING_STATUS_OWN = 'Own'
+HOUSING_STATUS_OTHER = 'Other'
+HOUSING_STATUSES = (
+    (HOUSING_STATUS_RENT, _('Rent')),
+    (HOUSING_STATUS_OWN, _('Own')),
+    (HOUSING_STATUS_OTHER, _('Other')),
+)
+
+ENGLISH, SPANISH = ('E', 'S')
+LANGUAGES = (
+    (ENGLISH, _('English')),
+    (SPANISH, _('Spanish')),
+)
+
+CREDIT_APP_APPROVED = 'APPROVED'
+CREDIT_APP_PENDING = 'PENDING'
+CREDIT_APP_DENIED = 'DENIED'
 CREDIT_APP_STATUSES = (
     ('', _("Unknown")),
     (CREDIT_APP_APPROVED, _("Approved")),
-    (CREDIT_APP_DECISION_DELAYED, _("Pending")),
-    (CREDIT_APP_FORMAT_ERROR, _("Format Error")),
-    (CREDIT_APP_WFF_ERROR, _("Wells Fargo Error")),
+    (CREDIT_APP_PENDING, _("Pending")),
     (CREDIT_APP_DENIED, _("Denied")),
 )
-
-
-def get_credit_app_status_name(status_code):
-    names = dict(CREDIT_APP_STATUSES)
-    return names.get(status_code, _("Unknown"))
-
 
 TRANS_DECLINED = 'A0'
 TRANS_APPROVED = 'A1'
@@ -32,32 +58,10 @@ TRANS_STATUSES = (
     (TRANS_VOID_MATCH_DUPLICATE, _("Time-out reversal or void approved, but matched duplicate transactions.")),
 )
 
-INQUIRY_SUCCESS = 'I0'
-INQUIRY_ACCT_NOT_FOUND = 'I1'
-INQUIRY_SYS_ERROR = 'I2'
-OTB_SUCCESS = 'H0'
-OTB_FAILED = 'H1'
-OTB_NO_MATCH = 'H2'
-OTB_ACCT_NOT_FOUND = 'H3'
-OTB_DENIED = 'H4'
-OTB_OTHER = 'H5'
-INQUIRY_STATUSES = (
-    (INQUIRY_SUCCESS, _("Account Inquiry Succeeded")),
-    (INQUIRY_ACCT_NOT_FOUND, _("Could Not Find Requested Account")),
-    (INQUIRY_SYS_ERROR, _("Wells Fargo System Error")),
-    (OTB_SUCCESS, _("OTB Success")),
-    (OTB_FAILED, _("OTB Failed")),
-    (OTB_NO_MATCH, _("OTB No Match")),
-    (OTB_ACCT_NOT_FOUND, _("OTB Account Not Found")),
-    (OTB_DENIED, _("OTB Denied")),
-    (OTB_OTHER, _("OTB External Status Code")),
-)
-
-
 TRANS_TYPE_AUTH = '5'
 TRANS_TYPE_CANCEL_AUTH = '7'
-# TRANS_TYPE_CHARGE = '3' # TODO: handle charges
-# TRANS_TYPE_AUTH_AND_CHARGE = '1'
+TRANS_TYPE_CHARGE = '3'
+TRANS_TYPE_AUTH_AND_CHARGE = '1'
 TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL = '2'
 TRANS_TYPE_RETURN_CREDIT = '4'
 TRANS_TYPE_RETURN_CREDIT_TIMEOUT_REVERSAL = '9'
@@ -68,8 +72,8 @@ TRANS_TYPE_APPLY = 'A6'
 TRANS_TYPES = (
     (TRANS_TYPE_AUTH, _('Authorization for Future Charge')),
     (TRANS_TYPE_CANCEL_AUTH, _('Cancel Existing Authorization')),
-    # (TRANS_TYPE_CHARGE, _('Charge for Previous Authorization')), # TODO: handle charges
-    # (TRANS_TYPE_AUTH_AND_CHARGE, _('Authorize and Charge')),
+    (TRANS_TYPE_CHARGE, _('Charge for Previous Authorization')),
+    (TRANS_TYPE_AUTH_AND_CHARGE, _('Authorize and Charge')),
     (TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL, _('Time-out Reversal for Previous "Authorization and Charge"')),
     (TRANS_TYPE_RETURN_CREDIT, _('Return or Credit')),
     (TRANS_TYPE_RETURN_CREDIT_TIMEOUT_REVERSAL, _('Time-out Reversal for Return or Credit')),
@@ -80,79 +84,8 @@ TRANS_TYPES = (
     # (TRANS_TYPE_APPLY, _('Credit Line Application')),
 )
 
-
-INDIVIDUAL, JOINT = ('I', 'J')
-APP_TYPES = (
-    (INDIVIDUAL, _('Individual')),
-    (JOINT, _('Joint')),
-)
-
-
-ENGLISH, FRENCH = ('E', 'F')
-LANGUAGES = (
-    (ENGLISH, _('English')),
-    (FRENCH, _('French')),
-)
-
-
-US, CA = ('US', 'CA')
-REGIONS = (
-    (US, _('United States')),
-    (CA, _('Canada')),
-)
-
-
-EN_US, EN_CA, FR_CA = ('en_US', 'en_CA', 'fr_CA')
-LOCALE_CHOICES = (
-    (EN_US, _('English (US)')),
-    (EN_CA, _('English (CA)')),
-    (FR_CA, _('French (CA)')),
-)
-PREQUAL_LOCALE_CHOICES = (
-    (EN_US, _('English (US)')),
-)
-LOCALES = {
-    US: {
-        ENGLISH: EN_US,
-    },
-    CA: {
-        ENGLISH: EN_CA,
-        FRENCH: FR_CA,
-    },
-}
-
-
-HOUSING_STATUSES = {
-    US: (
-        ('R', _('Rent')),
-        ('O', _('Own')),
-        ('OT', _('Other')),
-    ),
-    CA: (
-        ('R', _('Rent')),
-        ('O', _('Own')),
-    ),
-}
-
-
-PHOTO_ID_TYPES = {
-    CA: (
-        ('OA', _('Old Age Security Card')),
-        ('DL', _('Driver’s License')),
-        ('PI', _('Provincial ID')),
-        ('PA', _('Canadian Passport')),
-        ('CN', _('Certificate of Citizenship or Naturalization')),
-        ('IS', _('Certificate of Indian Status')),
-        ('CC', _('Canadian Citizen Form 1000 or 1442')),
-    ),
-}
-
-
-APPLICATION_FORM_EXCLUDE_FIELDS = ('status', 'user', 'submitting_user', 'last4_account_number', 'credentials')
-
-
-ENTRY_POINT_WEB = 'web'
-ENTRY_POINT_POS = 'pos'
+ENTRY_POINT_WEB = 'WEB'
+ENTRY_POINT_POS = 'POS'
 ENTRY_POINT_CHOICES = (
     (ENTRY_POINT_WEB, _('Web')),
     (ENTRY_POINT_POS, _('Point of Sale')),
