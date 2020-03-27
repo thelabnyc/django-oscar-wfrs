@@ -110,6 +110,82 @@ class BaseTest(SoapTest, APITestCase):
             **kwargs)
 
 
+    def mock_successful_individual_account_inquiry(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/details',
+            json={
+                "merchant_number": "1111111111111111",
+                "transaction_code": "C1",
+                "unique_id": "00001DGh",
+                "account_number": "5774422280000257",
+                "transaction_status": "H1",
+                "available_credit": "14455.00",
+                "credit_limit": "18000.00",
+                "individual_joint_indicator": "I",
+                "applicant": {
+                    "name": "Schmoe, Joe",
+                    "address": {
+                        "address_1": "123 FIRST STREET",
+                        "address_2": "APT  456",
+                        "city": "DES MOINES",
+                        "state": "IA",
+                        "postal_code": "50322"
+                    }
+                }
+            },
+            **kwargs)
+
+
+    def mock_successful_joint_account_inquiry(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/details',
+            json={
+                "merchant_number": "1111111111111111",
+                "transaction_code": "C4",
+                "unique_id": "00001DGh",
+                "account_number": "5774422280000257",
+                "transaction_status": "H1",
+                "available_credit": "14455.00",
+                "credit_limit": "18000.00",
+                "individual_joint_indicator": "J",
+                "applicant": {
+                    "name": "Schmoe, Joe",
+                    "address": {
+                        "address_1": "123 FIRST STREET",
+                        "address_2": "APT  456",
+                        "city": "DES MOINES",
+                        "state": "IA",
+                        "postal_code": "50322"
+                    }
+                },
+                "joint_applicant": {
+                    "name": "Schmoe, Karen",
+                    "address": {
+                        "address_1": "19 ARLEN RD APT J",
+                        "city": "BALTIMORE",
+                        "state": "MD",
+                        "postal_code": "21236-5152"
+                    }
+                }
+            },
+            **kwargs)
+
+
+    def mock_failed_individual_account_inquiry(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/details',
+            status_code=400,
+            json={
+                'errors': [
+                    {
+                        'error_code': '400-015',
+                        'description': "'account_number' cannot have fewer than 15 character(s).",
+                        'field_name': 'account_number',
+                        'field_value': '9999',
+                        'api_specification_url': 'https://devstore.wellsfargo.com/store',
+                    },
+                ],
+            },
+            **kwargs)
+
+
     def _build_single_credit_app(self, main_ssn):
         main_applicant_address = CreditApplicationAddress.objects.create(
             address_line_1='123 Evergreen Terrace',

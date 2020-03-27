@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.utils.translation import gettext as _
 from ..core.constants import (
     CREDIT_APP_APPROVED,
@@ -13,34 +12,16 @@ from ..models import (
     APICredentials,
     AccountInquiryResult,
 )
-from ..utils import as_decimal
+from ..utils import (
+    as_decimal,
+    format_date,
+    format_phone,
+    format_ssn,
+    remove_null_dict_keys,
+)
 from .client import WFRSGatewayAPIClient
 import uuid
-import re
 
-
-def format_date(date):
-    return date.strftime('%Y-%m-%d') if date else None
-
-
-def format_phone(number):
-    if number:
-        return str(number.national_number)
-    return None
-
-
-def format_ssn(number):
-    return re.sub(r'[^0-9]+', '', number) if number else None
-
-
-def remove_null_dict_keys(value):
-    keys = list(value.keys())
-    for key in keys:
-        if type(value[key]) == dict:
-            value[key] = remove_null_dict_keys(value[key])
-        elif value[key] is None or value[key] == "":
-            value.pop(key, None)
-    return value
 
 
 class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
@@ -112,13 +93,8 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
         resp = self.api_post('/credit-cards/private-label/new-accounts/v2/applications',
             client_request_id=uuid.uuid4(),
             json=request_data)
-        resp_data = resp.json()
-
-        if resp.status_code == 400:
-            errors = [e.get('description') for e in resp_data.get('errors', [])]
-            exc = ValidationError(message=errors)
-            raise exc
         resp.raise_for_status()
+        resp_data = resp.json()
 
         # If the status is not either Approved or Pending, it must be denied
         if resp_data['application_status'] not in (CREDIT_APP_APPROVED, CREDIT_APP_PENDING):

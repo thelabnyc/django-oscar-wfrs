@@ -99,4 +99,24 @@ class Migration(migrations.Migration):
             field=models.CharField(max_length=4, verbose_name='Last 4 digits of account number'),
             preserve_default=False,
         ),
+        migrations.AddField(
+            model_name='accountinquiryresult',
+            name='joint_applicant_address',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wellsfargo.CreditApplicationAddress', verbose_name='Joint Applicant Address'),
+        ),
+        migrations.AddField(
+            model_name='accountinquiryresult',
+            name='joint_applicant_full_name',
+            field=oscar.models.fields.NullCharField(max_length=50, verbose_name='Joint Applicant Name'),
+        ),
+        migrations.AddField(
+            model_name='accountinquiryresult',
+            name='main_applicant_address',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wellsfargo.CreditApplicationAddress', verbose_name='Main Applicant Address'),
+        ),
+        migrations.AddField(
+            model_name='accountinquiryresult',
+            name='main_applicant_full_name',
+            field=oscar.models.fields.NullCharField(max_length=50, verbose_name='Main Applicant Name'),
+        ),
     ]

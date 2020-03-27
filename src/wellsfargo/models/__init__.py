@@ -1,3 +1,4 @@
+from .accounts import *  # NOQA
 from .apps import *  # NOQA
 from .creds import *  # NOQA
 from .fraud import *  # NOQA

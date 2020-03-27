@@ -1,5 +1,6 @@
 from datetime import timedelta
 from requests.auth import HTTPBasicAuth
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.core.cache import cache
 from ..settings import (
@@ -110,6 +111,15 @@ class WFRSGatewayAPIClient:
             headers=headers,
             **kwargs)
         logger.info("WFRS Gateway API request returned. URL=[%s], RequestID=[%s], Status=[%s]", url, request_id, resp.status_code)
+        # Check response for errors
+        if resp.status_code == 400:
+            resp_data = resp.json()
+            print(resp_data)
+            errors = []
+            for err in resp_data.get('errors', []):
+                exc = ValidationError(err['description'], code=err['error_code'])
+                errors.append(exc)
+            raise ValidationError(errors)
         # Return response
         return resp
 

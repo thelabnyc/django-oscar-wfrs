@@ -63,16 +63,15 @@ class FraudScreenResultAdmin(ReadOnlyAdmin):
 
 @admin.register(models.AccountInquiryResult)
 class AccountInquiryResultAdmin(ReadOnlyAdmin):
-    list_display = ['masked_account_number', 'full_name', 'credit_limit', 'available_credit', 'created_datetime']
+    list_display = ['masked_account_number', 'main_applicant_full_name', 'credit_limit', 'available_credit', 'created_datetime']
     list_filter = ['created_datetime', 'modified_datetime']
     fields = (
         'status',
         'last4_account_number',
-        'first_name',
-        'middle_initial',
-        'last_name',
-        'phone_number',
-        'address',
+        'main_applicant_full_name',
+        'joint_applicant_full_name',
+        'main_applicant_address',
+        'joint_applicant_address',
         'credit_limit',
         'available_credit',
         'created_datetime',

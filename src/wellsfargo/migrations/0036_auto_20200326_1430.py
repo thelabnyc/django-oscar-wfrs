@@ -135,6 +135,31 @@ class Migration(migrations.Migration):
         migrations.RenameField(
             model_name='accountinquiryresult',
             old_name='new_credit_app',
-            new_name='credit_app',
+            new_name='credit_app_source',
+        ),
+        migrations.RemoveField(
+            model_name='accountinquiryresult',
+            name='address',
+        ),
+        migrations.RemoveField(
+            model_name='accountinquiryresult',
+            name='first_name',
+        ),
+        migrations.RemoveField(
+            model_name='accountinquiryresult',
+            name='last_name',
+        ),
+        migrations.RemoveField(
+            model_name='accountinquiryresult',
+            name='middle_initial',
+        ),
+        migrations.RemoveField(
+            model_name='accountinquiryresult',
+            name='phone_number',
+        ),
+        migrations.AlterField(
+            model_name='accountinquiryresult',
+            name='credit_app_source',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='account_inquiries', to='wellsfargo.CreditApplication', verbose_name='Credit Application Source'),
         ),
     ]

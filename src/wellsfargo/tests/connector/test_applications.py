@@ -1,5 +1,5 @@
 from decimal import Decimal
-from requests.exceptions import HTTPError
+from django.core.exceptions import ValidationError
 from unittest import mock
 from wellsfargo.core.exceptions import CreditApplicationDenied, CreditApplicationPending
 from wellsfargo.connector.applications import CreditApplicationsAPIClient
@@ -164,7 +164,7 @@ class CreditApplicationsAPIClientTest(BaseTest):
 
     @requests_mock.Mocker()
     @mock.patch('wellsfargo.core.signals.wfrs_app_approved.send')
-    def test_http_error(self, rmock, wfrs_app_approved):
+    def test_validation_error(self, rmock, wfrs_app_approved):
         self.mock_get_api_token_request(rmock)
         rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/applications',
             status_code=400,
@@ -179,6 +179,6 @@ class CreditApplicationsAPIClientTest(BaseTest):
                 ]
             })
         app = self._build_single_credit_app('999999990')
-        with self.assertRaises(HTTPError):
+        with self.assertRaises(ValidationError):
             CreditApplicationsAPIClient().submit_credit_application(app)
         wfrs_app_approved.assert_not_called()

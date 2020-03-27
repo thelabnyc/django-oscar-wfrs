@@ -16,36 +16,6 @@ from unittest import mock
 
 
 
-class CreditInquiryTest(BaseTest):
-    @mock.patch('soap.get_transport')
-    def test_submit_inquiry_success(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.inquiry_successful)
-        # Inquire as to the status of the account
-        resp = actions.submit_inquiry('9999999999999991')
-        self.assertEqual(resp.account_number, '9999999999999991')
-        self.assertEqual(resp.first_name, 'John')
-        self.assertEqual(resp.middle_initial, 'Q')
-        self.assertEqual(resp.last_name, 'Smith')
-        self.assertEqual(resp.phone_number.as_e164, '+15559998888')
-        self.assertEqual(resp.address, '123 First Street')
-        self.assertEqual(resp.credit_limit, Decimal('5000.00'))
-        self.assertEqual(resp.balance, Decimal('0.00'))
-        self.assertEqual(resp.available_credit, Decimal('5000.00'))
-        self.assertEqual(resp.last_payment_date, None)
-        self.assertEqual(resp.last_payment_amount, Decimal('0.00'))
-        self.assertEqual(resp.payment_due_date, None)
-        self.assertEqual(resp.payment_due_amount, Decimal('0.00'))
-
-
-    @mock.patch('soap.get_transport')
-    def test_submit_inquiry_failure(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.inquiry_failed)
-        # Account is invalid
-        with self.assertRaises(ValidationError):
-            actions.submit_inquiry('9999999999999990')
-
-
-
 class CheckPreQualificationStatusTest(BaseTest):
     @mock.patch('soap.get_transport')
     def test_prequal_success(self, get_transport):

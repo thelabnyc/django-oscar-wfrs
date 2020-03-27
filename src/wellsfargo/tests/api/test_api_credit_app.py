@@ -1,11 +1,8 @@
-from requests.exceptions import HTTPError
 from rest_framework import status
 from rest_framework.reverse import reverse
 from wellsfargo.models import CreditApplication
 from wellsfargo.tests.base import BaseTest
-from wellsfargo.tests import responses
 import requests_mock
-from unittest import mock
 
 
 class CreditApplicationTest(BaseTest):

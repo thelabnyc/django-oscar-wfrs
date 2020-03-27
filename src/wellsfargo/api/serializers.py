@@ -4,9 +4,9 @@ from rest_framework.exceptions import ValidationError as DRFValidationError
 from ipware import get_client_ip
 from oscar.core.loading import get_model
 from ..connector import (
-    actions,
     PrescreenAPIClient,
     CreditApplicationsAPIClient,
+    AccountsAPIClient,
 )
 from ..core.constants import (
     PREQUAL_TRANS_STATUS_CHOICES,
@@ -100,7 +100,6 @@ class CreditApplicationSerializer(serializers.ModelSerializer):
             request_user = request.user
 
         # Build the main applicant object
-        data = self.validated_data
         self.validated_data['main_applicant']['address'] = CreditApplicationAddress.objects.create(
             **self.validated_data['main_applicant']['address'],
         )
@@ -172,15 +171,16 @@ class EstimatedPaymentSerializer(serializers.Serializer):
 
 class AccountInquirySerializer(serializers.ModelSerializer):
     account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16)
+    main_applicant_address = CreditApplicationAddressSerializer(read_only=True)
+    joint_applicant_address = CreditApplicationAddressSerializer(read_only=True)
 
     class Meta:
         model = AccountInquiryResult
         read_only_fields = (
-            'first_name',
-            'middle_initial',
-            'last_name',
-            'phone_number',
-            'address',
+            'main_applicant_full_name',
+            'joint_applicant_full_name',
+            'main_applicant_address',
+            'joint_applicant_address',
             'credit_limit',
             'available_credit',
             'created_datetime',
@@ -198,11 +198,12 @@ class AccountInquirySerializer(serializers.ModelSerializer):
 
         # Submit inquiry to Wells
         account_number = self.validated_data['account_number']
+        client = AccountsAPIClient(current_user=request_user)
         try:
-            result = actions.submit_inquiry(account_number, current_user=request_user)
+            result = client.lookup_account_by_account_number(account_number)
         except DjangoValidationError as e:
             raise DRFValidationError({
-                'account_number': [e.message]
+                'account_number': [str(m) for m in e.messages],
             })
 
         return result
@@ -238,7 +239,7 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
             client.check_prescreen_status(prequal_request)
         except DjangoValidationError as e:
             raise DRFValidationError({
-                'non_field_errors': [e.message]
+                'non_field_errors': [str(m) for m in e.messages],
             })
         return prequal_request
 

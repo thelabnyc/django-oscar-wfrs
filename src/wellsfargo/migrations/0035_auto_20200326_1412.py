@@ -125,6 +125,12 @@ def migrate_credit_app_data(apps, schema_editor):
             inquiry.save()
 
 
+def migrate_account_inquiries(apps, schema_editor):
+    AccountInquiryResult = apps.get_model('wellsfargo', 'AccountInquiryResult')
+    for acct in AccountInquiryResult.objects.all():
+        acct.main_applicant_full_name = "%s, %s" % (acct.last_name, acct.first_name)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -133,4 +139,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(migrate_credit_app_data),
+        migrations.RunPython(migrate_account_inquiries),
     ]

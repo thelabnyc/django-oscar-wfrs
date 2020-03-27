@@ -20,67 +20,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def submit_inquiry(account_number, current_user=None, locale='en_US'):
-    client = soap.get_client(WFRS_INQUIRY_WSDL, 'WFRS')
-    type_name = _find_namespaced_name(client, 'Inquiry')
-    request = client.factory.create(type_name)
-    request.uuid = uuid.uuid1()
-    request.transactionCode = TRANS_TYPE_INQUIRY
-
-    creds = APICredentials.get_credentials(current_user)
-    request.userName = creds.username
-    request.setupPassword = creds.password
-    request.merchantNumber = creds.merchant_num
-
-    request.localeString = locale
-    request.accountNumber = account_number
-
-    # Submit
-    resp = client.service.submitInquiry(request)
-
-    # Check for faults
-    if resp.faults:
-        for fault in resp.faults:
-            logger.info(fault.faultDetailString)
-            raise ValidationError(fault.faultDetailString)
-
-    # Check for errors
-    error_msg = resp.sorErrorDescription.strip() if resp.sorErrorDescription else None
-    if error_msg:
-        raise ValidationError(error_msg)
-
-    # Build response
-    result = AccountInquiryResult()
-
-    result.status = resp.transactionStatus
-
-    result.account_number = resp.wfAccountNumber
-
-    result.first_name = resp.firstName or ''
-    result.middle_initial = resp.middleInitial or ''
-    result.last_name = resp.lastName or ''
-
-    # This is kind of awful, but WFRS only uses national phone number (with an implied +1 country code). So, we
-    # add back the country code to make it valid to store in the DB.
-    # E.g. Take "5559998888" and convert it to "+15559998888"
-    result.phone_number = '+1{}'.format(resp.phone)
-
-    result.address = resp.address or ''
-
-    result.credit_limit = (_as_decimal(resp.accountBalance) + _as_decimal(resp.openToBuy))
-    result.balance = _as_decimal(resp.accountBalance)
-    result.available_credit = _as_decimal(resp.openToBuy)
-
-    result.last_payment_date = _as_date(resp.lastPaymentDate)
-    result.last_payment_amount = _as_decimal(resp.lastPayment)
-
-    result.payment_due_date = _as_date(resp.lastPaymentDate)
-    result.payment_due_amount = _as_decimal(resp.paymentDue)
-
-    result.save()
-    return result
-
-
 # def check_pre_qualification_status(prequal_request, return_url=None, current_user=None):
 #     client = soap.get_client(WFRS_PRE_QUAL_WSDL, 'WFRS')
 #     type_name = _find_namespaced_name(client, 'WFRS_InstantPreScreenRequest')

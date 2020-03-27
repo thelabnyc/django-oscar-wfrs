@@ -39,6 +39,7 @@ class WFRSGatewayAPIClientTest(TestCase):
                         'PLCCA-Transactions-Cancel-Authorization',
                         'PLCCA-Transactions-Void-Return',
                         'PLCCA-Transactions-Void-Sale',
+                        'PLCCA-Transactions-Timeout-Authorization-Charge',
                         'PLCCA-Transactions-Timeout-Return',
                         'PLCCA-Account-Details',
                     ]),

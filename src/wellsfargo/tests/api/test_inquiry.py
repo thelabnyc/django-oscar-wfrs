@@ -1,44 +1,54 @@
 from rest_framework import status
 from rest_framework.reverse import reverse
 from wellsfargo.tests.base import BaseTest
-from wellsfargo.tests import responses
-from unittest import mock
+import requests_mock
 
 
 class CreditLineInquiryTest(BaseTest):
 
-    @mock.patch('soap.get_transport')
-    def test_inquiry_successful(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.inquiry_successful)
+    @requests_mock.Mocker()
+    def test_inquiry_successful(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_successful_joint_account_inquiry(rmock)
 
         url = reverse('wfrs-api-acct-inquiry')
         data = {
-            'account_number': '9999999999999991'
+            'account_number': '5774422280000257'
         }
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['account_number'], '9999999999999991')
-        self.assertEqual(response.data['status'], 'I0')
-        self.assertEqual(response.data['first_name'], 'John')
-        self.assertEqual(response.data['middle_initial'], 'Q')
-        self.assertEqual(response.data['last_name'], 'Smith')
-        self.assertEqual(response.data['phone_number'], '+15559998888')
-        self.assertEqual(response.data['address'], '123 First Street')
-        self.assertEqual(response.data['credit_limit'], '5000.00')
-        self.assertEqual(response.data['available_credit'], '5000.00')
+        self.assertEqual(response.data['account_number'], '5774422280000257')
+        self.assertEqual(response.data['main_applicant_full_name'], 'Schmoe, Joe')
+        self.assertEqual(response.data['joint_applicant_full_name'], 'Schmoe, Karen')
+        self.assertEqual(response.data['main_applicant_address'], {
+            'address_line_1': '123 FIRST STREET',
+            'address_line_2': 'APT  456',
+            'city': 'DES MOINES',
+            'state_code': 'IA',
+            'postal_code': '50322',
+        })
+        self.assertEqual(response.data['joint_applicant_address'], {
+            'address_line_1': '19 ARLEN RD APT J',
+            'address_line_2': '',
+            'city': 'BALTIMORE',
+            'state_code': 'MD',
+            'postal_code': '21236-5152',
+        })
+        self.assertEqual(response.data['credit_limit'], '18000.00')
+        self.assertEqual(response.data['available_credit'], '14455.00')
 
 
-
-    @mock.patch('soap.get_transport')
-    def test_inquiry_failed(self, get_transport):
-        get_transport.return_value = self._build_transport_with_reply(responses.inquiry_failed)
+    @requests_mock.Mocker()
+    def test_inquiry_failed(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_failed_individual_account_inquiry(rmock)
 
         url = reverse('wfrs-api-acct-inquiry')
         data = {
-            'account_number': '9999999999999991'
+            'account_number': '5774422280000257'
         }
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['account_number'], ['DEMO INVALID ACCOUNT'])
+        self.assertEqual(response.data['account_number'], ["'account_number' cannot have fewer than 15 character(s)."])
