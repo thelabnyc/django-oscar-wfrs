@@ -92,7 +92,9 @@ class WFRSGatewayAPIClient:
         url = "https://{host}{path}".format(host=self.api_host, path=path)
         # Setup authentication
         auth = BearerTokenAuth(self.get_api_key().api_key)
-        cert = (self.client_cert_path, self.priv_key_path)
+        cert = None
+        if self.client_cert_path and self.priv_key_path:
+            cert = (self.client_cert_path, self.priv_key_path)
         # Build headers
         request_id = str(uuid.uuid4()) if client_request_id is None else str(client_request_id)
         headers = {
@@ -114,7 +116,6 @@ class WFRSGatewayAPIClient:
         # Check response for errors
         if resp.status_code == 400:
             resp_data = resp.json()
-            print(resp_data)
             errors = []
             for err in resp_data.get('errors', []):
                 exc = ValidationError(err['description'], code=err['error_code'])

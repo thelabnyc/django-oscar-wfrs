@@ -2,7 +2,6 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from rest_framework.test import APITestCase
-from soap.tests import SoapTest
 from wellsfargo.core.constants import (
     TRANS_DECLINED,
     TRANS_APPROVED,
@@ -15,7 +14,7 @@ from wellsfargo.models import (
 )
 
 
-class BaseTest(SoapTest, APITestCase):
+class BaseTest(APITestCase):
     fixtures = ['wfrs-test']
 
     def setUp(self):
@@ -182,6 +181,47 @@ class BaseTest(SoapTest, APITestCase):
                         'api_specification_url': 'https://devstore.wellsfargo.com/store',
                     },
                 ],
+            },
+            **kwargs)
+
+
+    def mock_successful_prescreen_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/prequalifications',
+            json={
+                "client-request-id": "f98ee81c-5bf3-4366-9388-f3759a54b4be",
+                "merchant_number": "1111111111111111",
+                "transaction_code": "P1",
+                "decision_status": "A",
+                "application_id": "000005EP",
+                "max_credit_limit": "8500",
+                "decision_message": "APPROVED",
+                "URL": "https://localhost/ipscr.do?id=u64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.",
+            },
+            **kwargs)
+
+
+    def mock_denied_prescreen_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/prequalifications',
+            json={
+                "client-request-id": "f98ee81c-5bf3-4366-9388-f3759a54b4be",
+                "transaction_code": "P1",
+                "decision_status": "D",
+                "decision_message": "DENIED"
+            },
+            **kwargs)
+
+
+    def mock_invalid_prescreen_request(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/prequalifications',
+            status_code=400,
+            json={
+                "errors": [
+                    {
+                        "error_code": "1027-013",
+                        "description": "Return URL is missing or invalid.",
+                        "api_specification_url": "https://devstore.wellsfargo.com/store"
+                    }
+                ]
             },
             **kwargs)
 

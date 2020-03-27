@@ -19,6 +19,7 @@ class WFRSAPIConfig(OscarConfig):
             PreQualificationRequestView,
             PreQualificationSDKResponseView,
             PreQualificationCustomerResponseView,
+            PreQualificationCustomerRedirectView,
             PreQualificationSDKApplicationResultView,
         )
         urlpatterns = [
@@ -34,15 +35,24 @@ class WFRSAPIConfig(OscarConfig):
 
             url(r'^prequal/$', PreQualificationRequestView.as_view(),
                 name='wfrs-api-prequal'),
+
             url(r'^prequal/resume/(?P<signed_prequal_request_id>[A-z0-9-_=:]+)/$', PreQualificationResumeView.as_view(),
                 name='wfrs-api-prequal-resume'),
+
             url(r'^prequal/sdk-merchant-num/$', PreQualificationSDKMerchantNumView.as_view(),
                 name='wfrs-api-prequal-sdk-merchant-num'),
+
             url(r'^prequal/sdk-response/$', PreQualificationSDKResponseView.as_view(),
                 name='wfrs-api-prequal-sdk-response'),
+
             url(r'^prequal/sdk-application-result/$', PreQualificationSDKApplicationResultView.as_view(),
                 name='wfrs-api-prequal-sdk-app-result'),
+
             url(r'^prequal/set-customer-response/$', PreQualificationCustomerResponseView.as_view(),
                 name='wfrs-api-prequal-customer-response'),
+
+            url(r'^prequal/application-complete/$', PreQualificationCustomerRedirectView.as_view(),
+                name='wfrs-api-prequal-app-complete'),
+
         ]
         return self.post_process_urls(urlpatterns)

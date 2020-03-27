@@ -20,12 +20,15 @@ install_requires = [
     'django-oscar-bluelight>=0.14.0b1',
     'django-oscar>=2.0.0',
     'djangorestframework>=3.9.0',
-    'instrumented-soap>=1.2.0',
+    'requests>=2.23.0',
 ]
 
 extras_require = {
     'kms': [
         'boto3>=1.5.7',
+    ],
+    'cybersource': [
+        'instrumented-soap>=1.2.0',
     ],
     'development': [
         'coverage>=4.4.2',
@@ -61,15 +64,12 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Operating System :: Unix',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
     ],
     author='Craig Weber',
     author_email='crgwbr@gmail.com',

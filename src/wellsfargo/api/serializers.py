@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError as DRFValidationError
 from ipware import get_client_ip
 from oscar.core.loading import get_model
 from ..connector import (
-    PrescreenAPIClient,
+    PrequalAPIClient,
     CreditApplicationsAPIClient,
     AccountsAPIClient,
 )
@@ -234,7 +234,7 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
         request_user = None
         if request.user and request.user.is_authenticated:
             request_user = request.user
-        client = PrescreenAPIClient(current_user=request_user)
+        client = PrequalAPIClient(current_user=request_user)
         try:
             client.check_prescreen_status(prequal_request)
         except DjangoValidationError as e:

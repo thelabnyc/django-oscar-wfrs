@@ -7,8 +7,8 @@ from django.utils.functional import cached_property
 from oscar.core.loading import get_model
 from oscar.models.fields import PhoneNumberField, NullCharField
 from ..core.constants import (
-    ENTRY_POINT_WEB,
-    ENTRY_POINT_CHOICES,
+    PREQUAL_ENTRY_POINT_WEB,
+    PREQUAL_ENTRY_POINT_CHOICES,
     PREQUAL_TRANS_STATUS_APPROVED,
     PREQUAL_TRANS_STATUS_REJECTED,
     PREQUAL_TRANS_STATUS_CHOICES,
@@ -28,9 +28,9 @@ import urllib.parse
 class PreQualificationRequest(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     entry_point = models.CharField(_('Entry Point'),
-        max_length=_max_len(ENTRY_POINT_CHOICES),
-        choices=ENTRY_POINT_CHOICES,
-        default=ENTRY_POINT_WEB)
+        max_length=_max_len(PREQUAL_ENTRY_POINT_CHOICES),
+        choices=PREQUAL_ENTRY_POINT_CHOICES,
+        default=PREQUAL_ENTRY_POINT_WEB)
     customer_initiated = models.BooleanField(_("Check was deliberately initiated by customer action"), default=False)
     email = models.EmailField(_("Email"), null=True, blank=True)
     first_name = models.CharField(_("First Name"), max_length=15)
@@ -64,7 +64,7 @@ class PreQualificationRequest(models.Model):
 
     @property
     def entry_point_name(self):
-        return dict(ENTRY_POINT_CHOICES).get(self.entry_point, self.entry_point)
+        return dict(PREQUAL_ENTRY_POINT_CHOICES).get(self.entry_point, self.entry_point)
 
 
     @property
@@ -229,9 +229,15 @@ class PreQualificationResponse(models.Model):
 
 
     def check_account_status(self):
-        from ..connector import actions
-        return actions.check_pre_qualification_account_status(self)
-
+        from ..connector import AccountsAPIClient
+        client = AccountsAPIClient()
+        inquiry = client.lookup_account_by_prequal_offer_id(
+            first_name=self.request.first_name,
+            last_name=self.request.last_name,
+            unique_id=self.response_id)
+        inquiry.prequal_response_source = self
+        inquiry.save()
+        return inquiry
 
 
 class PreQualificationSDKApplicationResult(models.Model):

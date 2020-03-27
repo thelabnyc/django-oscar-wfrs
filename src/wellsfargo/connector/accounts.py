@@ -87,15 +87,12 @@ class AccountsAPIClient(WFRSGatewayAPIClient):
         if 'home_phone' in request_data:
             # Phone number be 10 digits, no groupings, no country code
             request_data['home_phone'] = str(request_data['home_phone'].national_number)
-        print(request_data)
         # Send the request to WF
         resp = self.api_post('/credit-cards/private-label/new-accounts/v2/details',
             client_request_id=uuid.uuid4(),
             json=request_data)
-        print(resp.text)
         resp.raise_for_status()
         resp_data = resp.json()
-        print(resp_data)
         # Save main address from response
         main_applicant_address = None
         if resp_data.get('applicant', {}).get('address'):
@@ -116,7 +113,6 @@ class AccountsAPIClient(WFRSGatewayAPIClient):
                 postal_code=resp_data['joint_applicant']['address'].get('postal_code', ''))
         # Build response
         result = AccountInquiryResult()
-        result.status = resp_data['transaction_status']
         result.account_number = resp_data['account_number']
         result.main_applicant_full_name = resp_data.get('applicant', {}).get('name')
         result.joint_applicant_full_name = resp_data.get('joint_applicant', {}).get('name')
