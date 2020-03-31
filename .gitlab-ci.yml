@@ -46,11 +46,11 @@ test_python38:
     - pip install tox
     - tox -e 'py38-django{220}-drf{39,310}-oscar{20}'
 
-test_pypy3:
-  stage: test
-  tags:
-    - django-oscar
-  image: pypy:3-5
-  script:
-    - pip install tox
-    - tox -e 'pypy3-django{220}-drf{39,310}-oscar{20}'
+# test_pypy3:
+#   stage: test
+#   tags:
+#     - django-oscar
+#   image: pypy:3-5
+#   script:
+#     - pip install tox
+#     - tox -e 'pypy3-django{220}-drf{39,310}-oscar{20}'
