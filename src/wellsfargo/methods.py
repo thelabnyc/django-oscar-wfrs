@@ -18,6 +18,7 @@ from .models import FraudScreenResult, FinancingPlan, TransferMetadata
 from .fraud import screen_transaction
 from .settings import WFRS_MAX_TRANSACTION_ATTEMPTS
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -170,5 +171,14 @@ class WellsFargo(PaymentMethod):
         trans_request.account_number = account_number
         trans_request.plan_number = plan_number
         trans_request.amount = amount
-        trans_request.ticket_number = order.number
+        trans_request.ticket_number = self._generate_ticket_number()
         return trans_request
+
+
+    def _generate_ticket_number(self):
+        """
+        Generate a new WF ticket number
+        WF ticket numbers must be between 1 and 12 chars long and only include digits.
+        """
+        max_length = TransferMetadata._meta.get_field('ticket_number').max_length
+        return ''.join(str(random.randrange(0, 9)) for _ in range(max_length))
