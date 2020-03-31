@@ -8,13 +8,13 @@ from .mixins import AccountNumberMixin
 class AccountInquiryResult(AccountNumberMixin, models.Model):
     credit_app_source = models.ForeignKey('wellsfargo.CreditApplication',
         verbose_name=_("Credit Application Source"),
-        related_name='account_inquiries',
+        related_name='inquiries',
         null=True, blank=True,
         on_delete=models.CASCADE)
 
     prequal_response_source = models.ForeignKey('wellsfargo.PreQualificationResponse',
         verbose_name=_("Pre-Qualification Source"),
-        related_name='account_inquiries',
+        related_name='inquiries',
         null=True, blank=True,
         on_delete=models.SET_NULL)
 

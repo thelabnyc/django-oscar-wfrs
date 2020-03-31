@@ -47,6 +47,9 @@ class CreditApplicationAddressSerializer(serializers.ModelSerializer):
             'state_code',
             'postal_code',
         ]
+        extra_kwargs = {
+            'address_line_2': { 'required': False, 'allow_null': True, },
+        }
 
 
 
@@ -70,12 +73,20 @@ class CreditApplicationApplicantSerializer(serializers.ModelSerializer):
             'housing_status',
             'address',
         ]
+        extra_kwargs = {
+            'middle_initial': { 'required': False, 'allow_null': True, },
+            'email_address': { 'required': False, 'allow_null': True, },
+            'mobile_phone': { 'required': False, 'allow_null': True, },
+            'work_phone': { 'required': False, 'allow_null': True, },
+            'employer_name': { 'required': False, 'allow_null': True, },
+            'housing_status': { 'required': False, 'allow_null': True, },
+        }
 
 
 
 class CreditApplicationSerializer(serializers.ModelSerializer):
     main_applicant = CreditApplicationApplicantSerializer()
-    joint_applicant = CreditApplicationApplicantSerializer(required=False)
+    joint_applicant = CreditApplicationApplicantSerializer(required=False, allow_null=True)
 
     class Meta:
         model = CreditApplication
@@ -83,7 +94,6 @@ class CreditApplicationSerializer(serializers.ModelSerializer):
             'transaction_code',
             'reservation_number',
             'application_id',
-            'consent_date',
             'requested_credit_limit',
             'language_preference',
             'salesperson',
@@ -91,6 +101,15 @@ class CreditApplicationSerializer(serializers.ModelSerializer):
             'joint_applicant',
             'application_source',
         ]
+        extra_kwargs = {
+            'transaction_code': { 'required': False, },
+            'reservation_number': { 'required': False, 'allow_null': True, },
+            'application_id': { 'required': False, 'allow_null': True, },
+            'requested_credit_limit': { 'required': False, 'allow_null': True, },
+            'language_preference': { 'required': False, },
+            'salesperson': { 'required': False, },
+            'application_source': { 'required': False, },
+        }
 
 
     def save(self):
@@ -139,7 +158,7 @@ class CreditApplicationSerializer(serializers.ModelSerializer):
             raise api_exceptions.CreditApplicationDenied()
         except DjangoValidationError as e:
             raise DRFValidationError({
-                'non_field_errors': list(e.error_list),
+                'non_field_errors': [str(m) for m in e.messages],
             })
         return result
 

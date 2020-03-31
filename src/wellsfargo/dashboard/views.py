@@ -186,7 +186,34 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
         # Basic search
         search_text = data.get('search_text')
         if search_text:
-            qs = qs.filter(text=search_text)
+            qs = qs\
+                .annotate(
+                    text=SearchVector(
+                        'main_applicant__first_name',
+                        'main_applicant__last_name',
+                        'joint_applicant__first_name',
+                        'joint_applicant__last_name',
+                        'main_applicant__email_address',
+                        'joint_applicant__email_address',
+                        'main_applicant__address__address_line_1',
+                        'main_applicant__address__address_line_2',
+                        'main_applicant__address__city',
+                        'main_applicant__address__state_code',
+                        'main_applicant__address__postal_code',
+                        'joint_applicant__address__address_line_1',
+                        'joint_applicant__address__address_line_2',
+                        'joint_applicant__address__city',
+                        'joint_applicant__address__state_code',
+                        'joint_applicant__address__postal_code',
+                        'main_applicant__home_phone',
+                        'main_applicant__mobile_phone',
+                        'main_applicant__work_phone',
+                        'joint_applicant__home_phone',
+                        'joint_applicant__mobile_phone',
+                        'joint_applicant__work_phone',
+                    ),
+                )\
+                .filter(text=search_text)
             self.filter_descrs.append(_('Application contains “%(text)s”') % dict(text=search_text))
 
         # Advanced search
@@ -197,22 +224,64 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
 
         name = data.get('name')
         if name:
-            qs = qs.filter(name=name)
+            qs = qs\
+                .annotate(
+                    name=SearchVector(
+                        'main_applicant__first_name',
+                        'main_applicant__last_name',
+                        'joint_applicant__first_name',
+                        'joint_applicant__last_name',
+                    ),
+                )\
+                .filter(name=name)
             self.filter_descrs.append(_('Applicant name contains “%(name)s”') % dict(name=name))
 
         email = data.get('email')
         if email:
-            qs = qs.filter(email=email)
+            qs = qs\
+                .annotate(
+                    email=SearchVector(
+                        'main_applicant__email_address',
+                        'joint_applicant__email_address',
+                    ),
+                )\
+                .filter(email=email)
             self.filter_descrs.append(_('Applicant email contains “%(email)s”') % dict(email=email))
 
         address = data.get('address')
         if address:
-            qs = qs.filter(address=address)
+            qs = qs\
+                .annotate(
+                    addr=SearchVector(
+                        'main_applicant__address__address_line_1',
+                        'main_applicant__address__address_line_2',
+                        'main_applicant__address__city',
+                        'main_applicant__address__state_code',
+                        'main_applicant__address__postal_code',
+                        'joint_applicant__address__address_line_1',
+                        'joint_applicant__address__address_line_2',
+                        'joint_applicant__address__city',
+                        'joint_applicant__address__state_code',
+                        'joint_applicant__address__postal_code',
+                    ),
+                )\
+                .filter(addr=address)
             self.filter_descrs.append(_('Applicant address contains “%(address)s”') % dict(address=address))
 
         phone = data.get('phone')
         if phone:
-            qs = qs.filter(phone=phone)
+            qs = qs\
+                .annotate(
+                    phone=SearchVector(
+                        'main_applicant__home_phone',
+                        'main_applicant__mobile_phone',
+                        'main_applicant__work_phone',
+                        'joint_applicant__home_phone',
+                        'joint_applicant__mobile_phone',
+                        'joint_applicant__work_phone',
+                    ),
+                )\
+                .filter(phone=phone)
             self.filter_descrs.append(_('Phone number contains “%(phone)s”') % dict(phone=phone))
 
         created_date_from = data.get('created_date_from')
@@ -235,10 +304,17 @@ class CreditApplicationListView(CSVDownloadableTableMixin, SingleTableView):
         submitted_by = data.get('submitted_by')
         if submitting_user_id:
             user = get_object_or_404(get_user_model(), pk=submitting_user_id)
-            qs = qs.filter(submitting_user_id=submitting_user_id)
+            qs = qs.filter(submitting_user=user)
             self.filter_descrs.append(_('Application submitted by “%(name)s”') % dict(name=user.get_full_name()))
         elif submitted_by:
-            qs = qs.filter(submitting_user_full_name__search=submitted_by)
+            qs = qs\
+                .annotate(
+                    submitting_user_name=SearchVector(
+                        'submitting_user__first_name',
+                        'submitting_user__last_name',
+                    ),
+                )\
+                .filter(submitting_user_name=submitted_by)
             self.filter_descrs.append(_('Application submitted by “%(name)s”') % dict(name=submitted_by))
 
         return qs

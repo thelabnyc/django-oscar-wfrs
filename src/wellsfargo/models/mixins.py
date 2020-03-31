@@ -1,13 +1,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from oscar.models.fields import NullCharField
 from ..security import encrypt_account_number, decrypt_account_number
 
 
 
-class AccountNumberMixin(models.Model):
-    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
-    encrypted_account_number = models.BinaryField(null=True)
-
+class AccountNumberMethodsMixin(models.Model):
     class Meta:
         abstract = True
 
@@ -34,3 +32,21 @@ class AccountNumberMixin(models.Model):
     def purge_encrypted_account_number(self):
         self.encrypted_account_number = None
         self.save()
+
+
+
+class AccountNumberMixin(AccountNumberMethodsMixin, models.Model):
+    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
+    encrypted_account_number = models.BinaryField(null=True)
+
+    class Meta:
+        abstract = True
+
+
+
+class MaybeAccountNumberMixin(AccountNumberMethodsMixin, models.Model):
+    last4_account_number = NullCharField(_("Last 4 digits of account number"), max_length=4)
+    encrypted_account_number = models.BinaryField(null=True)
+
+    class Meta:
+        abstract = True

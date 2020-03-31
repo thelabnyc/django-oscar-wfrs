@@ -26,7 +26,7 @@ from ..core.fields import (
     USSocialSecurityNumberField,
     DateOfBirthField,
 )
-from .mixins import AccountNumberMixin
+from .mixins import MaybeAccountNumberMixin
 from .creds import APICredentials
 from .transfers import TransferMetadata
 from .utils import _max_len
@@ -99,7 +99,7 @@ class CreditApplicationApplicant(models.Model):
 
 
 
-class CreditApplication(AccountNumberMixin, models.Model):
+class CreditApplication(MaybeAccountNumberMixin, models.Model):
     transaction_code = models.CharField(_('Transaction Code'),
         max_length=_max_len(CREDIT_APP_TRANS_CODES),
         choices=CREDIT_APP_TRANS_CODES,
@@ -111,10 +111,6 @@ class CreditApplication(AccountNumberMixin, models.Model):
     application_id = NullCharField(_('Prequalified Application ID'),
         max_length=8,
         help_text=_("An 8-character alphanumeric ID identifying the application."))
-    consent_date = models.DateField(_('Consent Date'),
-        null=True,
-        blank=True,
-        help_text=_('The date when the applicant consented to forward their personal details.'))
     requested_credit_limit = models.IntegerField(_("Requested Credit Limit"),
         null=True,
         blank=True,
@@ -223,7 +219,10 @@ class CreditApplication(AccountNumberMixin, models.Model):
                                                           .distinct()
                                                           .all())
             # all orders made by app.email that contain ref above UUIDs
-            orders = Order.objects.filter(Q(guest_email=self.email) | Q(user__email=self.email))\
+            emails = [self.main_applicant.email_address]
+            if self.joint_applicant:
+                emails.append(self.joint_applicant.email_address)
+            orders = Order.objects.filter(Q(guest_email__in=emails) | Q(user__email__in=emails))\
                                   .filter(sources__transactions__reference__in=reference_uuids)\
                                   .filter(date_placed__gte=self.created_datetime)\
                                   .order_by('date_placed')\

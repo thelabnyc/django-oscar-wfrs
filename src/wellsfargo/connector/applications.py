@@ -58,7 +58,6 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
             "merchant_number": creds.merchant_num,
             "transaction_code": credit_app.transaction_code,
             "application_id": credit_app.application_id,
-            "consent_date": credit_app.consent_date,
             "requested_credit_limit": credit_app.requested_credit_limit,
             "language_preference": credit_app.language_preference,
             "salesperson": credit_app.salesperson,
@@ -72,13 +71,13 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
                 "middle_initial": credit_app.joint_applicant.middle_initial,
                 "date_of_birth": format_date(credit_app.joint_applicant.date_of_birth),
                 "ssn": format_ssn(credit_app.joint_applicant.ssn),
-                "annual_income": credit_app.joint_applicant.annual_income,
+                # "annual_income": credit_app.joint_applicant.annual_income,
                 "email_address": credit_app.joint_applicant.email_address,
                 "mobile_phone": format_phone(credit_app.joint_applicant.mobile_phone),
                 "home_phone": format_phone(credit_app.joint_applicant.home_phone),
                 "work_phone": format_phone(credit_app.joint_applicant.work_phone),
                 "employer_name": credit_app.joint_applicant.employer_name,
-                "housing_status": credit_app.joint_applicant.housing_status,
+                # "housing_status": credit_app.joint_applicant.housing_status,
                 "address": {
                     "address_line_1": credit_app.joint_applicant.address.address_line_1,
                     "address_line_2": credit_app.joint_applicant.address.address_line_2,
@@ -95,6 +94,8 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
             json=request_data)
         resp.raise_for_status()
         resp_data = resp.json()
+        credit_app.status = resp_data['application_status']
+        credit_app.save()
 
         # If the status is not either Approved or Pending, it must be denied
         if resp_data['application_status'] not in (CREDIT_APP_APPROVED, CREDIT_APP_PENDING):
@@ -110,18 +111,24 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
         credit_app.save()
 
         # Record an account inquiry
-        result = AccountInquiryResult()
-        result.credit_app = credit_app
-        result.prequal_response_source = None
-        result.account_number = resp_data['credit_card_number']
-        result.first_name = credit_app.main_applicant.first_name
-        result.middle_initial = credit_app.main_applicant.middle_initial
-        result.last_name = credit_app.main_applicant.last_name
-        result.phone_number = credit_app.main_applicant.home_phone
-        result.address = credit_app.main_applicant.address.address_line_1
-        result.credit_limit = as_decimal(resp_data['credit_line'])
-        result.available_credit = as_decimal(resp_data['credit_line'])
-        result.save()
+        main_applicant_full_name = "{}, {}".format(
+            credit_app.main_applicant.last_name,
+            credit_app.main_applicant.first_name)
+        joint_applicant_full_name = None
+        if credit_app.joint_applicant:
+            joint_applicant_full_name = "{}, {}".format(
+                credit_app.joint_applicant.last_name,
+                credit_app.joint_applicant.first_name)
+        result = AccountInquiryResult.objects.create(
+            credit_app_source=credit_app,
+            prequal_response_source=None,
+            account_number=resp_data['credit_card_number'],
+            main_applicant_full_name=main_applicant_full_name,
+            joint_applicant_full_name=joint_applicant_full_name,
+            main_applicant_address=credit_app.main_applicant.address,
+            joint_applicant_address=credit_app.joint_applicant.address if credit_app.joint_applicant else None,
+            credit_limit=as_decimal(resp_data['credit_line']),
+            available_credit=as_decimal(resp_data['credit_line']))
 
         # Check if application approval is pending
         if resp_data['application_status'] == CREDIT_APP_PENDING:

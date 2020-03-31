@@ -57,11 +57,13 @@ class CreditApplicationsAPIClientTest(BaseTest):
         wfrs_app_approved.assert_called_once_with(sender=app.__class__, app=app)
 
         self.assertEqual(acct_details.account_number, '9999999999999999')
-        self.assertEqual(acct_details.first_name, 'Joe')
-        self.assertEqual(acct_details.middle_initial, '')
-        self.assertEqual(acct_details.last_name, 'Schmoe')
-        self.assertEqual(acct_details.phone_number.as_e164, '+12122091333')
-        self.assertEqual(acct_details.address, '123 Evergreen Terrace')
+        self.assertEqual(acct_details.main_applicant_full_name, 'Schmoe, Joe')
+        self.assertEqual(acct_details.joint_applicant_full_name, None)
+        self.assertEqual(acct_details.main_applicant_address.address_line_1, '123 Evergreen Terrace')
+        self.assertEqual(acct_details.main_applicant_address.city, 'Springfield')
+        self.assertEqual(acct_details.main_applicant_address.postal_code, '10001')
+        self.assertEqual(acct_details.main_applicant_address.state_code, 'NY')
+        self.assertEqual(acct_details.joint_applicant_address, None)
         self.assertEqual(acct_details.credit_limit, Decimal('7500.00'))
         self.assertEqual(acct_details.available_credit, Decimal('7500.00'))
 
@@ -104,13 +106,13 @@ class CreditApplicationsAPIClientTest(BaseTest):
                         "postal_code": "10001",
                         "state_code": "NY"
                     },
-                    "annual_income": 150000,
+                    # "annual_income": 150000,
                     "date_of_birth": "1991-01-01",
                     "email_address": "foo@example.com",
                     "employer_name": "self",
                     "first_name": "Joe",
                     "home_phone": "2122091333",
-                    "housing_status": "Rent",
+                    # "housing_status": "Rent",
                     "last_name": "Schmoe",
                     "mobile_phone": "2122091333",
                     "ssn": "999999990",
@@ -131,11 +133,16 @@ class CreditApplicationsAPIClientTest(BaseTest):
         wfrs_app_approved.assert_called_once_with(sender=app.__class__, app=app)
 
         self.assertEqual(acct_details.account_number, '9999999999999999')
-        self.assertEqual(acct_details.first_name, 'Joe')
-        self.assertEqual(acct_details.middle_initial, '')
-        self.assertEqual(acct_details.last_name, 'Schmoe')
-        self.assertEqual(acct_details.phone_number.as_e164, '+12122091333')
-        self.assertEqual(acct_details.address, '123 Evergreen Terrace')
+        self.assertEqual(acct_details.main_applicant_full_name, 'Schmoe, Joe')
+        self.assertEqual(acct_details.joint_applicant_full_name, 'Schmoe, Joe')
+        self.assertEqual(acct_details.main_applicant_address.address_line_1, '123 Evergreen Terrace')
+        self.assertEqual(acct_details.main_applicant_address.city, 'Springfield')
+        self.assertEqual(acct_details.main_applicant_address.postal_code, '10001')
+        self.assertEqual(acct_details.main_applicant_address.state_code, 'NY')
+        self.assertEqual(acct_details.joint_applicant_address.address_line_1, '123 Evergreen Terrace')
+        self.assertEqual(acct_details.joint_applicant_address.city, 'Springfield')
+        self.assertEqual(acct_details.joint_applicant_address.postal_code, '10001')
+        self.assertEqual(acct_details.joint_applicant_address.state_code, 'NY')
         self.assertEqual(acct_details.credit_limit, Decimal('7500.00'))
         self.assertEqual(acct_details.available_credit, Decimal('7500.00'))
 

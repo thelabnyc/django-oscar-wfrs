@@ -13,38 +13,6 @@ import json
 class TransactionsAPIClientTest(BaseTest):
 
 
-    def test_submit_transaction_success_live(self):
-        plan = FinancingPlan.objects.create(
-            plan_number='9999',
-            description='',
-            apr=0,
-            term_months=0)
-
-        # Authorize a change against the credit line
-        request = TransactionRequest()
-        request.user = self.joe
-        request.account_number = '9999999999999991'
-        request.plan_number = plan.plan_number
-        request.amount = Decimal('2159.99')
-        request.ticket_number = '1234567890'
-
-        transfer = TransactionsAPIClient().submit_transaction(request,
-            transaction_uuid='c17381a3-22fa-4463-8b0a-a3c18f6c4a44')
-
-        # Should return a valid transfer object
-        self.assertEqual(transfer.user, self.joe)
-        self.assertEqual(transfer.credentials, self.credentials)
-        self.assertEqual(transfer.merchant_reference, 'c17381a3-22fa-4463-8b0a-a3c18f6c4a44')
-        self.assertEqual(transfer.amount, Decimal('2159.99'))
-        self.assertEqual(transfer.type_code, '5')
-        self.assertEqual(transfer.ticket_number, '123444')
-        self.assertEqual(transfer.financing_plan.plan_number, 9999)
-        self.assertEqual(transfer.auth_number, '000000')
-        self.assertEqual(transfer.status, TRANS_APPROVED)
-        self.assertEqual(transfer.message, "APPROVED: 123434")
-        self.assertEqual(transfer.disclosure, "REGULAR TERMS WITH REGULAR PAYMENTS. THE REGULAR RATE IS 28.99%.")
-
-
     @requests_mock.Mocker()
     def test_submit_transaction_success(self, rmock):
         plan = FinancingPlan.objects.create(

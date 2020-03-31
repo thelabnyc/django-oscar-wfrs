@@ -31,7 +31,7 @@ class TransactionsAPIClient(WFRSGatewayAPIClient):
             "locale": trans_request.locale,
             "authorization_number": trans_request.auth_number,
             "account_number": trans_request.account_number,
-            "plan_number": trans_request.plan_number,
+            "plan_number": str(trans_request.plan_number),
             "amount": str(trans_request.amount),
             "ticket_number": trans_request.ticket_number,
             "merchant_number": creds.merchant_num,

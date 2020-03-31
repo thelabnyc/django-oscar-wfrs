@@ -5,6 +5,33 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def update_credit_app_statuses(apps, schema_editor):
+    CreditApplication = apps.get_model('wellsfargo', 'CreditApplication')
+
+    OLD_STATUS_APPROVED = 'E0'
+    OLD_STATUS_DECISION_DELAYED = 'E1'
+    OLD_STATUS_FORMAT_ERROR = 'E2'
+    OLD_STATUS_WFF_ERROR = 'E3'
+    OLD_STATUS_DENIED = 'E4'
+
+    NEW_STATUS_APPROVED = 'APPROVED'
+    NEW_STATUS_PENDING = 'PENDING'
+    NEW_STATUS_DENIED = 'DENIED'
+
+    mapping = [
+        (OLD_STATUS_APPROVED, NEW_STATUS_APPROVED),
+        (OLD_STATUS_DECISION_DELAYED, NEW_STATUS_PENDING),
+        (OLD_STATUS_FORMAT_ERROR, ''),
+        (OLD_STATUS_WFF_ERROR, ''),
+        (OLD_STATUS_DENIED, NEW_STATUS_DENIED),
+    ]
+
+    for old_status, new_status in mapping:
+        CreditApplication.objects\
+            .filter(status=old_status)\
+            .update(status=new_status)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -160,6 +187,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='accountinquiryresult',
             name='credit_app_source',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='account_inquiries', to='wellsfargo.CreditApplication', verbose_name='Credit Application Source'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='inquiries', to='wellsfargo.CreditApplication', verbose_name='Credit Application Source'),
         ),
+        migrations.AlterField(
+            model_name='accountinquiryresult',
+            name='prequal_response_source',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='inquiries', to='wellsfargo.PreQualificationResponse', verbose_name='Pre-Qualification Source'),
+        ),
+        migrations.RunPython(update_credit_app_statuses),
     ]

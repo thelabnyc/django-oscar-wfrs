@@ -1,6 +1,6 @@
 {% load i18n %}
 {% spaceless %}
-    {% with record.object.get_first_order_merchant as merchant %}
+    {% with record.get_first_order_merchant as merchant %}
         {% if merchant %}
             {{ merchant.name }}
         {% else %}

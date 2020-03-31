@@ -223,10 +223,6 @@ OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     'children': [
         # Wells Fargo Retail Services Views
         {
-            'label': _('Apply for a Credit Line (Wells Fargo)'),
-            'url_name': 'wfrs-apply-step1',
-        },
-        {
             'label': _('Financing Plans'),
             'url_name': 'wfrs-plan-list',
         },

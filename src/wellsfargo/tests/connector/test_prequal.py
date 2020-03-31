@@ -19,7 +19,6 @@ class PrequalAPIClientTest(BaseTest):
             # Check auth header
             self.assertTrue(request.headers['Authorization'].startswith('Bearer '))
             # Check data in body
-            print(request.body)
             data = json.loads(request.body)
             self.assertEqual(data, {
                 "merchant_number": "1111111111111111",

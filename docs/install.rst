@@ -86,10 +86,6 @@ Add the Wells Fargo views to the OSCAR_DASHBOARD_NAVIGATION setting in ``setting
         'children': [
             # Wells Fargo Retail Services Views
             {
-                'label': 'Apply for a Credit Line (Wells Fargo)',
-                'url_name': 'wfrs-apply-step1',
-            },
-            {
                 'label': 'Add existing Wells Fargo account',
                 'url_name': 'wfrs-add-account',
             },

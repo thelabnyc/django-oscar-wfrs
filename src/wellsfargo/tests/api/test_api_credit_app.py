@@ -177,7 +177,7 @@ class CreditApplicationTest(BaseTest):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue('non_field_errors' in response.data)
         self.assertEqual(len(response.data['non_field_errors']), 1)
-        self.assertEqual(str(response.data['non_field_errors'][0]), "[\"'ssn' is invalid.\"]")
+        self.assertEqual(str(response.data['non_field_errors'][0]), "'ssn' is invalid.")
 
 
     @requests_mock.Mocker()

@@ -1,4 +1,4 @@
 {% spaceless %}
     {% load currency_filters %}
-    {{ record.object.get_credit_limit | currency | default:'—' }}
+    {{ record.get_credit_limit | currency | default:'—' }}
 {% endspaceless %}

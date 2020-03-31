@@ -1,0 +1,95 @@
+{% load i18n %}
+{% load currency_filters %}
+{% load wfrs_filters %}
+
+<table class="table table-bordered">
+    <tr>
+        <th colspan="2">{% trans "Name" %}</th>
+    </tr>
+    <tr>
+        <td>{% trans "First Name" %}</td>
+        <td>{{ applicant.first_name | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Last Name" %}</td>
+        <td>{{ applicant.last_name | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Middle Initial" %}</td>
+        <td>{{ applicant.middle_initial | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Social Security Number / Social Insurance Number" %}</td>
+        <td>{{ applicant.ssn | default:"-" }}</td>
+    </tr>
+
+
+
+    <tr>
+        <th colspan="2">{% trans "Address" %}</th>
+    </tr>
+    <tr>
+        <td>{% trans "Line 1" %}</td>
+        <td>{{ applicant.address.address_line_1 | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Line 2" %}</td>
+        <td>{{ applicant.address.address_line_2 | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "City" %}</td>
+        <td>{{ applicant.address.city | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "State" %}</td>
+        <td>{{ applicant.address.get_state_code_display | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Postal Code" %}</td>
+        <td>{{ applicant.address.postal_code | default:"-" }}</td>
+    </tr>
+
+
+
+    <tr>
+        <th colspan="2">{% trans "Contact" %}</th>
+    </tr>
+    <tr>
+        <td>{% trans "Email Address" %}</td>
+        <td>{{ applicant.email_address | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Home Phone" %}</td>
+        <td>{{ applicant.home_phone | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Cell Phone" %}</td>
+        <td>{{ applicant.mobile_phone | default:"-" }}</td>
+    </tr>
+
+    <tr>
+        <th colspan="2">{% trans "Residence" %}</th>
+    </tr>
+    <tr>
+        <td>{% trans "Housing Status" %}</td>
+        <td>{{ applicant.get_housing_status_display | default:"-" }}</td>
+    </tr>
+
+
+
+    <tr>
+        <th colspan="2">{% trans "Employment" %}</th>
+    </tr>
+    <tr>
+        <td>{% trans "Annual Income" %}</td>
+        <td>{{ applicant.annual_income | currency | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Employer Name" %}</td>
+        <td>{{ applicant.employer_name | default:"-" }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Employer Phone" %}</td>
+        <td>{{ applicant.work_phone | default:"-" }}</td>
+    </tr>
+</table>

@@ -55,7 +55,6 @@ class Migration(migrations.Migration):
                 ('transaction_code', models.CharField(choices=[('A2', 'Applications from a non-consumer device'), ('AH', "Applications from a consumer's device"), ('A6', 'Credit application'), ('MAH', 'Merchant hosted at home, online'), ('MIS', 'Merchant hosted in store'), ('B1', 'Batch integrated at home'), ('B2', 'Batch get customer data'), ('B3', 'Batch merchant hosted in store'), ('B4', 'Batch merchant hosted at home')], default='MAH', help_text='Indicates where the transaction takes place.', max_length=3, verbose_name='Transaction Code')),
                 ('reservation_number', oscar.models.fields.NullCharField(help_text='The unique code that correlates with the user’s reservation.', max_length=20, verbose_name='Reservation Number')),
                 ('application_id', oscar.models.fields.NullCharField(help_text='An 8-character alphanumeric ID identifying the application.', max_length=8, verbose_name='Prequalified Application ID')),
-                ('consent_date', models.DateField(blank=True, help_text='The date when the applicant consented to forward their personal details.', null=True, verbose_name='Consent Date')),
                 ('requested_credit_limit', models.IntegerField(blank=True, help_text='This denotes the total price value of the items that the applicant’s shopping cart.', null=True, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(99999)], verbose_name='Requested Credit Limit')),
                 ('language_preference', models.CharField(choices=[('E', 'English'), ('S', 'Spanish')], default='E', help_text='The main applicant’s language preference values', max_length=1, verbose_name='Language Preference')),
                 ('salesperson', oscar.models.fields.NullCharField(help_text='Alphanumeric value associated with the salesperson.', max_length=10, verbose_name='Sales Person ID')),
@@ -96,7 +95,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='creditapplication',
             name='last4_account_number',
-            field=models.CharField(max_length=4, verbose_name='Last 4 digits of account number'),
+            field=oscar.models.fields.NullCharField(max_length=4, verbose_name='Last 4 digits of account number'),
             preserve_default=False,
         ),
         migrations.AddField(

@@ -56,7 +56,7 @@ class WFRSDashboardConfig(OscarDashboardConfig):
             url(r'^applications/$',
                 CreditApplicationListView.as_view(),
                 name='wfrs-application-list'),
-            url(r'^applications/(?P<app_type>[a-z\-]+)/(?P<pk>[0-9]+)/$',
+            url(r'^applications/(?P<pk>[0-9]+)/$',
                 CreditApplicationDetailView.as_view(),
                 name='wfrs-application-detail'),
 
