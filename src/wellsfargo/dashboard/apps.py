@@ -11,8 +11,6 @@ class WFRSDashboardConfig(OscarDashboardConfig):
 
     def get_urls(self):
         from .views import (
-            ApplicationSelectionView,
-            CreditApplicationView,
             FinancingPlanListView,
             FinancingPlanCreateView,
             FinancingPlanUpdateView,
@@ -29,13 +27,6 @@ class WFRSDashboardConfig(OscarDashboardConfig):
             PreQualificationDetailView,
         )
         urlpatterns = [
-            url(r'^apply/$',
-                ApplicationSelectionView.as_view(),
-                name='wfrs-apply-step1'),
-            url(r'^apply/(?P<region>\w+)/(?P<language>\w+)/(?P<app_type>\w+)/$',
-                CreditApplicationView.as_view(),
-                name='wfrs-apply-step2'),
-
             url(r'^plans/$',
                 FinancingPlanListView.as_view(),
                 name='wfrs-plan-list'),
@@ -65,7 +56,7 @@ class WFRSDashboardConfig(OscarDashboardConfig):
             url(r'^applications/$',
                 CreditApplicationListView.as_view(),
                 name='wfrs-application-list'),
-            url(r'^applications/(?P<app_type>[a-z\-]+)/(?P<pk>[0-9]+)/$',
+            url(r'^applications/(?P<pk>[0-9]+)/$',
                 CreditApplicationDetailView.as_view(),
                 name='wfrs-application-detail'),
 

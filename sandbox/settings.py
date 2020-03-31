@@ -85,7 +85,6 @@ INSTALLED_APPS = [
 
     # 3rd-party apps depend on
     'rest_framework',
-    'django_pgviews',
 ]
 
 LOGGING = {
@@ -107,7 +106,7 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'ERROR',
+        'level': 'INFO',
     }
 }
 
@@ -223,10 +222,6 @@ OSCAR_DASHBOARD_NAVIGATION.append({  # NOQA
     'icon': 'icon-globe',
     'children': [
         # Wells Fargo Retail Services Views
-        {
-            'label': _('Apply for a Credit Line (Wells Fargo)'),
-            'url_name': 'wfrs-apply-step1',
-        },
         {
             'label': _('Financing Plans'),
             'url_name': 'wfrs-plan-list',

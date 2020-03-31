@@ -1,19 +1,14 @@
-from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core import signing, exceptions
 from django.db import transaction
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
-from rest_framework.reverse import reverse_lazy
 from rest_framework import views, generics, status, serializers
 from oscarapi.basket import operations
-from ..core.constants import (
-    US, CA,
-    INDIVIDUAL, JOINT,
-    PREQUAL_REDIRECT_APP_APPROVED,
-)
+from ..core.constants import PREQUAL_REDIRECT_APP_APPROVED
 from ..models import (
     SDKMerchantNum,
     PreQualificationRequest,
@@ -24,11 +19,7 @@ from ..models import (
 )
 from ..utils import list_plans_for_basket, calculate_monthly_payments
 from .serializers import (
-    AppSelectionSerializer,
-    USCreditAppSerializer,
-    USJointCreditAppSerializer,
-    CACreditAppSerializer,
-    CAJointCreditAppSerializer,
+    CreditApplicationSerializer,
     FinancingPlanSerializer,
     EstimatedPaymentSerializer,
     AccountInquirySerializer,
@@ -44,34 +35,11 @@ INQUIRY_SESSION_KEY = 'wfrs-acct-inquiry-id'
 PREQUAL_SESSION_KEY = 'wfrs-prequal-request-id'
 
 
-class SelectCreditAppView(generics.GenericAPIView):
-    serializer_class = AppSelectionSerializer
-
-    def post(self, request):
-        serializer = self.get_serializer_class()(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return Response({
-            'url': self._get_app_url(request, **serializer.validated_data),
-        })
-
-    def _get_app_url(self, request, region, app_type):
-        routes = {
-            US: {
-                INDIVIDUAL: reverse_lazy('wfrs-api-apply-us-individual', request=request),
-                JOINT: reverse_lazy('wfrs-api-apply-us-join', request=request),
-            },
-            CA: {
-                INDIVIDUAL: reverse_lazy('wfrs-api-apply-ca-individual', request=request),
-                JOINT: reverse_lazy('wfrs-api-apply-ca-joint', request=request),
-            },
-        }
-        return routes.get(region, {}).get(app_type)
-
-
 # This (non-atomic request) is needed because we use exceptions to bubble up the application pending / declined
 # status, but when that happens we still want to save the application data (rather than rollback).
 @method_decorator(transaction.non_atomic_requests, name='dispatch')
-class BaseCreditAppView(generics.GenericAPIView):
+class CreditApplicationView(generics.GenericAPIView):
+    serializer_class = CreditApplicationSerializer
 
     def post(self, request):
         request_ser = self.get_serializer_class()(data=request.data, context={'request': request})
@@ -86,21 +54,6 @@ class BaseCreditAppView(generics.GenericAPIView):
         return Response(response_ser.data)
 
 
-class USCreditAppView(BaseCreditAppView):
-    serializer_class = USCreditAppSerializer
-
-
-class USJointCreditAppView(BaseCreditAppView):
-    serializer_class = USJointCreditAppSerializer
-
-
-class CACreditAppView(BaseCreditAppView):
-    serializer_class = CACreditAppSerializer
-
-
-class CAJointCreditAppView(BaseCreditAppView):
-    serializer_class = CAJointCreditAppSerializer
-
 
 class FinancingPlanView(views.APIView):
     def get(self, request):
@@ -108,6 +61,7 @@ class FinancingPlanView(views.APIView):
         plans = list_plans_for_basket(basket)
         ser = FinancingPlanSerializer(plans, many=True)
         return Response(ser.data)
+
 
 
 class EstimatedPaymentView(views.APIView):
@@ -149,6 +103,7 @@ class EstimatedPaymentView(views.APIView):
         return Response(ser.data)
 
 
+
 class UpdateAccountInquiryView(views.APIView):
     """
     After submitting a credit app, a client may use this view to update their credit limit info (for
@@ -172,7 +127,7 @@ class UpdateAccountInquiryView(views.APIView):
         request_ser.is_valid(raise_exception=True)
         result = request_ser.save()
         # Update the inquiry source to match the original inquiry
-        result.credit_app_source = inquiry.credit_app_source
+        result.credit_app = inquiry.credit_app
         result.prequal_response_source = inquiry.prequal_response_source
         result.save()
         # Update the session to have the new inquiry ID
@@ -180,6 +135,7 @@ class UpdateAccountInquiryView(views.APIView):
         # Return the results
         response_ser = AccountInquirySerializer(instance=result, context={'request': request})
         return Response(response_ser.data)
+
 
 
 class SubmitAccountInquiryView(generics.GenericAPIView):
@@ -197,6 +153,7 @@ class SubmitAccountInquiryView(generics.GenericAPIView):
         return Response(response_ser.data)
 
 
+
 class PreQualificationSDKMerchantNumView(generics.GenericAPIView):
     def get(self, request):
         creds = SDKMerchantNum.get_credentials(request.user)
@@ -204,6 +161,7 @@ class PreQualificationSDKMerchantNumView(generics.GenericAPIView):
             'merchant_name': creds.name,
             'merchant_num': creds.merchant_num,
         })
+
 
 
 class PreQualificationResumeView(generics.GenericAPIView):
@@ -235,6 +193,7 @@ class PreQualificationResumeView(generics.GenericAPIView):
         return redirect(redirect_url)
 
 
+
 class PreQualificationRequestView(generics.GenericAPIView):
     serializer_class = PreQualificationRequestSerializer
 
@@ -263,8 +222,10 @@ class PreQualificationRequestView(generics.GenericAPIView):
         return Response(response_ser.data)
 
 
+
 class PreQualificationSDKResponseView(PreQualificationRequestView):
     serializer_class = PreQualificationSDKResponseSerializer
+
 
 
 class PreQualificationSDKApplicationResultView(generics.GenericAPIView):
@@ -301,6 +262,7 @@ class PreQualificationSDKApplicationResultView(generics.GenericAPIView):
         return Response(response_ser.data)
 
 
+
 class PreQualificationCustomerResponseView(views.APIView):
     def post(self, request):
         prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
@@ -317,6 +279,7 @@ class PreQualificationCustomerResponseView(views.APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
 
 
 class PreQualificationCustomerRedirectView(views.APIView):
@@ -340,7 +303,7 @@ class PreQualificationCustomerRedirectView(views.APIView):
             acct_inquiry = None
 
         # If not response, account must have been declined or is pending.
-        if not acct_inquiry:
+        if not acct_inquiry or acct_inquiry.credit_limit <= 0:
             return self._return_not_approved(request)
 
         # Return response (including their account number) to the user

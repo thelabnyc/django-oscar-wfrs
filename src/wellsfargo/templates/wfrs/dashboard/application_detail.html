@@ -15,7 +15,7 @@
             <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
         </li>
         <li>
-            <a href="{% url 'wfrs-application-list' %}?app_type={{ object.APP_TYPE_CODE }}">{% trans "Credit Applications" %}</a>
+            <a href="{% url 'wfrs-application-list' %}">{% trans "Credit Applications" %}</a>
         </li>
         <li class="active">{% trans "Credit Application Details" %}</li>
     </ul>
@@ -33,16 +33,12 @@
             </div>
             <table class="table table-bordered">
                 <tr>
-                    <td>{% trans "Email Address" %}</td>
-                    <td>{{ object.email | default:"-" }}</td>
-                </tr>
-                <tr>
                     <td>{% trans "Resulting Account Number" %}</td>
-                    <td>{{ object.account_number | default:"-" }}</td>
+                    <td>{{ object.masked_account_number | default:"-" }}</td>
                 </tr>
                 <tr>
                     <td>{% trans "Requested Value" %}</td>
-                    <td>{{ object.purchase_price | currency | default:"-" }}</td>
+                    <td>{{ object.requested_credit_limit | currency | default:"-" }}</td>
                 </tr>
                 <tr>
                     <td>{% trans "IP Address" %}</td>
@@ -63,127 +59,7 @@
             <div class="table-header">
                 <h2>{% trans "Main Applicant" %}</h2>
             </div>
-            <table class="table table-bordered">
-                <tr>
-                    <th colspan="2">{% trans "Name" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "First Name" %}</td>
-                    <td>{{ object.main_first_name | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Last Name" %}</td>
-                    <td>{{ object.main_last_name | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Middle Initial" %}</td>
-                    <td>{{ object.main_middle_initial | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Social Security Number / Social Insurance Number" %}</td>
-                    <td>{{ object.main_ssn | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Address" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Line 1" %}</td>
-                    <td>{{ object.main_address_line1 | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Line 2" %}</td>
-                    <td>{{ object.main_address_line2 | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "City" %}</td>
-                    <td>{{ object.main_address_city | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "State" %}</td>
-                    <td>{{ object.main_address_state | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Postal Code" %}</td>
-                    <td>{{ object.main_address_postcode | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Contact" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Home Phone" %}</td>
-                    <td>{{ object.main_home_phone | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Cell Phone" %}</td>
-                    <td>{{ object.main_cell_phone | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Residence" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Home Value" %}</td>
-                    <td>{{ object.main_home_value | currency | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Mortgage Balance" %}</td>
-                    <td>{{ object.main_mortgage_balance | currency | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Time at Address" %}</td>
-                    <td>{{ object.main_time_at_address | timeat }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Housing Status" %}</td>
-                    <td>{{ object.main_housing_status | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Employment" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Occupation" %}</td>
-                    <td>{{ object.main_occupation | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Annual Income" %}</td>
-                    <td>{{ object.main_annual_income | currency | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Employer Name" %}</td>
-                    <td>{{ object.main_employer_name | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Time at Employer" %}</td>
-                    <td>{{ object.main_time_at_employer | timeat }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Employer Phone" %}</td>
-                    <td>{{ object.main_employer_phone | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Photo ID" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Photo ID Type" %}</td>
-                    <td>{{ object.main_photo_id_type | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Photo ID Number" %}</td>
-                    <td>{{ object.main_photo_id_number | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Driver's License Province" %}</td>
-                    <td>{{ object.main_drivers_license_province | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Photo ID Expiration Date" %}</td>
-                    <td>{{ object.main_photo_id_expiration | default:"-" }}</td>
-                </tr>
-            </table>
+            {% include 'wfrs/dashboard/_application_detail_applicant.html' with applicant=object.main_applicant %}
         </div>
 
 
@@ -191,103 +67,7 @@
             <div class="table-header">
                 <h2>{% trans "Secondary Applicant" %}</h2>
             </div>
-            <table class="table table-bordered">
-                <tr>
-                    <th colspan="2">{% trans "Name" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "First Name" %}</td>
-                    <td>{{ object.joint_first_name | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Last Name" %}</td>
-                    <td>{{ object.joint_last_name | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Middle Initial" %}</td>
-                    <td>{{ object.joint_middle_initial | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Social Security Number / Social Insurance Number" %}</td>
-                    <td>{{ object.joint_ssn | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Address" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Line 1" %}</td>
-                    <td>{{ object.joint_address_line1 | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Line 2" %}</td>
-                    <td>{{ object.joint_address_line2 | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "City" %}</td>
-                    <td>{{ object.joint_address_city | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "State" %}</td>
-                    <td>{{ object.joint_address_state | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Postal Code" %}</td>
-                    <td>{{ object.joint_address_postcode | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Contact" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Cell Phone" %}</td>
-                    <td>{{ object.joint_cell_phone | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Employment" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Occupation" %}</td>
-                    <td>{{ object.joint_occupation | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Annual Income" %}</td>
-                    <td>{{ object.joint_annual_income | currency | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Employer Name" %}</td>
-                    <td>{{ object.joint_employer_name | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Time at Employer" %}</td>
-                    <td>{{ object.joint_time_at_employer | timeat }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Employer Phone" %}</td>
-                    <td>{{ object.joint_employer_phone | default:"-" }}</td>
-                </tr>
-
-                <tr>
-                    <th colspan="2">{% trans "Photo ID" %}</th>
-                </tr>
-                <tr>
-                    <td>{% trans "Photo ID Type" %}</td>
-                    <td>{{ object.joint_photo_id_type | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Photo ID Number" %}</td>
-                    <td>{{ object.joint_photo_id_number | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Driver's License Province" %}</td>
-                    <td>{{ object.joint_drivers_license_province | default:"-" }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Photo ID Expiration Date" %}</td>
-                    <td>{{ object.joint_photo_id_expiration | default:"-" }}</td>
-                </tr>
-            </table>
+            {% include 'wfrs/dashboard/_application_detail_applicant.html' with applicant=object.joint_applicant %}
         </div>
 
         <div class="col-md-12">
@@ -299,14 +79,8 @@
                     <tr>
                         <th>{% trans "Inquiry Date/Time" %}</th>
                         <th>{% trans "Inquiry Account Number" %}</th>
-                        <th>{% trans "Status" %}</th>
                         <th>{% trans "Credit Limit" %}</th>
-                        <th>{% trans "Balance" %}</th>
-                        <th>{% trans "Open to Buy" %}</th>
-                        <th>{% trans "Last Payment Date" %}</th>
-                        <th>{% trans "Last Payment Amount" %}</th>
-                        <th>{% trans "Payment Due Date" %}</th>
-                        <th>{% trans "Payment Due Amount" %}</th>
+                        <th>{% trans "Available Credit" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -314,14 +88,8 @@
                         <tr>
                             <td>{{ inquiry.created_datetime }}</td>
                             <td>{{ inquiry.masked_account_number }}</td>
-                            <td>{{ inquiry.get_status_display }}</td>
                             <td>{{ inquiry.credit_limit | currency | default:"-" }}</td>
-                            <td>{{ inquiry.balance | currency | default:"-" }}</td>
-                            <td>{{ inquiry.open_to_buy | currency | default:"-" }}</td>
-                            <td>{{ inquiry.last_payment_date | default:"-" }}</td>
-                            <td>{{ inquiry.last_payment_amount | currency | default:"-" }}</td>
-                            <td>{{ inquiry.payment_due_date | default:"-" }}</td>
-                            <td>{{ inquiry.payment_due_amount | currency | default:"-" }}</td>
+                            <td>{{ inquiry.available_credit | currency | default:"-" }}</td>
                         </tr>
                     {% empty %}
                         <tr>

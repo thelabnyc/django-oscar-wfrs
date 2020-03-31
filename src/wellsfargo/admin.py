@@ -41,12 +41,8 @@ class TransferMetadataAdmin(ReadOnlyAdmin):
     list_filter = ['type_code', 'status']
 
 
-@admin.register(models.USCreditApp)
-@admin.register(models.USJointCreditApp)
-@admin.register(models.CACreditApp)
-@admin.register(models.CAJointCreditApp)
+@admin.register(models.CreditApplication)
 class CreditAppAdmin(ReadOnlyAdmin):
-    list_display = ['email', 'region', 'language', 'app_type', 'user', 'status', 'created_datetime', 'modified_datetime']
     list_filter = ['status', 'created_datetime', 'modified_datetime']
 
 
@@ -67,23 +63,17 @@ class FraudScreenResultAdmin(ReadOnlyAdmin):
 
 @admin.register(models.AccountInquiryResult)
 class AccountInquiryResultAdmin(ReadOnlyAdmin):
-    list_display = ['masked_account_number', 'full_name', 'credit_limit', 'balance', 'open_to_buy', 'status', 'created_datetime']
-    list_filter = ['status', 'created_datetime', 'modified_datetime']
+    list_display = ['masked_account_number', 'main_applicant_full_name', 'credit_limit', 'available_credit', 'created_datetime']
+    list_filter = ['created_datetime', 'modified_datetime']
     fields = (
         'status',
         'last4_account_number',
-        'first_name',
-        'middle_initial',
-        'last_name',
-        'phone_number',
-        'address',
+        'main_applicant_full_name',
+        'joint_applicant_full_name',
+        'main_applicant_address',
+        'joint_applicant_address',
         'credit_limit',
-        'balance',
-        'open_to_buy',
-        'last_payment_date',
-        'last_payment_amount',
-        'payment_due_date',
-        'payment_due_amount',
+        'available_credit',
         'created_datetime',
         'modified_datetime',
     )

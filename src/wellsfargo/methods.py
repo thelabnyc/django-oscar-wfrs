@@ -5,7 +5,7 @@ from oscarapi.basket import operations
 from oscarapicheckout.methods import PaymentMethod, PaymentMethodSerializer
 from oscarapicheckout.states import Complete, Declined
 from requests.exceptions import Timeout, ConnectionError
-from .connector import actions
+from .connector import TransactionsAPIClient
 from .core.constants import (
     TRANS_DECLINED,
     TRANS_TYPE_AUTH,
@@ -71,8 +71,9 @@ class WellsFargo(PaymentMethod):
             amount=state_to_void.amount,
             type_code=TRANS_TYPE_AUTH_AND_CHARGE_TIMEOUT_REVERSAL)
         current_user = request.user if request.user and request.user.is_authenticated else None
+        client = TransactionsAPIClient(current_user=current_user)
         try:
-            actions.submit_transaction(cancel_trans_request, current_user=current_user, transaction_uuid=None, persist=False)
+            client.submit_transaction(cancel_trans_request, transaction_uuid=None, persist=False)
         except (Timeout, ConnectionError) as e:
             logger.warning('Failed to void WFRS transaction for Order[{}]. Reason: {}'.format(order.number, str(e)))
 
@@ -143,15 +144,19 @@ class WellsFargo(PaymentMethod):
         exc = None
         for i in range(max_attempts):
             # Try to submit the transaction
+            client = TransactionsAPIClient(current_user=current_user)
             try:
-                transfer = actions.submit_transaction(trans_request, current_user=current_user, transaction_uuid=transaction_uuid)
+                transfer = client.submit_transaction(trans_request,
+                    transaction_uuid=transaction_uuid)
                 return transfer
 
             # If the transaction times out for some reason, cancel it and then try again.
             except (Timeout, ConnectionError) as e:
                 exc = e
                 logger.warning('WFRS transaction failed for Order[{}]: {}'.format(trans_request.ticket_number, e))
-                actions.submit_transaction(cancel_trans_request, current_user=current_user, transaction_uuid=transaction_uuid, persist=False)
+                client.submit_transaction(cancel_trans_request,
+                    transaction_uuid=transaction_uuid,
+                    persist=False)
                 logger.warning('Canceled transaction for Order[{}] due to previous error.'.format(trans_request.ticket_number))
 
         # We couldn't perform the transaction successfully in the allotted time, so bubble up the last exception thrown.

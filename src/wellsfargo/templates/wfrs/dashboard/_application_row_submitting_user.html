@@ -1,6 +1,6 @@
 {% spaceless %}
-    {% if record.submitting_user_username and record.submitting_user_id %}
-        <a href="{% url 'dashboard:user-detail' pk=record.submitting_user_id %}">{{ record.submitting_user_full_name | default:record.submitting_user_username }}</a>
+    {% if record.submitting_user %}
+        <a href="{% url 'dashboard:user-detail' pk=record.submitting_user.id %}">{{ record.submitting_user.get_full_name | default:record.submitting_user.username }}</a>
     {% else %}
         —
     {% endif %}

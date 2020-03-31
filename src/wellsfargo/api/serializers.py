@@ -1,26 +1,23 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError as DRFValidationError
-from rest_framework.reverse import reverse
 from ipware import get_client_ip
 from oscar.core.loading import get_model
-from ..connector import actions
+from ..connector import (
+    PrequalAPIClient,
+    CreditApplicationsAPIClient,
+    AccountsAPIClient,
+)
 from ..core.constants import (
-    US, CA,
-    INDIVIDUAL, JOINT,
-    ENGLISH, FRENCH,
-    APPLICATION_FORM_EXCLUDE_FIELDS,
     PREQUAL_TRANS_STATUS_CHOICES,
     PREQUAL_CUSTOMER_RESP_NONE,
 )
 from ..core import exceptions as core_exceptions
 from ..models import (
+    CreditApplicationAddress,
+    CreditApplicationApplicant,
+    CreditApplication,
     FinancingPlan,
-    USCreditApp,
-    USJointCreditApp,
-    CACreditApp,
-    CAJointCreditApp,
     AccountInquiryResult,
     PreQualificationRequest,
     PreQualificationResponse,
@@ -39,34 +36,120 @@ SourceType = get_model('payment', 'SourceType')
 Transaction = get_model('payment', 'Transaction')
 
 
-class AppSelectionSerializer(serializers.ModelSerializer):
+
+class CreditApplicationAddressSerializer(serializers.ModelSerializer):
     class Meta:
-        model = USCreditApp
-        fields = ('region', 'app_type')
+        model = CreditApplicationAddress
+        fields = [
+            'address_line_1',
+            'address_line_2',
+            'city',
+            'state_code',
+            'postal_code',
+        ]
+        extra_kwargs = {
+            'address_line_2': { 'required': False, 'allow_null': True, },
+        }
 
 
-class BaseCreditAppSerializer(serializers.ModelSerializer):
+
+class CreditApplicationApplicantSerializer(serializers.ModelSerializer):
+    address = CreditApplicationAddressSerializer()
+
+    class Meta:
+        model = CreditApplicationApplicant
+        fields = [
+            'first_name',
+            'last_name',
+            'middle_initial',
+            'date_of_birth',
+            'ssn',
+            'annual_income',
+            'email_address',
+            'home_phone',
+            'mobile_phone',
+            'work_phone',
+            'employer_name',
+            'housing_status',
+            'address',
+        ]
+        extra_kwargs = {
+            'middle_initial': { 'required': False, 'allow_null': True, },
+            'email_address': { 'required': False, 'allow_null': True, },
+            'mobile_phone': { 'required': False, 'allow_null': True, },
+            'work_phone': { 'required': False, 'allow_null': True, },
+            'employer_name': { 'required': False, 'allow_null': True, },
+            'housing_status': { 'required': False, 'allow_null': True, },
+        }
+
+
+
+class CreditApplicationSerializer(serializers.ModelSerializer):
+    main_applicant = CreditApplicationApplicantSerializer()
+    joint_applicant = CreditApplicationApplicantSerializer(required=False, allow_null=True)
+
+    class Meta:
+        model = CreditApplication
+        fields = [
+            'transaction_code',
+            'reservation_number',
+            'application_id',
+            'requested_credit_limit',
+            'language_preference',
+            'salesperson',
+            'main_applicant',
+            'joint_applicant',
+            'application_source',
+        ]
+        extra_kwargs = {
+            'transaction_code': { 'required': False, },
+            'reservation_number': { 'required': False, 'allow_null': True, },
+            'application_id': { 'required': False, 'allow_null': True, },
+            'requested_credit_limit': { 'required': False, 'allow_null': True, },
+            'language_preference': { 'required': False, },
+            'salesperson': { 'required': False, },
+            'application_source': { 'required': False, },
+        }
+
+
     def save(self):
         request = self.context['request']
-
         request_user = None
         if request.user and request.user.is_authenticated:
             request_user = request.user
 
-        # Build application class and save record to DB to record the attempt
-        Application = self.Meta.model
-        app = Application(**self.validated_data)
+        # Build the main applicant object
+        self.validated_data['main_applicant']['address'] = CreditApplicationAddress.objects.create(
+            **self.validated_data['main_applicant']['address'],
+        )
+        self.validated_data['main_applicant'] = CreditApplicationApplicant.objects.create(
+            **self.validated_data['main_applicant'],
+        )
+
+        # Build the joint applicant object
+        if self.validated_data.get('joint_applicant'):
+            self.validated_data['joint_applicant']['address'] = CreditApplicationAddress.objects.create(
+                **self.validated_data['joint_applicant']['address'],
+            )
+            self.validated_data['joint_applicant'] = CreditApplicationApplicant.objects.create(
+                **self.validated_data['joint_applicant'],
+            )
+
+        # Build the application object
+        app = CreditApplication(
+            **self.validated_data
+        )
 
         # Store the ip address of user sending the request
         app.ip_address, _ = get_client_ip(request)
-
         app.user = request_user
         app.submitting_user = request_user
         app.save()
 
         # Submit application to to Wells
+        client = CreditApplicationsAPIClient(current_user=request_user)
         try:
-            result = actions.submit_credit_application(app, current_user=request_user)
+            result = client.submit_credit_application(app)
         except core_exceptions.CreditApplicationPending as e:
             pending = api_exceptions.CreditApplicationPending()
             pending.inquiry = e.inquiry
@@ -75,75 +158,10 @@ class BaseCreditAppSerializer(serializers.ModelSerializer):
             raise api_exceptions.CreditApplicationDenied()
         except DjangoValidationError as e:
             raise DRFValidationError({
-                'non_field_errors': [e.message]
+                'non_field_errors': [str(m) for m in e.messages],
             })
         return result
 
-
-class USCreditAppSerializer(BaseCreditAppSerializer):
-    region = serializers.ChoiceField(default=US, choices=(
-        (US, _('United States')),
-    ))
-    app_type = serializers.ChoiceField(default=INDIVIDUAL, choices=(
-        (INDIVIDUAL, _('Individual')),
-    ))
-    language = serializers.ChoiceField(default=ENGLISH, choices=(
-        (ENGLISH, _('English')),
-    ))
-
-    class Meta:
-        model = USCreditApp
-        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
-
-
-class USJointCreditAppSerializer(BaseCreditAppSerializer):
-    region = serializers.ChoiceField(default=US, choices=(
-        (US, _('United States')),
-    ))
-    app_type = serializers.ChoiceField(default=JOINT, choices=(
-        (JOINT, _('Joint')),
-    ))
-    language = serializers.ChoiceField(default=ENGLISH, choices=(
-        (ENGLISH, _('English')),
-    ))
-
-    class Meta:
-        model = USJointCreditApp
-        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
-
-
-class CACreditAppSerializer(BaseCreditAppSerializer):
-    region = serializers.ChoiceField(default=CA, choices=(
-        (CA, _('Canada')),
-    ))
-    app_type = serializers.ChoiceField(default=INDIVIDUAL, choices=(
-        (INDIVIDUAL, _('Individual')),
-    ))
-    language = serializers.ChoiceField(default=ENGLISH, choices=(
-        (ENGLISH, _('English')),
-        (FRENCH, _('French')),
-    ))
-
-    class Meta:
-        model = CACreditApp
-        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
-
-
-class CAJointCreditAppSerializer(BaseCreditAppSerializer):
-    region = serializers.ChoiceField(default=CA, choices=(
-        (CA, _('Canada')),
-    ))
-    app_type = serializers.ChoiceField(default=JOINT, choices=(
-        (JOINT, _('Joint')),
-    ))
-    language = serializers.ChoiceField(default=ENGLISH, choices=(
-        (ENGLISH, _('English')),
-        (FRENCH, _('French')),
-    ))
-
-    class Meta:
-        model = CAJointCreditApp
-        exclude = APPLICATION_FORM_EXCLUDE_FIELDS
 
 
 class FinancingPlanSerializer(serializers.ModelSerializer):
@@ -161,6 +179,7 @@ class FinancingPlanSerializer(serializers.ModelSerializer):
         )
 
 
+
 class EstimatedPaymentSerializer(serializers.Serializer):
     plan = FinancingPlanSerializer()
     principal = serializers.DecimalField(decimal_places=2, max_digits=12)
@@ -168,25 +187,21 @@ class EstimatedPaymentSerializer(serializers.Serializer):
     loan_cost = serializers.DecimalField(decimal_places=2, max_digits=12)
 
 
+
 class AccountInquirySerializer(serializers.ModelSerializer):
     account_number = serializers.RegexField('^[0-9]{16}$', max_length=16, min_length=16)
+    main_applicant_address = CreditApplicationAddressSerializer(read_only=True)
+    joint_applicant_address = CreditApplicationAddressSerializer(read_only=True)
 
     class Meta:
         model = AccountInquiryResult
         read_only_fields = (
-            'status',
-            'first_name',
-            'middle_initial',
-            'last_name',
-            'phone_number',
-            'address',
+            'main_applicant_full_name',
+            'joint_applicant_full_name',
+            'main_applicant_address',
+            'joint_applicant_address',
             'credit_limit',
-            'balance',
-            'open_to_buy',
-            'last_payment_date',
-            'last_payment_amount',
-            'payment_due_date',
-            'payment_due_amount',
+            'available_credit',
             'created_datetime',
             'modified_datetime',
         )
@@ -202,14 +217,16 @@ class AccountInquirySerializer(serializers.ModelSerializer):
 
         # Submit inquiry to Wells
         account_number = self.validated_data['account_number']
+        client = AccountsAPIClient(current_user=request_user)
         try:
-            result = actions.submit_inquiry(account_number, current_user=request_user)
+            result = client.lookup_account_by_account_number(account_number)
         except DjangoValidationError as e:
             raise DRFValidationError({
-                'account_number': [e.message]
+                'account_number': [str(m) for m in e.messages],
             })
 
         return result
+
 
 
 class PreQualificationRequestSerializer(serializers.ModelSerializer):
@@ -236,15 +253,15 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
         request_user = None
         if request.user and request.user.is_authenticated:
             request_user = request.user
-        return_url = reverse('wfrs-api-prequal-app-complete', request=request)
+        client = PrequalAPIClient(current_user=request_user)
         try:
-            actions.check_pre_qualification_status(prequal_request, return_url=return_url, current_user=request_user)
+            client.check_prescreen_status(prequal_request)
         except DjangoValidationError as e:
             raise DRFValidationError({
-                'non_field_errors': [e.message]
+                'non_field_errors': [str(m) for m in e.messages],
             })
-
         return prequal_request
+
 
 
 class PreQualificationSDKApplicationResultSerializer(serializers.ModelSerializer):
@@ -260,6 +277,7 @@ class PreQualificationSDKApplicationResultSerializer(serializers.ModelSerializer
             'last_name',
             'application_status',
         )
+
 
 
 class PreQualificationRequestInlineSerializer(serializers.ModelSerializer):
@@ -282,6 +300,7 @@ class PreQualificationRequestInlineSerializer(serializers.ModelSerializer):
         fields = read_only_fields
 
 
+
 class PreQualificationResponseSerializer(serializers.ModelSerializer):
     request = PreQualificationRequestInlineSerializer(read_only=True)
     sdk_application_result = PreQualificationSDKApplicationResultSerializer(read_only=True)
@@ -302,6 +321,7 @@ class PreQualificationResponseSerializer(serializers.ModelSerializer):
             'modified_datetime',
         )
         fields = read_only_fields + ('customer_response', )
+
 
 
 class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):

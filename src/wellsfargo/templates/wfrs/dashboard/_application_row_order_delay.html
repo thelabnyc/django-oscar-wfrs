@@ -1,7 +1,7 @@
 {% load i18n %}
 {% spaceless %}
     {% load wfrs_filters %}
-    {% with record.object.get_first_order as order %}
+    {% with record.get_first_order as order %}
         {% if order %}
             <span title="{% blocktrans trimmed with placed_on=order.date_placed time_diff=record.created_datetime|timesince:order.date_placed %}
                 Order placed on {{ placed_on }}, {{ time_diff }} after initial credit application.

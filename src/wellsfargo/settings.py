@@ -12,21 +12,26 @@ def overridable(name, default=None, required=False, cast=None):
     return value
 
 
-# SOAP service for sending transaction requests to WFRS
-WFRS_TRANSACTION_WSDL = overridable('WFRS_TRANSACTION_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitTransactionService?WSDL')
+# WFRS Gateway API Company ID
+WFRS_GATEWAY_COMPANY_ID = overridable('WFRS_GATEWAY_COMPANY_ID', '')
 
-# SOAP service for obtaining account status information from WFRS
-WFRS_INQUIRY_WSDL = overridable('WFRS_INQUIRY_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitInquiryService?WSDL')
+# WFRS Gateway API Entity ID
+WFRS_GATEWAY_ENTITY_ID = overridable('WFRS_GATEWAY_ENTITY_ID', '')
 
-# SOAP service for applying for a new Wells Fargo account
-WFRS_CREDIT_APP_WSDL = overridable('WFRS_CREDIT_APP_WSDL', 'https://retailservices-uat.wellsfargo.com/services/SubmitCreditAppService?WSDL')
+# Hostname to use when connecting to the WFRS Gateway API
+WFRS_GATEWAY_API_HOST = overridable('WFRS_GATEWAY_API_HOST', 'api-sandbox.wellsfargo.com')
 
-# SOAP service for checking account pre-qualification status
-WFRS_PRE_QUAL_WSDL = overridable('WFRS_PRE_QUAL_WSDL', 'https://retailservices-uat.wellsfargo.com/services/WFRS_InstantPreScreenService?WSDL')
+# Consumer Key used when generating API keys for the WFRS Gateway API
+WFRS_GATEWAY_CONSUMER_KEY = overridable('WFRS_GATEWAY_CONSUMER_KEY', '')
 
-# SOAP service for checking account pre-qualification application status (the status of an account after the user was pre-qualified)
-WFRS_OTB_WSDL = overridable('WFRS_OTB_WSDL', 'https://retailservices-uat.wellsfargo.com/services/WFRS_SubmitOTBService?WSDL')
+# Consumer Secret used when generating API keys for the WFRS Gateway API
+WFRS_GATEWAY_CONSUMER_SECRET = overridable('WFRS_GATEWAY_CONSUMER_SECRET', '')
 
+# File path to the TLS client cert used for WFRS Gateway API authentication
+WFRS_GATEWAY_CLIENT_CERT_PATH = overridable('WFRS_GATEWAY_CLIENT_CERT_PATH', None)
+
+# File path to the private key for the TLS client cert (corresponding to WFRS_GATEWAY_CLIENT_CERT_PATH)
+WFRS_GATEWAY_PRIV_KEY_PATH = overridable('WFRS_GATEWAY_PRIV_KEY_PATH', None)
 
 # Encryption settings (used to protect account numbers stored in the database)
 WFRS_SECURITY = {
@@ -42,7 +47,6 @@ if WFRS_SECURITY['encryptor'] == 'wellsfargo.security.fernet.FernetEncryption':
             "You must supply a value for WFRS_SECURITY['encryptor_kwargs']['key'] in settings. "
             "See https://cryptography.io/en/latest/fernet/ for details."
         ))
-
 
 # Fraud Protection Settings
 WFRS_FRAUD_PROTECTION = {
