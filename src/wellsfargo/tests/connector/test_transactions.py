@@ -54,7 +54,8 @@ class TransactionsAPIClientTest(BaseTest):
 
         # Should return a valid transfer object
         self.assertEqual(transfer.user, self.joe)
-        self.assertEqual(transfer.credentials, self.credentials)
+        self.assertEqual(transfer.merchant_name, self.credentials.name)
+        self.assertEqual(transfer.merchant_num, self.credentials.merchant_num)
         self.assertEqual(transfer.merchant_reference, 'c17381a3-22fa-4463-8b0a-a3c18f6c4a44')
         self.assertEqual(transfer.amount, Decimal('2159.99'))
         self.assertEqual(transfer.type_code, '5')

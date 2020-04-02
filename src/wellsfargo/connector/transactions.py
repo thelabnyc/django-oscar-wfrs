@@ -10,7 +10,7 @@ from ..core.constants import (
     TRANS_TYPE_VOID_RETURN,
 )
 from wellsfargo.core.exceptions import TransactionDenied
-from ..models import APICredentials, FinancingPlan, TransferMetadata
+from ..models import APIMerchantNum, FinancingPlan, TransferMetadata
 from ..utils import as_decimal
 from .client import WFRSGatewayAPIClient
 import uuid
@@ -25,7 +25,7 @@ class TransactionsAPIClient(WFRSGatewayAPIClient):
 
     def submit_transaction(self, trans_request, transaction_uuid=None, persist=True):
         api_path = self.get_api_path(trans_request)
-        creds = APICredentials.get_credentials(self.current_user)
+        creds = APIMerchantNum.get_for_user(self.current_user)
         # Submit transaction to WFRS
         trans_request_data = {
             "locale": trans_request.locale,
@@ -49,7 +49,8 @@ class TransactionsAPIClient(WFRSGatewayAPIClient):
         # Persist transaction data and WF specific metadata
         transfer = TransferMetadata()
         transfer.user = trans_request.user
-        transfer.credentials = creds
+        transfer.merchant_name = creds.name
+        transfer.merchant_num = creds.merchant_num
         transfer.account_number = resp_data.get('account_number', trans_request.account_number)
         transfer.merchant_reference = transaction_uuid
         transfer.amount = as_decimal(resp_data.get('amount', trans_request.amount))

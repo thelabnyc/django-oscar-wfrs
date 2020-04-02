@@ -27,7 +27,6 @@ from ..core.fields import (
     DateOfBirthField,
 )
 from .mixins import MaybeAccountNumberMixin
-from .creds import APICredentials
 from .transfers import TransferMetadata
 from .utils import _max_len
 
@@ -91,7 +90,7 @@ class CreditApplicationApplicant(models.Model):
         max_length=_max_len(HOUSING_STATUSES),
         choices=HOUSING_STATUSES,
         help_text=_("The applicant’s housing status."))
-    address = models.ForeignKey(CreditApplicationAddress,
+    address = models.ForeignKey('wellsfargo.CreditApplicationAddress',
         verbose_name=_("Address"),
         related_name='+',
         on_delete=models.CASCADE,
@@ -126,12 +125,12 @@ class CreditApplication(MaybeAccountNumberMixin, models.Model):
         help_text=_("Alphanumeric value associated with the salesperson."))
 
     # Main applicant data
-    main_applicant = models.ForeignKey(CreditApplicationApplicant,
+    main_applicant = models.ForeignKey('wellsfargo.CreditApplicationApplicant',
         verbose_name=_("Main Applicant"),
         related_name='+',
         on_delete=models.CASCADE,
         help_text=_("The main applicant’s personal details."))
-    joint_applicant = models.ForeignKey(CreditApplicationApplicant,
+    joint_applicant = models.ForeignKey('wellsfargo.CreditApplicationApplicant',
         verbose_name=_("Joint Applicant"),
         null=True,
         blank=True,
@@ -147,12 +146,10 @@ class CreditApplication(MaybeAccountNumberMixin, models.Model):
         help_text=_("Application Status"))
 
     # Internal Metadata
-    credentials = models.ForeignKey(APICredentials,
-        null=True, blank=True,
-        verbose_name=_("Merchant"),
-        help_text=_("Which merchant account submitted this application?"),
-        related_name='+',
-        on_delete=models.SET_NULL)
+    merchant_name = NullCharField(_('Merchant Name'),
+        max_length=200)
+    merchant_num = NullCharField(_('Merchant Number'),
+        max_length=200)
     application_source = models.CharField(_("Application Source"),
         default=_('Website'),
         max_length=25,
@@ -237,7 +234,7 @@ class CreditApplication(MaybeAccountNumberMixin, models.Model):
         return self._first_order_cache
 
 
-    def get_first_order_merchant(self):
+    def get_first_order_merchant_name(self):
         Transaction = get_model('payment', 'Transaction')
         order = self.get_first_order()
         if not order:
@@ -250,4 +247,4 @@ class CreditApplication(MaybeAccountNumberMixin, models.Model):
                     transfers.append(transfer)
         if len(transfers) <= 0:
             return None
-        return transfers[0].credentials
+        return transfers[0].merchant_name

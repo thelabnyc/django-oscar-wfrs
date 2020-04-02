@@ -236,7 +236,6 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
             'uuid',
             'merchant_name',
             'merchant_num',
-            'credentials',
             'ip_address',
             'created_datetime',
             'modified_datetime',
@@ -375,7 +374,6 @@ class PreQualificationSDKResponseSerializer(serializers.ModelSerializer):
         request.ip_address, _ = get_client_ip(self.context['request'])
         request.merchant_name = self.validated_data['merchant_name']
         request.merchant_num = self.validated_data['merchant_num']
-        request.credentials = None  # Set credentials to None since this request was made client-side via the WFRS PLCCA SDK
         request.save()
         if self.validated_data['response_id']:
             response = PreQualificationResponse()

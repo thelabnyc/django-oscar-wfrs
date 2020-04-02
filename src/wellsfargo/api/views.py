@@ -156,7 +156,7 @@ class SubmitAccountInquiryView(generics.GenericAPIView):
 
 class PreQualificationSDKMerchantNumView(generics.GenericAPIView):
     def get(self, request):
-        creds = SDKMerchantNum.get_credentials(request.user)
+        creds = SDKMerchantNum.get_for_user(request.user)
         return Response({
             'merchant_name': creds.name,
             'merchant_num': creds.merchant_num,

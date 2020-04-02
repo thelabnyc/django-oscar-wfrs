@@ -10,7 +10,7 @@ from wellsfargo.models import (
     CreditApplicationAddress,
     CreditApplicationApplicant,
     CreditApplication,
-    APICredentials,
+    APIMerchantNum,
 )
 
 
@@ -29,9 +29,7 @@ class BaseTest(APITestCase):
             is_staff=True,
             is_superuser=True,
             email='bill@example.com')
-        self.credentials = APICredentials.objects.create(
-            username='WF1111111111111111',
-            password='FOOBAR',
+        self.credentials = APIMerchantNum.objects.create(
             merchant_num='1111111111111111',
             user_group=None,
             priority=1)

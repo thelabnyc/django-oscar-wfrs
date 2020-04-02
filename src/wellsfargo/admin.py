@@ -15,14 +15,10 @@ class ReadOnlyAdmin(admin.ModelAdmin):
         return False
 
 
-@admin.register(models.APICredentials)
-class APICredentialsAdmin(admin.ModelAdmin):
-    list_display = ['priority', 'username', 'merchant_num', 'user_group']
-
-
+@admin.register(models.APIMerchantNum)
 @admin.register(models.SDKMerchantNum)
-class SDKMerchantNumAdmin(admin.ModelAdmin):
-    list_display = ['priority', 'merchant_num', 'user_group']
+class MerchantNumAdmin(admin.ModelAdmin):
+    list_display = ['name', 'merchant_num', 'priority', 'user_group']
 
 
 @admin.register(models.FinancingPlan)

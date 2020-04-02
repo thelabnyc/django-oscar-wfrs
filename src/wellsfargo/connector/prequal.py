@@ -3,7 +3,7 @@ from ..core.constants import (
     PREQUAL_TRANS_STATUS_ERROR,
     PREQUAL_CUSTOMER_RESP_NONE,
 )
-from ..models import APICredentials, PreQualificationResponse
+from ..models import APIMerchantNum, PreQualificationResponse
 from ..utils import as_decimal, format_phone, format_date, remove_null_dict_keys
 from .client import WFRSGatewayAPIClient
 import logging
@@ -18,7 +18,7 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
 
 
     def check_prescreen_status(self, prequal_request, return_url=None):
-        creds = APICredentials.get_credentials(self.current_user)
+        creds = APIMerchantNum.get_for_user(self.current_user)
         # Build request data
         request_data = {
             "merchant_number": creds.merchant_num,
@@ -47,7 +47,6 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
         # Save the credentials used to make the request
         prequal_request.merchant_name = creds.name
         prequal_request.merchant_num = creds.merchant_num
-        prequal_request.credentials = creds
         prequal_request.save()
         # Send the request to WF
         resp = self.api_post('/credit-cards/private-label/new-accounts/v2/prequalifications',

@@ -17,7 +17,6 @@ from ..core.constants import (
     get_prequal_trans_status_name,
 )
 from ..core.fields import USStateField, USZipCodeField
-from .creds import APICredentials
 from .transfers import TransferMetadata
 from .utils import _max_len
 import uuid
@@ -45,11 +44,6 @@ class PreQualificationRequest(models.Model):
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     merchant_name = NullCharField(_('Merchant Name'), max_length=200)
     merchant_num = NullCharField(_('Merchant Number'), max_length=200)
-    credentials = models.ForeignKey(APICredentials,
-        verbose_name=_("API Credentials"),
-        related_name='prequal_requests',
-        null=True, blank=True,
-        on_delete=models.SET_NULL)
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)
 
@@ -149,8 +143,7 @@ class PreQualificationRequest(models.Model):
                     transfers.append(transfer)
         if len(transfers) <= 0:
             return None
-        credentials = transfers[0].credentials
-        return credentials.name if credentials else None
+        return transfers[0].merchant_name
 
 
     @property

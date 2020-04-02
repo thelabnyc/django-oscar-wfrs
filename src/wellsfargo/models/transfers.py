@@ -3,14 +3,13 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from oscar.core.loading import get_model
+from oscar.models.fields import NullCharField
 from ..core.constants import (
     TRANS_TYPE_AUTH,
     TRANS_TYPES,
     TRANS_STATUSES,
 )
 from .mixins import AccountNumberMixin
-from .creds import APICredentials
-from .plans import FinancingPlan
 
 
 
@@ -23,16 +22,13 @@ class TransferMetadata(AccountNumberMixin, models.Model):
         related_name='wfrs_transfers',
         null=True, blank=True,
         on_delete=models.CASCADE)
-    credentials = models.ForeignKey(APICredentials,
-        verbose_name=_("API Credentials"),
-        related_name='transfers',
-        null=True, blank=True,
-        on_delete=models.SET_NULL)
+    merchant_name = NullCharField(_('Merchant Name'), max_length=200)
+    merchant_num = NullCharField(_('Merchant Number'), max_length=200)
     merchant_reference = models.CharField(max_length=128, null=True)
     amount = models.DecimalField(decimal_places=2, max_digits=12)
     type_code = models.CharField(_("Transaction Type"), choices=TRANS_TYPES, max_length=2)
     ticket_number = models.CharField(_("Ticket Number"), null=True, blank=True, max_length=12)
-    financing_plan = models.ForeignKey(FinancingPlan,
+    financing_plan = models.ForeignKey('wellsfargo.FinancingPlan',
         verbose_name=_("Plan Number"),
         null=True, blank=False,
         on_delete=models.SET_NULL)

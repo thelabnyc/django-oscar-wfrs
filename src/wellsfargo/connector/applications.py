@@ -9,7 +9,7 @@ from ..core.exceptions import (
     CreditApplicationPending,
 )
 from ..models import (
-    APICredentials,
+    APIMerchantNum,
     AccountInquiryResult,
 )
 from ..utils import (
@@ -31,7 +31,7 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
 
 
     def submit_credit_application(self, credit_app):
-        creds = APICredentials.get_credentials(self.current_user)
+        creds = APIMerchantNum.get_for_user(self.current_user)
         # Submit transaction to WFRS
         main_applicant = {
             "first_name": credit_app.main_applicant.first_name,
@@ -94,6 +94,8 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
             json=request_data)
         resp.raise_for_status()
         resp_data = resp.json()
+        credit_app.merchant_name = creds.name
+        credit_app.merchant_num = creds.merchant_num
         credit_app.status = resp_data['application_status']
         credit_app.save()
 

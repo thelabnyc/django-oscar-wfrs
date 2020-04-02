@@ -6,7 +6,7 @@ from oscar.test import factories
 from wellsfargo.tests.base import BaseTest
 from wellsfargo.core.constants import TRANS_TYPE_AUTH, TRANS_APPROVED
 from wellsfargo.models import (
-    APICredentials,
+    APIMerchantNum,
     TransferMetadata,
     FinancingPlan,
     FinancingPlanBenefit,
@@ -23,57 +23,45 @@ OfferGroup = get_model('offer', 'OfferGroup')
 Applicator = get_class('offer.applicator', 'Applicator')
 
 
-class APICredentialsTest(BaseTest):
+class APIMerchantNumTest(BaseTest):
     def test_selection_no_user(self):
-        APICredentials.objects.create(
-            username='credsA',
-            password='',
-            merchant_num='',
+        APIMerchantNum.objects.create(
+            merchant_num='0000',
             user_group=None,
             priority=1)
-        APICredentials.objects.create(
-            username='credsB',
-            password='',
-            merchant_num='',
+        APIMerchantNum.objects.create(
+            merchant_num='1111',
             user_group=None,
             priority=2)
-        self.assertEqual(APICredentials.get_credentials().username, 'credsB')
+        self.assertEqual(APIMerchantNum.get_for_user().merchant_num, '1111')
 
 
     def test_selection_user_no_group(self):
-        APICredentials.objects.create(
-            username='credsA',
-            password='',
-            merchant_num='',
+        APIMerchantNum.objects.create(
+            merchant_num='0000',
             user_group=None,
             priority=1)
-        APICredentials.objects.create(
-            username='credsB',
-            password='',
-            merchant_num='',
+        APIMerchantNum.objects.create(
+            merchant_num='1111',
             user_group=None,
             priority=2)
-        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsB')
+        self.assertEqual(APIMerchantNum.get_for_user(self.joe).merchant_num, '1111')
 
     def test_selection_user_group(self):
         group = Group.objects.create(name='Special Group')
-        APICredentials.objects.create(
-            username='credsA',
-            password='',
-            merchant_num='',
+        APIMerchantNum.objects.create(
+            merchant_num='0000',
             user_group=None,
             priority=1)
-        APICredentials.objects.create(
-            username='credsB',
-            password='',
-            merchant_num='',
+        APIMerchantNum.objects.create(
+            merchant_num='1111',
             user_group=group,
             priority=2)
-        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsA')
+        self.assertEqual(APIMerchantNum.get_for_user(self.joe).merchant_num, '0000')
         self.joe.groups.add(group)
-        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsB')
+        self.assertEqual(APIMerchantNum.get_for_user(self.joe).merchant_num, '1111')
         self.joe.groups.remove(group)
-        self.assertEqual(APICredentials.get_credentials(self.joe).username, 'credsA')
+        self.assertEqual(APIMerchantNum.get_for_user(self.joe).merchant_num, '0000')
 
 
 
@@ -81,7 +69,8 @@ class TransferMetadataTest(BaseTest):
     def test_account_number(self):
         transfer = TransferMetadata()
         transfer.user = self.joe
-        transfer.credentials = self.credentials
+        transfer.merchant_name = self.credentials.name
+        transfer.merchant_num = self.credentials.merchant_num
         transfer.merchant_reference = uuid.uuid1()
         transfer.amount = Decimal('10.00')
         transfer.type_code = TRANS_TYPE_AUTH

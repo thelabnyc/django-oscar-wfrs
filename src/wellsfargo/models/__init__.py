@@ -1,6 +1,6 @@
 from .accounts import *  # NOQA
 from .apps import *  # NOQA
-from .creds import *  # NOQA
+from .merchants import *  # NOQA
 from .fraud import *  # NOQA
 from .mixins import *  # NOQA
 from .plans import *  # NOQA

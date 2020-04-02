@@ -1,5 +1,5 @@
 from ..models import (
-    APICredentials,
+    APIMerchantNum,
     AccountInquiryResult,
     CreditApplicationAddress,
 )
@@ -73,7 +73,7 @@ class AccountsAPIClient(WFRSGatewayAPIClient):
 
     def _do_account_lookup(self, **kwargs):
         # Assemble request data
-        creds = APICredentials.get_credentials(self.current_user)
+        creds = APIMerchantNum.get_for_user(self.current_user)
         request_data = {
             "locale": "en_US",
             "merchant_number": creds.merchant_num,
