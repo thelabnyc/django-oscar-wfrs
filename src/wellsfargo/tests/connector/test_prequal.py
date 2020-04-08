@@ -1,6 +1,5 @@
 from decimal import Decimal
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from wellsfargo.connector.prequal import PrequalAPIClient
 from wellsfargo.models import PreQualificationRequest
 from wellsfargo.tests.base import BaseTest
@@ -36,7 +35,6 @@ class PrequalAPIClientTest(BaseTest):
                     },
                 },
                 "entry_point": "WEB",
-                "consent_datetime": timezone.now().strftime('%Y-%m-%d'),
             })
             return True
 

@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.urls import reverse
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from ipware import get_client_ip
@@ -254,7 +255,8 @@ class PreQualificationRequestSerializer(serializers.ModelSerializer):
             request_user = request.user
         client = PrequalAPIClient(current_user=request_user)
         try:
-            client.check_prescreen_status(prequal_request)
+            return_url = request.build_absolute_uri(reverse('wfrs-api-prequal-app-complete'))
+            client.check_prescreen_status(prequal_request, return_url=return_url)
         except DjangoValidationError as e:
             raise DRFValidationError({
                 'non_field_errors': [str(m) for m in e.messages],

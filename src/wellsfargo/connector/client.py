@@ -76,8 +76,14 @@ class WFRSGatewayAPIClient:
         'PLCCA-Account-Details',
     ]
 
-    cache_key = 'wfrs-gateway-api-key'
     cache_version = 1
+
+
+    @property
+    def cache_key(self):
+        return 'wfrs-gateway-api-key-{api_host}-{consumer_key}'.format(
+            api_host=self.api_host,
+            consumer_key=self.consumer_key)
 
 
     def api_get(self, path, **kwargs):

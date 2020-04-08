@@ -44,7 +44,7 @@ class CreditApplicationsAPIClientTest(BaseTest):
                 },
                 "merchant_number": "1111111111111111",
                 "requested_credit_limit": 2000,
-                "transaction_code": "MAH"
+                "transaction_code": "A6"
             })
             return True
 
@@ -106,7 +106,7 @@ class CreditApplicationsAPIClientTest(BaseTest):
                         "postal_code": "10001",
                         "state_code": "NY"
                     },
-                    # "annual_income": 150000,
+                    "annual_income": 150000,
                     "date_of_birth": "1991-01-01",
                     "email_address": "foo@example.com",
                     "employer_name": "self",
@@ -120,7 +120,7 @@ class CreditApplicationsAPIClientTest(BaseTest):
                 },
                 "merchant_number": "1111111111111111",
                 "requested_credit_limit": 2000,
-                "transaction_code": "MAH"
+                "transaction_code": "A6"
             })
             return True
 

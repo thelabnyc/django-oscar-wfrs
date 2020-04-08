@@ -71,7 +71,7 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
                 "middle_initial": credit_app.joint_applicant.middle_initial,
                 "date_of_birth": format_date(credit_app.joint_applicant.date_of_birth),
                 "ssn": format_ssn(credit_app.joint_applicant.ssn),
-                # "annual_income": credit_app.joint_applicant.annual_income,
+                "annual_income": credit_app.joint_applicant.annual_income,
                 "email_address": credit_app.joint_applicant.email_address,
                 "mobile_phone": format_phone(credit_app.joint_applicant.mobile_phone),
                 "home_phone": format_phone(credit_app.joint_applicant.home_phone),

@@ -4,9 +4,10 @@ from ..core.constants import (
     PREQUAL_CUSTOMER_RESP_NONE,
 )
 from ..models import APIMerchantNum, PreQualificationResponse
-from ..utils import as_decimal, format_phone, format_date, remove_null_dict_keys
+from ..utils import as_decimal, format_phone, remove_null_dict_keys
 from .client import WFRSGatewayAPIClient
 import logging
+import urllib.parse
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,6 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
             },
             "entry_point": prequal_request.entry_point,
             "requested_credit_limit": None,
-            "consent_datetime": format_date(prequal_request.created_datetime),
             "return_URL": return_url,
         }
         request_data = remove_null_dict_keys(request_data)
@@ -62,7 +62,7 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
         response.offer_indicator = resp_data.get('offer_indicator', '')
         response.credit_limit = as_decimal(resp_data.get('max_credit_limit', '0.00'))
         response.response_id = resp_data.get('application_id', '')
-        response.application_url = resp_data.get('URL', '')
+        response.application_url = urllib.parse.unquote(resp_data.get('URL', ''))
         response.customer_response = PREQUAL_CUSTOMER_RESP_NONE
         response.save()
         return response

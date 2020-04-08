@@ -18,7 +18,7 @@ from ..core.constants import (
     CREDIT_APP_STATUSES,
     HOUSING_STATUSES,
     CREDIT_APP_TRANS_CODES,
-    CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_ONLINE,
+    CREDIT_APP_TRANS_CODE_CREDIT_APPLICATION,
     LANGUAGES,
     ENGLISH,
 )
@@ -102,7 +102,7 @@ class CreditApplication(MaybeAccountNumberMixin, models.Model):
     transaction_code = models.CharField(_('Transaction Code'),
         max_length=_max_len(CREDIT_APP_TRANS_CODES),
         choices=CREDIT_APP_TRANS_CODES,
-        default=CREDIT_APP_TRANS_CODE_MERCHANT_HOSTED_ONLINE,
+        default=CREDIT_APP_TRANS_CODE_CREDIT_APPLICATION,
         help_text=_("Indicates where the transaction takes place."))
     reservation_number = NullCharField(_('Reservation Number'),
         max_length=20,
