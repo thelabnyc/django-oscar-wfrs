@@ -34,67 +34,49 @@ from .utils import _max_len
 
 class CreditApplicationAddress(models.Model):
     address_line_1 = models.CharField(_("Address Line 1"),
-        max_length=26,
-        help_text=_("The street address line 1. This cannot contain a PO Box."))
+        max_length=26)
     address_line_2 = NullCharField(_("Address Line 2"),
-        max_length=26,
-        help_text=_("The street address line 2."))
+        max_length=26)
     city = models.CharField(_("City"),
-        max_length=18,
-        help_text=_("The city component of the address."))
-    state_code = USStateField(_("State"),
-        help_text=_("The two-letter US state code component of the address."))
+        max_length=18)
+    state_code = USStateField(_("State"))
     postal_code = USZipCodeField(_("Postcode"),
-        validators=[MinLengthValidator(5), MaxLengthValidator(5)],
-        help_text=_("US ZIP Code."))
+        validators=[MinLengthValidator(5), MaxLengthValidator(5)])
 
 
 
 class CreditApplicationApplicant(models.Model):
     first_name = models.CharField(_("First Name"),
-        max_length=15,
-        help_text=_("The applicant’s first name."))
+        max_length=15)
     last_name = models.CharField(_("Last Name"),
-        max_length=20,
-        help_text=_("The applicant’s last name."))
+        max_length=20)
     middle_initial = NullCharField(_("Middle Initial"),
-        max_length=1,
-        help_text=_("The applicant’s middle initial."))
-    date_of_birth = DateOfBirthField(_("Date of Birth"),
-        help_text=_("The applicant’s date of birth."))
-    ssn = USSocialSecurityNumberField(_("Social Security Number"),
-        help_text=_("The applicant’s Social Security Number."))
+        max_length=1)
+    date_of_birth = DateOfBirthField(_("Date of Birth"))
+    ssn = USSocialSecurityNumberField(_("Social Security Number"))
     annual_income = models.IntegerField(_("Annual Income"),
-        validators=[MinValueValidator(0), MaxValueValidator(999999)],
-        help_text=_("The applicant’s annual income."))
+        validators=[MinValueValidator(0), MaxValueValidator(999999)])
     email_address = models.EmailField(_("Email"),
         max_length=50,
         null=True,
         blank=True,
-        validators=[MinLengthValidator(7)],
-        help_text=_("The applicant’s email address."))
-    home_phone = PhoneNumberField(_("Home Phone"),
-        help_text=_("The applicant’s home phone number."))
+        validators=[MinLengthValidator(7)])
+    home_phone = PhoneNumberField(_("Home Phone"))
     mobile_phone = PhoneNumberField(_("Mobile Phone"),
         null=True,
-        blank=True,
-        help_text=_("The applicant’s mobile phone number."))
+        blank=True)
     work_phone = PhoneNumberField(_("Work Phone"),
         null=True,
-        blank=True,
-        help_text=_("The applicant’s work phone number."))
+        blank=True)
     employer_name = NullCharField(_("Employer Name"),
-        max_length=30,
-        help_text=_("The name of the applicant’s employer."))
+        max_length=30)
     housing_status = NullCharField(_("Housing Status"),
         max_length=_max_len(HOUSING_STATUSES),
-        choices=HOUSING_STATUSES,
-        help_text=_("The applicant’s housing status."))
+        choices=HOUSING_STATUSES)
     address = models.ForeignKey('wellsfargo.CreditApplicationAddress',
         verbose_name=_("Address"),
         related_name='+',
-        on_delete=models.CASCADE,
-        help_text=_("The applicant’s address."))
+        on_delete=models.CASCADE)
 
 
 
