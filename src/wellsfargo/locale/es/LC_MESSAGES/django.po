@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-02 18:05+0000\n"
+"POT-Creation-Date: 2020-04-15 17:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -324,7 +324,7 @@ msgid "Customer Initiated?"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:53 wellsfargo/dashboard/tables.py:152
-#: wellsfargo/models/apps.py:54 wellsfargo/models/prequal.py:35
+#: wellsfargo/models/apps.py:49 wellsfargo/models/prequal.py:35
 #: wellsfargo/models/prequal.py:243
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:10
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:84
@@ -333,7 +333,7 @@ msgid "First Name"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:54 wellsfargo/dashboard/tables.py:155
-#: wellsfargo/models/apps.py:57 wellsfargo/models/prequal.py:37
+#: wellsfargo/models/apps.py:51 wellsfargo/models/prequal.py:37
 #: wellsfargo/models/prequal.py:244
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:14
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:92
@@ -354,21 +354,21 @@ msgid "Application Type"
 msgstr ""
 
 #: wellsfargo/dashboard/tables.py:29 wellsfargo/dashboard/tables.py:148
-#: wellsfargo/models/apps.py:149 wellsfargo/models/merchants.py:10
+#: wellsfargo/models/apps.py:131 wellsfargo/models/merchants.py:10
 #: wellsfargo/models/prequal.py:45 wellsfargo/models/transfers.py:25
 msgid "Merchant Name"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:32 wellsfargo/models/apps.py:153
+#: wellsfargo/dashboard/tables.py:32 wellsfargo/models/apps.py:135
 msgid "Application Source"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:35 wellsfargo/models/apps.py:160
+#: wellsfargo/dashboard/tables.py:35 wellsfargo/models/apps.py:142
 msgid "Owner"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:43 wellsfargo/models/apps.py:142
-#: wellsfargo/models/apps.py:146 wellsfargo/models/prequal.py:245
+#: wellsfargo/dashboard/tables.py:43 wellsfargo/models/apps.py:124
+#: wellsfargo/models/apps.py:128 wellsfargo/models/prequal.py:245
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:191
 msgid "Application Status"
 msgstr ""
@@ -463,7 +463,7 @@ msgstr ""
 msgid "UUID"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:158 wellsfargo/models/apps.py:94
+#: wellsfargo/dashboard/tables.py:158 wellsfargo/models/apps.py:77
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:29
 msgid "Address"
 msgstr ""
@@ -481,7 +481,7 @@ msgstr ""
 msgid "SDK Application Result"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:175 wellsfargo/models/apps.py:151
+#: wellsfargo/dashboard/tables.py:175 wellsfargo/models/apps.py:133
 #: wellsfargo/models/merchants.py:11 wellsfargo/models/prequal.py:46
 #: wellsfargo/models/transfers.py:26
 msgid "Merchant Number"
@@ -653,254 +653,182 @@ msgstr ""
 msgid "Address Line 1"
 msgstr ""
 
-#: wellsfargo/models/apps.py:38
-msgid "The street address line 1. This cannot contain a PO Box."
-msgstr ""
-
-#: wellsfargo/models/apps.py:39 wellsfargo/models/prequal.py:39
+#: wellsfargo/models/apps.py:38 wellsfargo/models/prequal.py:39
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:100
 msgid "Address Line 2"
 msgstr ""
 
-#: wellsfargo/models/apps.py:41
-msgid "The street address line 2."
-msgstr ""
-
-#: wellsfargo/models/apps.py:42 wellsfargo/models/prequal.py:40
+#: wellsfargo/models/apps.py:40 wellsfargo/models/prequal.py:40
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:40
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:104
 msgid "City"
 msgstr ""
 
-#: wellsfargo/models/apps.py:44
-msgid "The city component of the address."
-msgstr ""
-
-#: wellsfargo/models/apps.py:45 wellsfargo/models/prequal.py:41
+#: wellsfargo/models/apps.py:42 wellsfargo/models/prequal.py:41
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:44
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:108
 msgid "State"
 msgstr ""
 
-#: wellsfargo/models/apps.py:46
-msgid "The two-letter US state code component of the address."
-msgstr ""
-
-#: wellsfargo/models/apps.py:47 wellsfargo/models/prequal.py:42
+#: wellsfargo/models/apps.py:43 wellsfargo/models/prequal.py:42
 msgid "Postcode"
 msgstr ""
 
-#: wellsfargo/models/apps.py:49
-msgid "US ZIP Code."
-msgstr ""
-
-#: wellsfargo/models/apps.py:56
-msgid "The applicant’s first name."
-msgstr ""
-
-#: wellsfargo/models/apps.py:59
-msgid "The applicant’s last name."
-msgstr ""
-
-#: wellsfargo/models/apps.py:60 wellsfargo/models/prequal.py:36
+#: wellsfargo/models/apps.py:53 wellsfargo/models/prequal.py:36
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:18
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:88
 msgid "Middle Initial"
 msgstr ""
 
-#: wellsfargo/models/apps.py:62
-msgid "The applicant’s middle initial."
-msgstr ""
-
-#: wellsfargo/models/apps.py:63
+#: wellsfargo/models/apps.py:55
 msgid "Date of Birth"
 msgstr ""
 
-#: wellsfargo/models/apps.py:64
-msgid "The applicant’s date of birth."
-msgstr ""
-
-#: wellsfargo/models/apps.py:65
+#: wellsfargo/models/apps.py:56
 msgid "Social Security Number"
 msgstr ""
 
-#: wellsfargo/models/apps.py:66
-msgid "The applicant’s Social Security Number."
-msgstr ""
-
-#: wellsfargo/models/apps.py:67
+#: wellsfargo/models/apps.py:57
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:84
 msgid "Annual Income"
 msgstr ""
 
-#: wellsfargo/models/apps.py:69
-msgid "The applicant’s annual income."
-msgstr ""
-
-#: wellsfargo/models/apps.py:70 wellsfargo/models/prequal.py:34
+#: wellsfargo/models/apps.py:59 wellsfargo/models/prequal.py:34
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:80
 msgid "Email"
 msgstr ""
 
-#: wellsfargo/models/apps.py:75
-msgid "The applicant’s email address."
-msgstr ""
-
-#: wellsfargo/models/apps.py:76
+#: wellsfargo/models/apps.py:64
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:62
 msgid "Home Phone"
 msgstr ""
 
-#: wellsfargo/models/apps.py:77
-msgid "The applicant’s home phone number."
-msgstr ""
-
-#: wellsfargo/models/apps.py:78
+#: wellsfargo/models/apps.py:65
 msgid "Mobile Phone"
 msgstr ""
 
-#: wellsfargo/models/apps.py:81
-msgid "The applicant’s mobile phone number."
-msgstr ""
-
-#: wellsfargo/models/apps.py:82
+#: wellsfargo/models/apps.py:68
 msgid "Work Phone"
 msgstr ""
 
-#: wellsfargo/models/apps.py:85
-msgid "The applicant’s work phone number."
-msgstr ""
-
-#: wellsfargo/models/apps.py:86
+#: wellsfargo/models/apps.py:71
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:88
 msgid "Employer Name"
 msgstr ""
 
-#: wellsfargo/models/apps.py:88
-msgid "The name of the applicant’s employer."
-msgstr ""
-
-#: wellsfargo/models/apps.py:89
+#: wellsfargo/models/apps.py:73
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:74
 msgid "Housing Status"
 msgstr ""
 
-#: wellsfargo/models/apps.py:92
-msgid "The applicant’s housing status."
-msgstr ""
-
-#: wellsfargo/models/apps.py:97
-msgid "The applicant’s address."
-msgstr ""
-
-#: wellsfargo/models/apps.py:102
+#: wellsfargo/models/apps.py:84
 msgid "Transaction Code"
 msgstr ""
 
-#: wellsfargo/models/apps.py:106
+#: wellsfargo/models/apps.py:88
 msgid "Indicates where the transaction takes place."
 msgstr ""
 
-#: wellsfargo/models/apps.py:107
+#: wellsfargo/models/apps.py:89
 msgid "Reservation Number"
 msgstr ""
 
-#: wellsfargo/models/apps.py:109
+#: wellsfargo/models/apps.py:91
 msgid "The unique code that correlates with the user’s reservation."
 msgstr ""
 
-#: wellsfargo/models/apps.py:110
+#: wellsfargo/models/apps.py:92
 msgid "Prequalified Application ID"
 msgstr ""
 
-#: wellsfargo/models/apps.py:112
+#: wellsfargo/models/apps.py:94
 msgid "An 8-character alphanumeric ID identifying the application."
 msgstr ""
 
-#: wellsfargo/models/apps.py:113
+#: wellsfargo/models/apps.py:95
 msgid "Requested Credit Limit"
 msgstr ""
 
-#: wellsfargo/models/apps.py:117
+#: wellsfargo/models/apps.py:99
 msgid ""
 "This denotes the total price value of the items that the applicant’s "
 "shopping cart."
 msgstr ""
 
-#: wellsfargo/models/apps.py:118
+#: wellsfargo/models/apps.py:100
 msgid "Language Preference"
 msgstr ""
 
-#: wellsfargo/models/apps.py:122
+#: wellsfargo/models/apps.py:104
 msgid "The main applicant’s language preference values"
 msgstr ""
 
-#: wellsfargo/models/apps.py:123
+#: wellsfargo/models/apps.py:105
 msgid "Sales Person ID"
 msgstr ""
 
-#: wellsfargo/models/apps.py:125
+#: wellsfargo/models/apps.py:107
 msgid "Alphanumeric value associated with the salesperson."
 msgstr ""
 
-#: wellsfargo/models/apps.py:129
+#: wellsfargo/models/apps.py:111
 #: wellsfargo/templates/wfrs/dashboard/application_detail.html:60
 msgid "Main Applicant"
 msgstr ""
 
-#: wellsfargo/models/apps.py:132
+#: wellsfargo/models/apps.py:114
 msgid "The main applicant’s personal details."
 msgstr ""
 
-#: wellsfargo/models/apps.py:134
+#: wellsfargo/models/apps.py:116
 msgid "Joint Applicant"
 msgstr ""
 
-#: wellsfargo/models/apps.py:139
+#: wellsfargo/models/apps.py:121
 msgid "The joint applicant’s details."
 msgstr ""
 
-#: wellsfargo/models/apps.py:154
+#: wellsfargo/models/apps.py:136
 msgid "Website"
 msgstr ""
 
-#: wellsfargo/models/apps.py:156
+#: wellsfargo/models/apps.py:138
 msgid "Where/how is user applying? E.g. Website, Call Center, In-Store, etc."
 msgstr ""
 
-#: wellsfargo/models/apps.py:161
+#: wellsfargo/models/apps.py:143
 msgid ""
 "Select the user user who is applying and who will own (be the primary user "
 "of) this account."
 msgstr ""
 
-#: wellsfargo/models/apps.py:164 wellsfargo/models/apps.py:167
+#: wellsfargo/models/apps.py:146 wellsfargo/models/apps.py:149
 msgid "Submitting User's IP Address"
 msgstr ""
 
-#: wellsfargo/models/apps.py:171
+#: wellsfargo/models/apps.py:153
 msgid "Submitting User"
 msgstr ""
 
-#: wellsfargo/models/apps.py:172
+#: wellsfargo/models/apps.py:154
 msgid ""
 "Select the user who filled out and submitted the credit application (not "
 "always the same as the user who is applying for credit)."
 msgstr ""
 
-#: wellsfargo/models/apps.py:175
+#: wellsfargo/models/apps.py:157
 msgid "Created Date/Time"
 msgstr ""
 
-#: wellsfargo/models/apps.py:177
+#: wellsfargo/models/apps.py:159
 msgid "Modified Date/Time"
 msgstr ""
 
-#: wellsfargo/models/apps.py:181
+#: wellsfargo/models/apps.py:163
 msgid "Wells Fargo Credit Application"
 msgstr ""
 
-#: wellsfargo/models/apps.py:182
+#: wellsfargo/models/apps.py:164
 msgid "Wells Fargo Credit Applications"
 msgstr ""
 
