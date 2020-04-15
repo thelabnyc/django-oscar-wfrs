@@ -3,6 +3,10 @@
 Changelog
 =========
 
+2.0.0
+------------------
+- Migrate from Wells Fargo's deprecated SOAP API to the new Gateway Private Label Credit Card HTTP API.
+
 1.0.0
 ------------------
 - Remove StatsD metrics

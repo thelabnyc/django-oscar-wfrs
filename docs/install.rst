@@ -131,14 +131,6 @@ Add ``wellsfargo.models.FinancingPlanBenefit`` to ``BLUELIGHT_BENEFIT_CLASSES`` 
         ('wellsfargo.models.FinancingPlanBenefit', 'Activate Wells Fargo Plan Number Group'),
     ]
 
-Configure to connect to either the UAT or the Production Wells Fargo Retail Services SOAP API.
-
-.. code-block:: python
-
-    WFRS_TRANSACTION_WSDL = 'https://retailservices-uat.wellsfargo.com/services/SubmitTransactionService?WSDL'
-    WFRS_INQUIRY_WSDL = 'https://retailservices-uat.wellsfargo.com/services/SubmitInquiryService?WSDL'
-    WFRS_CREDIT_APP_WSDL = 'https://retailservices-uat.wellsfargo.com/services/SubmitCreditAppService?WSDL'
-
 Configure an encryption key to use when encrypting Wells Fargo Account Numbers. By default this uses symmetric encryption by means of `Fernet <https://cryptography.io/en/latest/fernet/>`_. Alternatively, you may point to a different class implementing the same interface and do encryption by another means, like `KMS <https://aws.amazon.com/kms/>`_ (in which case you wouldn't need to specify a key argument). If you do use Fernet, keep in mind that…
 
 1. …the key should be a a 32-byte sequence that's been base64 encoded.
@@ -179,16 +171,3 @@ Add the ``django-oscar-wfrs`` views to your projects url configuration.
         # Include stock Oscar
         url(r'', include(oscar_application.urls)),
     ]
-
-Add your Wells Fargo Retail Services SOAP API credentials to the database. You can do this directly, or via the Django Admin at ``/admin/wellsfargo/apicredentials/``.
-
-.. code-block:: sql
-
-    INSERT INTO wellsfargo_apicredentials
-                (username,
-                 password,
-                 merchant_num,
-                 priority)
-    VALUES      ('WS000000000000000',
-                 'MY_WELLSFARGO_PASSWORD',
-                 '000000000000000');
