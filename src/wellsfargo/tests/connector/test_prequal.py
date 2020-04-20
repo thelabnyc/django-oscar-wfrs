@@ -21,7 +21,7 @@ class PrequalAPIClientTest(BaseTest):
             data = json.loads(request.body)
             self.assertEqual(data, {
                 "merchant_number": "1111111111111111",
-                "transaction_code": "P1",
+                "transaction_code": "MAH",
                 "main_applicant": {
                     "first_name": "Bruce",
                     "last_name": "Smith",
