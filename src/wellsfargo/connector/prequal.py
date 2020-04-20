@@ -18,7 +18,7 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
         self.current_user = current_user
 
 
-    def check_prescreen_status(self, prequal_request, return_url=None):
+    def check_prescreen_status(self, prequal_request):
         creds = APIMerchantNum.get_for_user(self.current_user)
         # Build request data
         request_data = {
@@ -41,7 +41,6 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
             },
             "entry_point": prequal_request.entry_point,
             "requested_credit_limit": None,
-            "return_URL": return_url,
         }
         request_data = remove_null_dict_keys(request_data)
         # Save the credentials used to make the request

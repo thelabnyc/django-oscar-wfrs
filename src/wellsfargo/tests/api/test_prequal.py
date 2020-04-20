@@ -39,14 +39,6 @@ class PreQualificationRequestTest(BaseTest):
         self.assertEqual(response.data['credit_limit'], '8500.00')
         self.assertEqual(response.data['customer_response'], '')
 
-        url = "{}?A=41".format(reverse('wfrs-api-prequal-app-complete'))
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertInHTML('<h1>Your Wells Fargo application was approved.</h1>', response.content.decode())
-        self.assertInHTML('<p>Your account number is 5774422280000257.</p>', response.content.decode())
-        self.assertInHTML('<p>Your credit limit is 18000.00.</p>', response.content.decode())
-
         # Check if IPAddress was stored
         prequal_request = PreQualificationRequest.objects.first()
         self.assertEqual(prequal_request.ip_address, self.ip_address)
@@ -102,12 +94,6 @@ class PreQualificationRequestTest(BaseTest):
         self.assertEqual(response.data['credit_limit'], '8500.00')
         self.assertEqual(response.data['customer_response'], '')
 
-        url = reverse('wfrs-api-prequal-app-complete')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertInHTML('<h1>Your Wells Fargo application was not approved.</h1>', response.content.decode())
-
         # Check if IPAddress was stored
         prequal_request = PreQualificationRequest.objects.first()
         self.assertEqual(prequal_request.ip_address, self.ip_address)
@@ -137,12 +123,6 @@ class PreQualificationRequestTest(BaseTest):
         self.assertEqual(response.data['message'], 'APPROVED')
         self.assertEqual(response.data['credit_limit'], '8500.00')
         self.assertEqual(response.data['customer_response'], '')
-
-        url = "{}?A=41".format(reverse('wfrs-api-prequal-app-complete'))
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertInHTML('<h1>Your Wells Fargo application was not approved.</h1>', response.content.decode())
 
         # Check if IPAddress was stored
         prequal_request = PreQualificationRequest.objects.first()
