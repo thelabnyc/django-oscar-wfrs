@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-15 17:05+0000\n"
+"POT-Creation-Date: 2020-04-20 21:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,12 +26,11 @@ msgstr ""
 msgid "Credit Application was denied by Wells Fargo"
 msgstr ""
 
-#: wellsfargo/api/views.py:79
+#: wellsfargo/api/views.py:77
 msgid "Submitted price parameter was not valid."
 msgstr ""
 
-#: wellsfargo/api/views.py:270 wellsfargo/api/views.py:274
-#: wellsfargo/api/views.py:289 wellsfargo/api/views.py:293
+#: wellsfargo/api/views.py:268 wellsfargo/api/views.py:272
 msgid "No pre-qualification response was found for this session."
 msgstr ""
 
@@ -1088,38 +1087,6 @@ msgstr ""
 
 #: wellsfargo/templates/oscar/dashboard/users/detail.html:24
 msgid "View All Submitted Applications"
-msgstr ""
-
-#: wellsfargo/templates/wfrs/api/prequal-redirect-approved.html:4
-msgid "Application Approved"
-msgstr ""
-
-#: wellsfargo/templates/wfrs/api/prequal-redirect-approved.html:7
-msgid "Your Wells Fargo application was approved."
-msgstr ""
-
-#: wellsfargo/templates/wfrs/api/prequal-redirect-approved.html:9
-#, python-format
-msgid ""
-"\n"
-"                Your account number is %(account_number)s.\n"
-"            "
-msgstr ""
-
-#: wellsfargo/templates/wfrs/api/prequal-redirect-approved.html:14
-#, python-format
-msgid ""
-"\n"
-"                Your credit limit is %(credit_limit)s.\n"
-"            "
-msgstr ""
-
-#: wellsfargo/templates/wfrs/api/prequal-redirect-not-approved.html:4
-msgid "Application Not Approved"
-msgstr ""
-
-#: wellsfargo/templates/wfrs/api/prequal-redirect-not-approved.html:7
-msgid "Your Wells Fargo application was not approved."
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:22
