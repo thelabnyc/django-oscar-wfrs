@@ -23,15 +23,15 @@ class PrequalAPIClientTest(BaseTest):
                 "merchant_number": "1111111111111111",
                 "transaction_code": "MAH",
                 "main_applicant": {
-                    "first_name": "Bruce",
-                    "last_name": "Smith",
+                    "first_name": "Demo",
+                    "last_name": "Tester",
                     "phone_number": "2122091333",
                     "email": "demo@wellsfargo.com",
                     "address": {
-                        "address_line_1": "304 Buckels",
-                        "city": "Houston",
-                        "state_code": "PA",
-                        "postal_code": "15342",
+                        "address_line_1": "800 Walnut St",
+                        "city": "Des Moines",
+                        "state_code": "IA",
+                        "postal_code": "50309",
                     },
                 },
                 "entry_point": "WEB",
@@ -42,12 +42,12 @@ class PrequalAPIClientTest(BaseTest):
 
         request = PreQualificationRequest()
         request.email = 'demo@wellsfargo.com'
-        request.first_name = 'Bruce'
-        request.last_name = 'Smith'
-        request.line1 = '304 Buckels'
-        request.city = 'Houston'
-        request.state = 'PA'
-        request.postcode = '15342'
+        request.first_name = 'Demo'
+        request.last_name = 'Tester'
+        request.line1 = '800 Walnut St'
+        request.city = 'Des Moines'
+        request.state = 'IA'
+        request.postcode = '50309'
         request.phone = '+1 (212) 209-1333'
         request.save()
 
@@ -60,7 +60,7 @@ class PrequalAPIClientTest(BaseTest):
         self.assertEqual(resp.offer_indicator, '')
         self.assertEqual(resp.credit_limit, Decimal('8500.00'))
         self.assertEqual(resp.response_id, '000005EP')
-        self.assertEqual(resp.application_url, 'https://localhost/ipscr.do?id=u64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.')
+        self.assertEqual(resp.application_url, '')
         self.assertEqual(resp.customer_response, '')
 
 

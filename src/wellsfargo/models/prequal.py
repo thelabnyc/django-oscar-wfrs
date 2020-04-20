@@ -170,7 +170,7 @@ class PreQualificationRequest(models.Model):
 class PreQualificationResponse(models.Model):
     request = models.OneToOneField(PreQualificationRequest, related_name='response', on_delete=models.CASCADE)
     status = models.CharField(_('Transaction Status'),
-        max_length=_max_len(PREQUAL_TRANS_STATUS_CHOICES),
+        max_length=10,
         choices=PREQUAL_TRANS_STATUS_CHOICES)
     message = models.TextField(_('Message'))
     offer_indicator = models.CharField(_('Offer Indicator'), max_length=20)

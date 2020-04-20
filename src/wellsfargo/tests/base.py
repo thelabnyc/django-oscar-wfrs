@@ -193,7 +193,7 @@ class BaseTest(APITestCase):
                 "application_id": "000005EP",
                 "max_credit_limit": "8500",
                 "decision_message": "APPROVED",
-                "URL": "https://localhost/ipscr.do?id=u64RVNDAAAAICbmCjLaoQIJNSOJhojOkEssokkO3WvGBqdOxl_4BfA.",
+                "URL": "",
             },
             **kwargs)
 
