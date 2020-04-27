@@ -113,7 +113,7 @@ class BaseTest(APITestCase):
                 "merchant_number": "1111111111111111",
                 "transaction_code": "C1",
                 "unique_id": "00001DGh",
-                "account_number": "5774422280000257",
+                "account_number": "2222222222222222",
                 "transaction_status": "H1",
                 "available_credit": "14455.00",
                 "credit_limit": "18000.00",
@@ -138,7 +138,7 @@ class BaseTest(APITestCase):
                 "merchant_number": "1111111111111111",
                 "transaction_code": "C4",
                 "unique_id": "00001DGh",
-                "account_number": "5774422280000257",
+                "account_number": "2222222222222222",
                 "transaction_status": "H1",
                 "available_credit": "14455.00",
                 "credit_limit": "18000.00",
@@ -179,6 +179,17 @@ class BaseTest(APITestCase):
                         'api_specification_url': 'https://devstore.wellsfargo.com/store',
                     },
                 ],
+            },
+            **kwargs)
+
+
+    def mock_pending_individual_account_inquiry(self, rmock, **kwargs):
+        rmock.post('https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/details',
+            json={
+                "merchant_number": "1111111111111111",
+                "message": "Pending",
+                "transaction_code": "C4",
+                "transaction_status": "H7",
             },
             **kwargs)
 

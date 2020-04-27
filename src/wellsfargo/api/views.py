@@ -144,6 +144,8 @@ class SubmitAccountInquiryView(generics.GenericAPIView):
         request_ser = self.get_serializer_class()(data=request.data, context={'request': request})
         request_ser.is_valid(raise_exception=True)
         result = request_ser.save()
+        if result is None:
+            return Response(status=status.HTTP_204_NO_CONTENT)
         # Update the session to have the new inquiry ID
         request.session[INQUIRY_SESSION_KEY] = result.pk
         # Return the results

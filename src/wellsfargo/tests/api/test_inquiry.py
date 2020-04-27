@@ -13,12 +13,12 @@ class CreditLineInquiryTest(BaseTest):
 
         url = reverse('wfrs-api-acct-inquiry')
         data = {
-            'account_number': '5774422280000257'
+            'account_number': '2222222222222222'
         }
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['account_number'], '5774422280000257')
+        self.assertEqual(response.data['account_number'], '2222222222222222')
         self.assertEqual(response.data['main_applicant_full_name'], 'Schmoe, Joe')
         self.assertEqual(response.data['joint_applicant_full_name'], 'Schmoe, Karen')
         self.assertEqual(response.data['main_applicant_address'], {
@@ -46,9 +46,24 @@ class CreditLineInquiryTest(BaseTest):
 
         url = reverse('wfrs-api-acct-inquiry')
         data = {
-            'account_number': '5774422280000257'
+            'account_number': '2222222222222222'
         }
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['account_number'], ["'account_number' cannot have fewer than 15 character(s)."])
+
+
+    @requests_mock.Mocker()
+    def test_inquiry_still_pending(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_pending_individual_account_inquiry(rmock)
+
+        url = reverse('wfrs-api-acct-inquiry')
+        data = {
+            'account_number': '2222222222222222'
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data, None)

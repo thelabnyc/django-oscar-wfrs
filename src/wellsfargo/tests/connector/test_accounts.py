@@ -162,3 +162,13 @@ class AccountsAPIClientTest(BaseTest):
         with self.assertRaises(ValidationError):
             AccountsAPIClient().lookup_account_by_account_number(
                 account_number='9999')
+
+
+    @requests_mock.Mocker()
+    def test_lookup_account_by_account_number_account_still_pending(self, rmock):
+        self.mock_get_api_token_request(rmock)
+        self.mock_pending_individual_account_inquiry(rmock)
+
+        inquiry = AccountsAPIClient().lookup_account_by_account_number(
+            account_number='9999')
+        self.assertIsNone(inquiry)

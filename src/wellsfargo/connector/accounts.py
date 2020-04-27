@@ -112,6 +112,8 @@ class AccountsAPIClient(WFRSGatewayAPIClient):
                 state_code=resp_data['joint_applicant']['address'].get('state', ''),
                 postal_code=resp_data['joint_applicant']['address'].get('postal_code', ''))
         # Build response
+        if not resp_data.get('account_number'):
+            return None
         result = AccountInquiryResult()
         result.account_number = resp_data['account_number']
         result.main_applicant_full_name = resp_data.get('applicant', {}).get('name')
