@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import views, generics, status, serializers
 from oscarapi.basket import operations
 from ..models import (
+    APIMerchantNum,
     SDKMerchantNum,
     PreQualificationRequest,
     PreQualificationResponse,
@@ -156,7 +157,12 @@ class SubmitAccountInquiryView(generics.GenericAPIView):
 
 class PreQualificationSDKMerchantNumView(generics.GenericAPIView):
     def get(self, request):
-        creds = SDKMerchantNum.get_for_user(request.user)
+        # If this merchant number is used for following up on a prescreen offer, we have to use the API
+        # merchant num, not the SDK merchant num.
+        if request.GET.get('role') == 'prescreen':
+            creds = APIMerchantNum.get_for_user(request.user)
+        else:
+            creds = SDKMerchantNum.get_for_user(request.user)
         return Response({
             'merchant_name': creds.name,
             'merchant_num': creds.merchant_num,

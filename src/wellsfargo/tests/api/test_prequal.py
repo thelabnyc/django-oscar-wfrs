@@ -5,6 +5,38 @@ from wellsfargo.models import PreQualificationRequest
 import requests_mock
 
 
+class PreQualificationSDKMerchantNumViewTest(BaseTest):
+
+    def test_get_sdk_merchant_number_default(self):
+        url = reverse('wfrs-api-prequal-sdk-merchant-num')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {
+            'merchant_name': 'Default',
+            'merchant_num': '1111111111112222',
+        })
+
+
+    def test_get_sdk_merchant_number_following_prequal(self):
+        url = reverse('wfrs-api-prequal-sdk-merchant-num')
+        response = self.client.get(url + '?role=prequal')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {
+            'merchant_name': 'Default',
+            'merchant_num': '1111111111112222',
+        })
+
+
+    def test_get_sdk_merchant_number_following_prescreen(self):
+        url = reverse('wfrs-api-prequal-sdk-merchant-num')
+        response = self.client.get(url + '?role=prescreen')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {
+            'merchant_name': 'Default',
+            'merchant_num': '1111111111111111',
+        })
+
+
 
 class PreQualificationRequestTest(BaseTest):
 

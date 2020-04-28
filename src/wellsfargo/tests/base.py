@@ -11,6 +11,7 @@ from wellsfargo.models import (
     CreditApplicationApplicant,
     CreditApplication,
     APIMerchantNum,
+    SDKMerchantNum,
 )
 
 
@@ -31,6 +32,10 @@ class BaseTest(APITestCase):
             email='bill@example.com')
         self.credentials = APIMerchantNum.objects.create(
             merchant_num='1111111111111111',
+            user_group=None,
+            priority=1)
+        self.sdk_credentials = SDKMerchantNum.objects.create(
+            merchant_num='1111111111112222',
             user_group=None,
             priority=1)
         return super().setUp()
