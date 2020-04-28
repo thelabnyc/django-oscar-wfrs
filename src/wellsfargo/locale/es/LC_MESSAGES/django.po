@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 22:05+0000\n"
+"POT-Creation-Date: 2020-04-28 22:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,11 +26,11 @@ msgstr ""
 msgid "Credit Application was denied by Wells Fargo"
 msgstr ""
 
-#: wellsfargo/api/views.py:77
+#: wellsfargo/api/views.py:78
 msgid "Submitted price parameter was not valid."
 msgstr ""
 
-#: wellsfargo/api/views.py:270 wellsfargo/api/views.py:274
+#: wellsfargo/api/views.py:276 wellsfargo/api/views.py:280
 msgid "No pre-qualification response was found for this session."
 msgstr ""
 
