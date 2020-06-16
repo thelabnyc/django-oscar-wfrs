@@ -126,7 +126,7 @@ class UpdateAccountInquiryView(views.APIView):
         request_ser.is_valid(raise_exception=True)
         result = request_ser.save()
         # Update the inquiry source to match the original inquiry
-        result.credit_app = inquiry.credit_app
+        result.credit_app_source = inquiry.credit_app
         result.prequal_response_source = inquiry.prequal_response_source
         result.save()
         # Update the session to have the new inquiry ID
