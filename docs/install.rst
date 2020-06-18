@@ -15,8 +15,8 @@ In your project, if you haven't already done so, follow the installation instruc
 
 1. `django-oscar <https://django-oscar.readthedocs.io/en/releases-1.4/internals/getting_started.html#install-oscar-and-its-dependencies>`_
 2. `django-oscar-api <https://github.com/django-oscar/django-oscar-api>`_
-3. `django-oscar-api-checkout <https://gitlab.com/thelabnyc/django-oscar-api-checkout>`_
-4. `django-oscar-bluelight <https://gitlab.com/thelabnyc/django-oscar-bluelight>`_
+3. `django-oscar-api-checkout <https://gitlab.com/thelabnyc/django-oscar/django-oscar-api-checkout>`_
+4. `django-oscar-bluelight <https://gitlab.com/thelabnyc/django-oscar/django-oscar-bluelight>`_
 
 Installing
 ----------
