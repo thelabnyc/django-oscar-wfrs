@@ -3,6 +3,28 @@
 Changelog
 =========
 
+2.0.7
+------------------
+- Fix property name bug in UpdateAccountInquiryView
+
+2.0.6
+------------------
+
+2.0.5
+------------------
+
+2.0.4
+------------------
+
+2.0.3
+------------------
+
+2.0.2
+------------------
+
+2.0.1
+------------------
+
 2.0.0
 ------------------
 - Migrate from Wells Fargo's deprecated SOAP API to the new Gateway Private Label Credit Card HTTP API.
