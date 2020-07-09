@@ -3,6 +3,10 @@
 Changelog
 =========
 
+2.0.8
+------------------
+- Fix property name bug in UpdateAccountInquiryView
+
 2.0.7
 ------------------
 - Fix property name bug in UpdateAccountInquiryView
