@@ -2,7 +2,7 @@ from decimal import Decimal
 from django.core import exceptions
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from oscar.core.loading import get_model, get_class
 
 Benefit = get_model('offer', 'Benefit')

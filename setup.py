@@ -13,13 +13,14 @@ packages = find_packages('src')
 
 install_requires = [
     'cryptography>=2.1.4',
+    'django>=2.2',
+    'django-oscar>=2.1',
+    'django-oscar-api>=2.0.0',
+    'django-oscar-api-checkout>=2.0.0b2',
+    'django-oscar-bluelight>=2.0.0b1',
     'django-ipware>=2.1.0',
     'django-localflavor>=2.0',
-    'django-oscar-api-checkout>=0.6.0b1',
-    'django-oscar-api>=2.0.0',
-    'django-oscar-bluelight>=0.14.0b1',
-    'django-oscar>=2.0.0',
-    'djangorestframework>=3.9.0',
+    'djangorestframework>=3.10.0',
     'requests>=2.23.0',
 ]
 
@@ -64,7 +65,6 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 2.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Operating System :: Unix',

@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.html import strip_tags
 from django.views import generic
 from django_tables2 import SingleTableView

@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_tables2 import Column, TemplateColumn, DateTimeColumn, LinkColumn, A
 from oscar.apps.dashboard.tables import DashboardTable
 import pytz
