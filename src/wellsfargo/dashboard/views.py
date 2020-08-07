@@ -20,14 +20,21 @@ from ..models import (
     CreditApplication,
     TransferMetadata,
     PreQualificationRequest,
+    PreQualificationSDKApplicationResult,
 )
 from .forms import (
     FinancingPlanForm,
     FinancingPlanBenefitForm,
     ApplicationSearchForm,
     PreQualSearchForm,
+    SDKApplicationSearchForm,
 )
-from .tables import CreditApplicationTable, TransferMetadataTable, PreQualificationTable
+from .tables import (
+    CreditApplicationTable,
+    TransferMetadataTable,
+    PreQualificationTable,
+    SDKApplicationTable,
+)
 
 
 class CSVDownloadableTableMixin(object):
@@ -468,3 +475,76 @@ class PreQualificationDetailView(generic.DetailView):
 
     def get_queryset(self):
         return PreQualificationRequest.objects.all()
+
+
+
+class SDKApplicationListView(CSVDownloadableTableMixin, SingleTableView):
+    template_name = "wfrs/dashboard/sdk_application_list.html"
+    form_class = SDKApplicationSearchForm
+    table_class = SDKApplicationTable
+    context_table_name = 'applications'
+    filter_descrs = []
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form
+        context['search_filters'] = self.filter_descrs
+        return context
+
+
+    def get_description(self, form):
+        if form.is_valid() and any(form.cleaned_data.values()):
+            return _('SDK Credit Application Search Results')
+        return _('SDK Credit Applications')
+
+
+    def get_table(self, **kwargs):
+        table = super().get_table(**kwargs)
+        table.caption = self.get_description(self.form)
+        return table
+
+
+    def get_queryset(self):
+        qs = PreQualificationSDKApplicationResult.objects.get_queryset()
+        # Default ordering
+        if not self.request.GET.get('sort'):
+            qs = qs.order_by('-created_datetime', '-id')
+        # Apply search filters
+        qs = self.apply_search(qs)
+        return qs
+
+
+    def apply_search(self, qs):
+        self.filter_descrs = []
+        self.form = self.form_class(self.request.GET)
+        if not self.form.is_valid():
+            return qs
+        data = self.form.cleaned_data
+
+        # Basic search
+        search_text = data.get('search_text')
+        if search_text:
+            qs = qs.annotate(text=SearchVector(
+                'first_name',
+                'last_name',
+            ))
+            qs = qs.filter(text=search_text)
+            self.filter_descrs.append(_('Application contains “%(text)s”') % dict(text=search_text))
+
+        # Advanced Search
+        created_date_from = data.get('created_date_from')
+        if created_date_from:
+            qs = qs.filter(created_datetime__gte=created_date_from)
+            self.filter_descrs.append(_('Created after %(text)s') % dict(text=created_date_from))
+
+        created_date_to = data.get('created_date_to')
+        if created_date_to:
+            qs = qs.filter(created_datetime__lte=created_date_to)
+            self.filter_descrs.append(_('Created before %(text)s') % dict(text=created_date_to))
+
+        return qs
+
+
+    def get_download_filename(self, request):
+        return 'sdk-credit-applications.csv'

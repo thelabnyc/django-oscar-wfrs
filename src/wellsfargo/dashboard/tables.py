@@ -216,3 +216,42 @@ class PreQualificationTable(DashboardTable):
             'created_datetime',
             'response_reported_datetime',
         )
+
+
+
+class SDKApplicationTable(DashboardTable):
+    application_id = Column(
+        verbose_name=_('Application ID'),
+        orderable=False)
+    first_name = Column(
+        verbose_name=_('First Name'),
+        orderable=False)
+    last_name = Column(
+        verbose_name=_('Last Name'),
+        orderable=False)
+    application_status = Column(
+        verbose_name=_('Status'),
+        orderable=False)
+    prequal_details = TemplateColumn(
+        verbose_name=_('Pre-Qualification Details'),
+        template_name='wfrs/dashboard/_sdk_application_row_prequal_link.html',
+        orderable=False)
+    created_datetime = TZAwareDateTimeColumn(
+        verbose_name=_('Created On'),
+        order_by='created_datetime',
+        format='D, N j Y, P')
+    modified_datetime = TZAwareDateTimeColumn(
+        verbose_name=_('Last Modified On'),
+        order_by='modified_datetime',
+        format='D, N j Y, P')
+
+    class Meta(DashboardTable.Meta):
+        sequence = (
+            'application_id',
+            'first_name',
+            'last_name',
+            'application_status',
+            'prequal_details',
+            'created_datetime',
+            'modified_datetime',
+        )

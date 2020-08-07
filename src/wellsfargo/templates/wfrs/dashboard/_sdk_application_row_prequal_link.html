@@ -1,0 +1,9 @@
+{% spaceless %}
+    {% if record.prequal_request_uuid %}
+        <a href="{% url 'wfrs-prequal-detail' uuid=record.prequal_request_uuid %}">
+            {{ record.prequal_request_uuid }}
+        </a>
+    {% else %}
+        -
+    {% endif %}
+{% endspaceless %}

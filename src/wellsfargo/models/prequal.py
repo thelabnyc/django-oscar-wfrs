@@ -249,3 +249,9 @@ class PreQualificationSDKApplicationResult(models.Model):
     class Meta:
         verbose_name = _('Pre-Qualification SDK Application Result')
         verbose_name_plural = _('Pre-Qualification SDK Application Results')
+
+    @property
+    def prequal_request_uuid(self):
+        if self.prequal_response and self.prequal_response.request:
+            return self.prequal_response.request.uuid
+        return None

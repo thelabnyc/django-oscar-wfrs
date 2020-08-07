@@ -32,6 +32,7 @@ import decimal
 
 INQUIRY_SESSION_KEY = 'wfrs-acct-inquiry-id'
 PREQUAL_SESSION_KEY = 'wfrs-prequal-request-id'
+SDK_APP_RESULT_SESSION_KEY = 'wfrs-sdk-app-result-id'
 
 
 # This (non-atomic request) is needed because we use exceptions to bubble up the application pending / declined
@@ -237,35 +238,55 @@ class PreQualificationSDKResponseView(PreQualificationRequestView):
 class PreQualificationSDKApplicationResultView(generics.GenericAPIView):
     serializer_class = PreQualificationSDKApplicationResultSerializer
 
+
     def get(self, request):
-        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
-        if not prequal_request_id:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        try:
-            sdk_application_result = PreQualificationSDKApplicationResult.objects.get(prequal_response__request__id=prequal_request_id)
-        except PreQualificationSDKApplicationResult.DoesNotExist:
+        # Try to find an existing SDK app result for this session
+        sdk_application_result = self._get_sdk_app_result_from_session(request)
+        if sdk_application_result is None:
             return Response(status=status.HTTP_204_NO_CONTENT)
         response_ser = self.get_serializer_class()(instance=sdk_application_result, context={'request': request})
         return Response(response_ser.data)
 
 
     def post(self, request):
-        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
-        try:
-            instance = PreQualificationSDKApplicationResult.objects.get(prequal_response__request__id=prequal_request_id)
-        except PreQualificationSDKApplicationResult.DoesNotExist:
-            instance = None
+        # Try to find an existing SDK app result for this session
+        instance = self._get_sdk_app_result_from_session(request)
+        # Save the SDK app response data
         request_ser = self.get_serializer_class()(instance=instance, data=request.data, context={'request': request})
         request_ser.is_valid(raise_exception=True)
         sdk_application_result = request_ser.save()
+        # Try to associate the SDK app result with the PreQual response data
         try:
+            prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
             prequal_response = PreQualificationResponse.objects.get(request__id=prequal_request_id)
             sdk_application_result.prequal_response = prequal_response
             sdk_application_result.save()
         except PreQualificationResponse.DoesNotExist:
             pass
+        # Update the ID in the session
+        request.session[SDK_APP_RESULT_SESSION_KEY] = sdk_application_result.pk
+        # Return the SDK app result data
         response_ser = self.get_serializer_class()(instance=sdk_application_result, context={'request': request})
         return Response(response_ser.data)
+
+
+    def _get_sdk_app_result_from_session(self, request):
+        instance = None
+        # Try looking up PreQualificationSDKApplicationResult by ID stored in the session
+        sdk_app_result_id = request.session.get(SDK_APP_RESULT_SESSION_KEY)
+        if sdk_app_result_id is not None:
+            try:
+                instance = PreQualificationSDKApplicationResult.objects.get(pk=sdk_app_result_id)
+            except PreQualificationSDKApplicationResult.DoesNotExist:
+                pass
+        # Try looking up PreQualificationSDKApplicationResult by session's PreQualificationRequest ID
+        prequal_request_id = request.session.get(PREQUAL_SESSION_KEY)
+        if prequal_request_id is not None:
+            try:
+                instance = PreQualificationSDKApplicationResult.objects.get(prequal_response__request__id=prequal_request_id)
+            except PreQualificationSDKApplicationResult.DoesNotExist:
+                pass
+        return instance
 
 
 

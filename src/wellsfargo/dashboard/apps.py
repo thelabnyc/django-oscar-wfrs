@@ -25,6 +25,7 @@ class WFRSDashboardConfig(OscarDashboardConfig):
             TransferMetadataDetailView,
             PreQualificationListView,
             PreQualificationDetailView,
+            SDKApplicationListView,
         )
         urlpatterns = [
             url(r'^plans/$',
@@ -73,5 +74,9 @@ class WFRSDashboardConfig(OscarDashboardConfig):
             url(r'^prequal-requests/(?P<uuid>[A-Za-z0-9\-]+)/$',
                 PreQualificationDetailView.as_view(),
                 name='wfrs-prequal-detail'),
+
+            url(r'^sdk-applications/$',
+                SDKApplicationListView.as_view(),
+                name='wfrs-sdk-application-list'),
         ]
         return self.post_process_urls(urlpatterns)

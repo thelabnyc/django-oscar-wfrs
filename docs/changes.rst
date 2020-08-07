@@ -3,6 +3,12 @@
 Changelog
 =========
 
+3.0.0
+------------------
+- Add support for Oscar >= 2.1
+- Drop support for Oscar <= 2.0
+- Fix bug that occurred when saving an SDK application result which occurred without a related PreQual request/response.
+
 2.0.8
 ------------------
 - Fix property name bug in UpdateAccountInquiryView

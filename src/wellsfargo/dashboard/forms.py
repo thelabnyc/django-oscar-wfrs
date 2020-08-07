@@ -55,3 +55,12 @@ class PreQualSearchForm(forms.Form):
     status = forms.ChoiceField(required=False, label=_("Status"), choices=((('', _('All Statuses')), ) + PREQUAL_TRANS_STATUS_CHOICES))
     created_date_from = forms.DateTimeField(required=False, label=_("Submitted After"), widget=DateTimePickerInput)
     created_date_to = forms.DateTimeField(required=False, label=_("Submitted Before"), widget=DateTimePickerInput)
+
+
+class SDKApplicationSearchForm(forms.Form):
+    # Basic Search
+    search_text = forms.CharField(required=False, label=_("Search"))
+
+    # Advanced Search
+    created_date_from = forms.DateTimeField(required=False, label=_("Submitted After"), widget=DateTimePickerInput)
+    created_date_to = forms.DateTimeField(required=False, label=_("Submitted Before"), widget=DateTimePickerInput)
