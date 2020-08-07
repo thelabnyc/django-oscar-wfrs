@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 22:05+0000\n"
+"POT-Creation-Date: 2020-08-07 23:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,11 +26,11 @@ msgstr ""
 msgid "Credit Application was denied by Wells Fargo"
 msgstr ""
 
-#: wellsfargo/api/views.py:78
+#: wellsfargo/api/views.py:79
 msgid "Submitted price parameter was not valid."
 msgstr ""
 
-#: wellsfargo/api/views.py:276 wellsfargo/api/views.py:280
+#: wellsfargo/api/views.py:297 wellsfargo/api/views.py:301
 msgid "No pre-qualification response was found for this session."
 msgstr ""
 
@@ -269,7 +269,8 @@ msgid "Offer Presented By PLCCA SDK"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:33 wellsfargo/dashboard/forms.py:55
-#: wellsfargo/dashboard/tables.py:162 wellsfargo/models/transfers.py:36
+#: wellsfargo/dashboard/tables.py:162 wellsfargo/dashboard/tables.py:233
+#: wellsfargo/models/transfers.py:36
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:58
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:129
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:84
@@ -297,10 +298,12 @@ msgid "Applicant Phone Number"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:38 wellsfargo/dashboard/forms.py:56
+#: wellsfargo/dashboard/forms.py:65
 msgid "Submitted After"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:39 wellsfargo/dashboard/forms.py:57
+#: wellsfargo/dashboard/forms.py:66
 msgid "Submitted Before"
 msgstr ""
 
@@ -308,13 +311,16 @@ msgstr ""
 msgid "Submitted By"
 msgstr ""
 
-#: wellsfargo/dashboard/forms.py:49
+#: wellsfargo/dashboard/forms.py:49 wellsfargo/dashboard/forms.py:62
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:39
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:53
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:77
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:39
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:53
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:77
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:39
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:53
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:77
 msgid "Search"
 msgstr ""
 
@@ -323,8 +329,8 @@ msgid "Customer Initiated?"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:53 wellsfargo/dashboard/tables.py:152
-#: wellsfargo/models/apps.py:49 wellsfargo/models/prequal.py:35
-#: wellsfargo/models/prequal.py:243
+#: wellsfargo/dashboard/tables.py:227 wellsfargo/models/apps.py:49
+#: wellsfargo/models/prequal.py:35 wellsfargo/models/prequal.py:243
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:10
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:84
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:183
@@ -332,8 +338,8 @@ msgid "First Name"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:54 wellsfargo/dashboard/tables.py:155
-#: wellsfargo/models/apps.py:51 wellsfargo/models/prequal.py:37
-#: wellsfargo/models/prequal.py:244
+#: wellsfargo/dashboard/tables.py:230 wellsfargo/models/apps.py:51
+#: wellsfargo/models/prequal.py:37 wellsfargo/models/prequal.py:244
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:14
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:92
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:187
@@ -403,11 +409,12 @@ msgid "Order Merchant Name"
 msgstr ""
 
 #: wellsfargo/dashboard/tables.py:70 wellsfargo/dashboard/tables.py:122
-#: wellsfargo/dashboard/tables.py:192 wellsfargo/models/fraud.py:25
+#: wellsfargo/dashboard/tables.py:192 wellsfargo/dashboard/tables.py:240
+#: wellsfargo/models/fraud.py:25
 msgid "Created On"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:74
+#: wellsfargo/dashboard/tables.py:74 wellsfargo/dashboard/tables.py:244
 msgid "Last Modified On"
 msgstr ""
 
@@ -495,11 +502,20 @@ msgstr ""
 msgid "Reported On"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:159
+#: wellsfargo/dashboard/tables.py:224
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:179
+msgid "Application ID"
+msgstr ""
+
+#: wellsfargo/dashboard/tables.py:236
+msgid "Pre-Qualification Details"
+msgstr ""
+
+#: wellsfargo/dashboard/views.py:166
 msgid "Credit Application Search Results"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:160
+#: wellsfargo/dashboard/views.py:167
 #: wellsfargo/templates/oscar/dashboard/users/detail.html:12
 #: wellsfargo/templates/oscar/dashboard/users/detail.html:21
 #: wellsfargo/templates/wfrs/dashboard/application_detail.html:18
@@ -510,57 +526,57 @@ msgstr ""
 msgid "Credit Applications"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:217
+#: wellsfargo/dashboard/views.py:224 wellsfargo/dashboard/views.py:533
 #, python-format
 msgid "Application contains “%(text)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:223
+#: wellsfargo/dashboard/views.py:230
 #, python-format
 msgid "Status is “%(status)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:237
+#: wellsfargo/dashboard/views.py:244
 #, python-format
 msgid "Applicant name contains “%(name)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:249
+#: wellsfargo/dashboard/views.py:256
 #, python-format
 msgid "Applicant email contains “%(email)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:269
+#: wellsfargo/dashboard/views.py:276
 #, python-format
 msgid "Applicant address contains “%(address)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:285
+#: wellsfargo/dashboard/views.py:292
 #, python-format
 msgid "Phone number contains “%(phone)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:290
+#: wellsfargo/dashboard/views.py:297
 #, python-format
 msgid "Application submitted after %(date)s"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:295
+#: wellsfargo/dashboard/views.py:302
 #, python-format
 msgid "Application submitted before %(date)s"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:301
+#: wellsfargo/dashboard/views.py:308
 #, python-format
 msgid "Application owned by “%(name)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:308 wellsfargo/dashboard/views.py:318
+#: wellsfargo/dashboard/views.py:315 wellsfargo/dashboard/views.py:325
 #, python-format
 msgid "Application submitted by “%(name)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:341
+#: wellsfargo/dashboard/views.py:348
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:16
 #: wellsfargo/templates/wfrs/dashboard/transfer_list.html:9
 #: wellsfargo/templates/wfrs/dashboard/transfer_list.html:18
@@ -568,47 +584,58 @@ msgstr ""
 msgid "Transfers"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:380
+#: wellsfargo/dashboard/views.py:387
 msgid "Pre-Qualification Search Results"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:381 wellsfargo/models/prequal.py:52
+#: wellsfargo/dashboard/views.py:388 wellsfargo/models/prequal.py:52
 msgid "Pre-Qualification Requests"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:420
+#: wellsfargo/dashboard/views.py:427
 #, python-format
 msgid "Request contains “%(text)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:426
+#: wellsfargo/dashboard/views.py:433
 #, python-format
 msgid "Customer Initiated is “%(text)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:431
+#: wellsfargo/dashboard/views.py:438
 #, python-format
 msgid "First name is “%(text)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:436
+#: wellsfargo/dashboard/views.py:443
 #, python-format
 msgid "Last name is “%(text)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:444
+#: wellsfargo/dashboard/views.py:451
 #, python-format
 msgid "Status is “%(text)s”"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:449
+#: wellsfargo/dashboard/views.py:456 wellsfargo/dashboard/views.py:539
 #, python-format
 msgid "Created after %(text)s"
 msgstr ""
 
-#: wellsfargo/dashboard/views.py:454
+#: wellsfargo/dashboard/views.py:461 wellsfargo/dashboard/views.py:544
 #, python-format
 msgid "Created before %(text)s"
+msgstr ""
+
+#: wellsfargo/dashboard/views.py:498
+msgid "SDK Credit Application Search Results"
+msgstr ""
+
+#: wellsfargo/dashboard/views.py:499
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:9
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:18
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:26
+msgid "SDK Credit Applications"
 msgstr ""
 
 #: wellsfargo/models/accounts.py:10
@@ -1170,6 +1197,7 @@ msgstr ""
 #: wellsfargo/templates/wfrs/dashboard/plan_list.html:7
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:7
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:9
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:9
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:7
 #: wellsfargo/templates/wfrs/dashboard/transfer_list.html:9
 msgid "Wells Fargo"
@@ -1186,6 +1214,7 @@ msgstr ""
 #: wellsfargo/templates/wfrs/dashboard/plan_list.html:14
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:13
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:16
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:16
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:13
 #: wellsfargo/templates/wfrs/dashboard/transfer_list.html:16
 msgid "Dashboard"
@@ -1248,11 +1277,14 @@ msgstr ""
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:77
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:53
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:77
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:53
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:77
 msgid "Searching..."
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:54
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:54
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:54
 msgid "Reset"
 msgstr ""
 
@@ -1260,11 +1292,14 @@ msgstr ""
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:63
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:55
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:63
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:55
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:63
 msgid "Advanced Search"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:76
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:76
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:76
 msgid "Close"
 msgstr ""
 
@@ -1273,6 +1308,7 @@ msgid "Filters:"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:97
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:97
 msgid "No applications found."
 msgstr ""
 
@@ -1496,10 +1532,6 @@ msgstr ""
 msgid "SDK Credit Application Results"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:179
-msgid "Application ID"
-msgstr ""
-
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:205
 msgid "This consumer did not complete the Wells Fargo Credit Application."
 msgstr ""
@@ -1517,6 +1549,7 @@ msgid "This consumer did not place an order."
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:30
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:30
 msgid "Export Results"
 msgstr ""
 
