@@ -126,6 +126,8 @@ class UpdateAccountInquiryView(views.APIView):
         request_ser = AccountInquirySerializer(data={'account_number': account_number}, context={'request': request})
         request_ser.is_valid(raise_exception=True)
         result = request_ser.save()
+        if result is None:
+            return Response(status=status.HTTP_204_NO_CONTENT)
         # Update the inquiry source to match the original inquiry
         result.credit_app_source = inquiry.credit_app_source
         result.prequal_response_source = inquiry.prequal_response_source
