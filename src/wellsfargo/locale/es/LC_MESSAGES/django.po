@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-07 23:05+0000\n"
+"POT-Creation-Date: 2020-08-18 17:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Submitted price parameter was not valid."
 msgstr ""
 
-#: wellsfargo/api/views.py:297 wellsfargo/api/views.py:301
+#: wellsfargo/api/views.py:299 wellsfargo/api/views.py:303
 msgid "No pre-qualification response was found for this session."
 msgstr ""
 
