@@ -1,5 +1,7 @@
 *.env
 sandbox/public/media/
+junit/
+junit-py*/
 
 # Created by https://www.gitignore.io/api/osx,python,linux,sublimetext
 
