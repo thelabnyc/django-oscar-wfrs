@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-18 17:05+0000\n"
+"POT-Creation-Date: 2021-02-17 19:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -269,11 +269,11 @@ msgid "Offer Presented By PLCCA SDK"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:33 wellsfargo/dashboard/forms.py:55
-#: wellsfargo/dashboard/tables.py:162 wellsfargo/dashboard/tables.py:233
+#: wellsfargo/dashboard/tables.py:168 wellsfargo/dashboard/tables.py:239
 #: wellsfargo/models/transfers.py:36
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:58
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:129
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:84
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:62
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:133
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:88
 msgid "Status"
 msgstr ""
 
@@ -307,20 +307,20 @@ msgstr ""
 msgid "Submitted Before"
 msgstr ""
 
-#: wellsfargo/dashboard/forms.py:40 wellsfargo/dashboard/tables.py:39
+#: wellsfargo/dashboard/forms.py:40 wellsfargo/dashboard/tables.py:45
 msgid "Submitted By"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:49 wellsfargo/dashboard/forms.py:62
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:39
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:53
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:77
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:39
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:53
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:77
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:39
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:53
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:77
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:43
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:57
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:81
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:43
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:57
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:81
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:43
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:57
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:81
 msgid "Search"
 msgstr ""
 
@@ -328,186 +328,186 @@ msgstr ""
 msgid "Customer Initiated?"
 msgstr ""
 
-#: wellsfargo/dashboard/forms.py:53 wellsfargo/dashboard/tables.py:152
-#: wellsfargo/dashboard/tables.py:227 wellsfargo/models/apps.py:49
+#: wellsfargo/dashboard/forms.py:53 wellsfargo/dashboard/tables.py:158
+#: wellsfargo/dashboard/tables.py:233 wellsfargo/models/apps.py:49
 #: wellsfargo/models/prequal.py:35 wellsfargo/models/prequal.py:243
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:10
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:84
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:183
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:88
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:187
 msgid "First Name"
 msgstr ""
 
-#: wellsfargo/dashboard/forms.py:54 wellsfargo/dashboard/tables.py:155
-#: wellsfargo/dashboard/tables.py:230 wellsfargo/models/apps.py:51
+#: wellsfargo/dashboard/forms.py:54 wellsfargo/dashboard/tables.py:161
+#: wellsfargo/dashboard/tables.py:236 wellsfargo/models/apps.py:51
 #: wellsfargo/models/prequal.py:37 wellsfargo/models/prequal.py:244
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:14
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:92
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:187
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:96
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:191
 msgid "Last Name"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:17 wellsfargo/models/accounts.py:21
+#: wellsfargo/dashboard/tables.py:23 wellsfargo/models/accounts.py:21
 msgid "Main Applicant Name"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:21
+#: wellsfargo/dashboard/tables.py:27
 msgid "Secondary Applicant Name"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:25
+#: wellsfargo/dashboard/tables.py:31
 msgid "Application Type"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:29 wellsfargo/dashboard/tables.py:148
+#: wellsfargo/dashboard/tables.py:35 wellsfargo/dashboard/tables.py:154
 #: wellsfargo/models/apps.py:131 wellsfargo/models/merchants.py:10
 #: wellsfargo/models/prequal.py:45 wellsfargo/models/transfers.py:25
 msgid "Merchant Name"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:32 wellsfargo/models/apps.py:135
+#: wellsfargo/dashboard/tables.py:38 wellsfargo/models/apps.py:135
 msgid "Application Source"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:35 wellsfargo/models/apps.py:142
+#: wellsfargo/dashboard/tables.py:41 wellsfargo/models/apps.py:142
 msgid "Owner"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:43 wellsfargo/models/apps.py:124
+#: wellsfargo/dashboard/tables.py:49 wellsfargo/models/apps.py:124
 #: wellsfargo/models/apps.py:128 wellsfargo/models/prequal.py:245
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:191
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:195
 msgid "Application Status"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:46
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:36
+#: wellsfargo/dashboard/tables.py:52
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:40
 msgid "Resulting Account Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:50
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:40
+#: wellsfargo/dashboard/tables.py:56
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:44
 msgid "Requested Value"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:54 wellsfargo/models/prequal.py:177
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:82
+#: wellsfargo/dashboard/tables.py:60 wellsfargo/models/prequal.py:177
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:86
 msgid "Credit Limit"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:58 wellsfargo/dashboard/tables.py:181
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:225
+#: wellsfargo/dashboard/tables.py:64 wellsfargo/dashboard/tables.py:187
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:229
 msgid "Order Total"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:62 wellsfargo/dashboard/tables.py:185
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:231
+#: wellsfargo/dashboard/tables.py:68 wellsfargo/dashboard/tables.py:191
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:235
 msgid "Time until Order Placement (Minutes)"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:66 wellsfargo/dashboard/tables.py:189
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:237
+#: wellsfargo/dashboard/tables.py:72 wellsfargo/dashboard/tables.py:195
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:241
 msgid "Order Merchant Name"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:70 wellsfargo/dashboard/tables.py:122
-#: wellsfargo/dashboard/tables.py:192 wellsfargo/dashboard/tables.py:240
+#: wellsfargo/dashboard/tables.py:76 wellsfargo/dashboard/tables.py:128
+#: wellsfargo/dashboard/tables.py:198 wellsfargo/dashboard/tables.py:246
 #: wellsfargo/models/fraud.py:25
 msgid "Created On"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:74 wellsfargo/dashboard/tables.py:244
+#: wellsfargo/dashboard/tables.py:80 wellsfargo/dashboard/tables.py:250
 msgid "Last Modified On"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:78
+#: wellsfargo/dashboard/tables.py:84
 msgid "Actions"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:107
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:38
+#: wellsfargo/dashboard/tables.py:113
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:42
 msgid "Account Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:109 wellsfargo/models/fraud.py:14
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:42
+#: wellsfargo/dashboard/tables.py:115 wellsfargo/models/fraud.py:14
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:46
 msgid "Order"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:113
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:54
+#: wellsfargo/dashboard/tables.py:119
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:58
 msgid "User"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:116
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:64
+#: wellsfargo/dashboard/tables.py:122
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:68
 msgid "Amount"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:117
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:68
+#: wellsfargo/dashboard/tables.py:123
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:72
 msgid "Type"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:118 wellsfargo/models/transfers.py:30
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:72
+#: wellsfargo/dashboard/tables.py:124 wellsfargo/models/transfers.py:30
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:76
 msgid "Ticket Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:119 wellsfargo/models/plans.py:17
+#: wellsfargo/dashboard/tables.py:125 wellsfargo/models/plans.py:17
 #: wellsfargo/models/transfers.py:32
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:32
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:37
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:36
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:41
 msgid "Plan Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:120 wellsfargo/models/transfers.py:35
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:80
+#: wellsfargo/dashboard/tables.py:126 wellsfargo/models/transfers.py:35
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:84
 msgid "Authorization Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:145
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:34
+#: wellsfargo/dashboard/tables.py:151
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:38
 msgid "UUID"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:158 wellsfargo/models/apps.py:77
+#: wellsfargo/dashboard/tables.py:164 wellsfargo/models/apps.py:77
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:29
 msgid "Address"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:165
+#: wellsfargo/dashboard/tables.py:171
 msgid "Pre-Qual Credit Limit"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:169 wellsfargo/models/prequal.py:180
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:149
+#: wellsfargo/dashboard/tables.py:175 wellsfargo/models/prequal.py:180
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:153
 msgid "Customer Response"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:172
+#: wellsfargo/dashboard/tables.py:178
 msgid "SDK Application Result"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:175 wellsfargo/models/apps.py:133
+#: wellsfargo/dashboard/tables.py:181 wellsfargo/models/apps.py:133
 #: wellsfargo/models/merchants.py:11 wellsfargo/models/prequal.py:46
 #: wellsfargo/models/transfers.py:26
 msgid "Merchant Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:178
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:44
+#: wellsfargo/dashboard/tables.py:184
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:48
 msgid "Customer Initiated"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:196
+#: wellsfargo/dashboard/tables.py:202
 msgid "Reported On"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:224
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:179
+#: wellsfargo/dashboard/tables.py:230
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:183
 msgid "Application ID"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:236
+#: wellsfargo/dashboard/tables.py:242
 msgid "Pre-Qualification Details"
 msgstr ""
 
@@ -516,12 +516,12 @@ msgid "Credit Application Search Results"
 msgstr ""
 
 #: wellsfargo/dashboard/views.py:167
-#: wellsfargo/templates/oscar/dashboard/users/detail.html:12
-#: wellsfargo/templates/oscar/dashboard/users/detail.html:21
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:18
+#: wellsfargo/templates/oscar/dashboard/users/detail.html:19
+#: wellsfargo/templates/oscar/dashboard/users/detail.html:29
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:19
 #: wellsfargo/templates/wfrs/dashboard/application_list.html:9
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:18
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:26
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:20
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:30
 #: wellsfargo/templatetags/wfrs_credit_apps.py:18
 msgid "Credit Applications"
 msgstr ""
@@ -577,10 +577,10 @@ msgid "Application submitted by “%(name)s”"
 msgstr ""
 
 #: wellsfargo/dashboard/views.py:348
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:16
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:17
 #: wellsfargo/templates/wfrs/dashboard/transfer_list.html:9
-#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:18
-#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:25
+#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:20
+#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:29
 msgid "Transfers"
 msgstr ""
 
@@ -633,8 +633,8 @@ msgstr ""
 
 #: wellsfargo/dashboard/views.py:499
 #: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:9
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:18
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:26
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:20
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:30
 msgid "SDK Credit Applications"
 msgstr ""
 
@@ -675,24 +675,24 @@ msgid "Account Inquiry Results"
 msgstr ""
 
 #: wellsfargo/models/apps.py:36 wellsfargo/models/prequal.py:38
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:96
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:100
 msgid "Address Line 1"
 msgstr ""
 
 #: wellsfargo/models/apps.py:38 wellsfargo/models/prequal.py:39
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:100
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:104
 msgid "Address Line 2"
 msgstr ""
 
 #: wellsfargo/models/apps.py:40 wellsfargo/models/prequal.py:40
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:40
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:104
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:108
 msgid "City"
 msgstr ""
 
 #: wellsfargo/models/apps.py:42 wellsfargo/models/prequal.py:41
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:44
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:108
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:112
 msgid "State"
 msgstr ""
 
@@ -702,7 +702,7 @@ msgstr ""
 
 #: wellsfargo/models/apps.py:53 wellsfargo/models/prequal.py:36
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:18
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:88
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:92
 msgid "Middle Initial"
 msgstr ""
 
@@ -720,7 +720,7 @@ msgid "Annual Income"
 msgstr ""
 
 #: wellsfargo/models/apps.py:59 wellsfargo/models/prequal.py:34
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:80
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:84
 msgid "Email"
 msgstr ""
 
@@ -798,7 +798,7 @@ msgid "Alphanumeric value associated with the salesperson."
 msgstr ""
 
 #: wellsfargo/models/apps.py:111
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:60
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:64
 msgid "Main Applicant"
 msgstr ""
 
@@ -888,8 +888,8 @@ msgstr ""
 
 #: wellsfargo/models/fraud.py:24 wellsfargo/models/prequal.py:175
 #: wellsfargo/models/transfers.py:37
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:133
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:88
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:137
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:92
 msgid "Message"
 msgstr ""
 
@@ -934,10 +934,10 @@ msgid "Last 4 digits of account number"
 msgstr ""
 
 #: wellsfargo/models/plans.py:21
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:33
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:38
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:36
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:40
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:37
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:42
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:40
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:44
 msgid "Description"
 msgstr ""
 
@@ -950,8 +950,8 @@ msgid "Annual percentage rate (0.0 – 100.0)"
 msgstr ""
 
 #: wellsfargo/models/plans.py:27
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:44
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:39
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:48
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:43
 msgid "Term Length (months)"
 msgstr ""
 
@@ -972,13 +972,13 @@ msgid "Allow new credit applications when user is eligible for this plan?"
 msgstr ""
 
 #: wellsfargo/models/plans.py:39
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:76
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:80
 msgid "Financing Plan"
 msgstr ""
 
 #: wellsfargo/models/plans.py:40
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:26
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:33
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:30
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:37
 msgid "Financing Plans"
 msgstr ""
 
@@ -989,8 +989,8 @@ msgstr ""
 
 #: wellsfargo/models/plans.py:72
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:7
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:29
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:37
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:33
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:41
 msgid "Name"
 msgstr ""
 
@@ -1017,7 +1017,7 @@ msgid "Causes the following Wells Fargo financing plans to be available: %s"
 msgstr ""
 
 #: wellsfargo/models/prequal.py:29
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:54
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:58
 msgid "Entry Point"
 msgstr ""
 
@@ -1026,7 +1026,7 @@ msgid "Check was deliberately initiated by customer action"
 msgstr ""
 
 #: wellsfargo/models/prequal.py:43
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:116
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:120
 msgid "Phone"
 msgstr ""
 
@@ -1039,12 +1039,12 @@ msgid "Transaction Status"
 msgstr ""
 
 #: wellsfargo/models/prequal.py:176
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:137
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:141
 msgid "Offer Indicator"
 msgstr ""
 
 #: wellsfargo/models/prequal.py:178 wellsfargo/models/prequal.py:242
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:145
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:149
 msgid "Unique Response ID"
 msgstr ""
 
@@ -1096,23 +1096,23 @@ msgstr ""
 msgid "Modified"
 msgstr ""
 
-#: wellsfargo/templates/oscar/dashboard/users/detail.html:9
+#: wellsfargo/templates/oscar/dashboard/users/detail.html:10
 msgid "Orders"
 msgstr ""
 
-#: wellsfargo/templates/oscar/dashboard/users/detail.html:10
+#: wellsfargo/templates/oscar/dashboard/users/detail.html:13
 msgid "Addresses"
 msgstr ""
 
-#: wellsfargo/templates/oscar/dashboard/users/detail.html:11
+#: wellsfargo/templates/oscar/dashboard/users/detail.html:16
 msgid "Reviews"
 msgstr ""
 
-#: wellsfargo/templates/oscar/dashboard/users/detail.html:23
+#: wellsfargo/templates/oscar/dashboard/users/detail.html:31
 msgid "View All Owned Applications"
 msgstr ""
 
-#: wellsfargo/templates/oscar/dashboard/users/detail.html:24
+#: wellsfargo/templates/oscar/dashboard/users/detail.html:32
 msgid "View All Submitted Applications"
 msgstr ""
 
@@ -1129,7 +1129,7 @@ msgid "Line 2"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:48
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:112
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:116
 msgid "Postal Code"
 msgstr ""
 
@@ -1178,8 +1178,8 @@ msgid "US Individual"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/application_detail.html:7
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:20
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:25
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:22
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:29
 msgid "Credit Application Details"
 msgstr ""
 
@@ -1189,11 +1189,11 @@ msgstr ""
 #: wellsfargo/templates/wfrs/dashboard/benefit_form.html:11
 #: wellsfargo/templates/wfrs/dashboard/benefit_list.html:7
 #: wellsfargo/templates/wfrs/dashboard/form_base.html:7
-#: wellsfargo/templates/wfrs/dashboard/form_base.html:16
+#: wellsfargo/templates/wfrs/dashboard/form_base.html:17
 #: wellsfargo/templates/wfrs/dashboard/plan_delete.html:6
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:15
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:16
 #: wellsfargo/templates/wfrs/dashboard/plan_form.html:11
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:21
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:22
 #: wellsfargo/templates/wfrs/dashboard/plan_list.html:7
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:7
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:9
@@ -1203,38 +1203,30 @@ msgstr ""
 msgid "Wells Fargo"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:15
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:16
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:12
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:18
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:14
-#: wellsfargo/templates/wfrs/dashboard/form_base.html:13
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:12
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:18
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:14
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:13
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:16
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:16
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:13
-#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:16
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:16
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:17
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:13
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:19
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:15
+#: wellsfargo/templates/wfrs/dashboard/form_base.html:14
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:13
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:19
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:15
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:14
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:17
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:17
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:14
+#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:17
 msgid "Dashboard"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:32
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:36
 msgid "General"
-msgstr ""
-
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:44
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:62
-msgid "IP Address"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/application_detail.html:48
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:66
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:157
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:195
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:97
-msgid "Created Date"
+msgid "IP Address"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/application_detail.html:52
@@ -1242,202 +1234,210 @@ msgstr ""
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:161
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:199
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:101
+msgid "Created Date"
+msgstr ""
+
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:56
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:74
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:165
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:203
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:105
 msgid "Modified Date"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:68
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:72
 msgid "Secondary Applicant"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:75
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:79
 msgid "Account Inquiries"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:80
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:84
 msgid "Inquiry Date/Time"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:81
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:85
 msgid "Inquiry Account Number"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:83
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:87
 msgid "Available Credit"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_detail.html:97
+#: wellsfargo/templates/wfrs/dashboard/application_detail.html:101
 msgid "No account inquiries currently exist for this Credit Application"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:30
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:34
 msgid "Export Applications"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:53
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:77
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:53
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:77
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:53
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:77
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:57
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:81
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:57
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:81
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:57
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:81
 msgid "Searching..."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:54
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:54
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:54
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:58
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:58
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:58
 msgid "Reset"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:55
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:63
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:55
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:63
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:55
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:63
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:59
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:66
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:59
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:66
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:59
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:66
 msgid "Advanced Search"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:76
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:76
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:76
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:80
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:80
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:80
 msgid "Close"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:86
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:90
 msgid "Filters:"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/application_list.html:97
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:97
+#: wellsfargo/templates/wfrs/dashboard/application_list.html:101
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:101
 msgid "No applications found."
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:6
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:17
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:22
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:19
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:26
 msgid "Delete plan group?"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:15
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:21
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:16
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:22
 msgid "Wells Fargo Plan Groups"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:39
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:43
 msgid "Are you sure you want to delete this plan group?"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:42
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:53
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:46
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:57
 msgid "Deleting..."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:42
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:49
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:53
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:63
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:46
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:53
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:57
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:67
 msgid "Delete"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:42
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:46
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:53
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:49
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:46
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:52
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:57
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:55
 msgid "or"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:43
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:47
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:54
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:50
+#: wellsfargo/templates/wfrs/dashboard/benefit_delete.html:47
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:53
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:58
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:56
 msgid "cancel"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/benefit_form.html:7
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:24
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:26
 msgid "Edit plan group"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/benefit_form.html:9
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:24
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:28
 msgid "Create new plan group"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:26
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:30
 msgid "New plan group"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:33
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:39
 msgid "Edit plan groups"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:35
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:41
 msgid "New plan groups"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:46
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:49
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:52
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:55
 msgid "Saving..."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:46
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:49
+#: wellsfargo/templates/wfrs/dashboard/benefit_form.html:52
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:55
 msgid "Save"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/benefit_list.html:7
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:16
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:18
 msgid "Plan Groups"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:26
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:33
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:30
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:37
 msgid "Financing Plan Groups"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:48
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:62
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:52
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:66
 msgid "Edit"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:55
+#: wellsfargo/templates/wfrs/dashboard/benefit_list.html:59
 msgid "No plan groups found."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/form_base.html:29
+#: wellsfargo/templates/wfrs/dashboard/form_base.html:33
 msgid "Please correct the errors below."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/form_base.html:49
+#: wellsfargo/templates/wfrs/dashboard/form_base.html:53
 msgid "Form"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/form_base.html:55
+#: wellsfargo/templates/wfrs/dashboard/form_base.html:59
 msgid "Cancel"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/form_base.html:56
+#: wellsfargo/templates/wfrs/dashboard/form_base.html:60
 msgid "Continue"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/plan_delete.html:6
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:20
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:25
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:22
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:29
 msgid "Delete plan?"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:40
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:38
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:44
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:42
 msgid "APR"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:50
+#: wellsfargo/templates/wfrs/dashboard/plan_delete.html:54
 msgid "Are you sure you want to delete this plan?"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/plan_form.html:7
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:27
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:36
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:29
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:42
 msgid "Edit plan"
 msgstr ""
 
@@ -1445,137 +1445,137 @@ msgstr ""
 msgid "Create new plan"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:29
-#: wellsfargo/templates/wfrs/dashboard/plan_form.html:38
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:33
+#: wellsfargo/templates/wfrs/dashboard/plan_form.html:44
 msgid "New plan"
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/plan_list.html:7
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:16
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:18
 msgid "Plans"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:24
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:28
 msgid "Create new financing plan"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:41
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:45
 msgid "Product Price Threshold"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:42
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:46
 msgid "Advertising Enabled"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:43
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:47
 msgid "Is Default"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:44
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:48
 msgid "Allow New Credit Applications"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/plan_list.html:69
+#: wellsfargo/templates/wfrs/dashboard/plan_list.html:73
 msgid "No plans found."
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:7
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:16
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:17
 #: wellsfargo/templates/wfrs/dashboard/prequal_list.html:9
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:18
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:26
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:20
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:30
 msgid "Pre-Qualification Inquiries"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:18
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:23
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:20
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:27
 msgid "Pre-Qualification Inquiry Details"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:30
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:34
 msgid "Pre-Qualification Request Details"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:40
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:44
 msgid "Merchant"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:47
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:51
 msgid "Yes (PREQUAL)"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:49
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:53
 msgid "No (PRESCREEN)"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:76
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:80
 msgid "Pre-Qualification Customer Details"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:124
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:128
 msgid "Pre-Qualification Response Details"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:141
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:145
 msgid "Pre-Qualified Credit Limit"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:153
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:157
 msgid "Reported Date"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:167
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:171
 msgid "Pre-qualified offer was not returned by Wells Fargo for this consumer."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:174
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:178
 msgid "SDK Credit Application Results"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:205
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:209
 msgid "This consumer did not complete the Wells Fargo Credit Application."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:212
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:216
 msgid "Resulting Order Details"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:217
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:221
 msgid "Order Number"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:245
+#: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:249
 msgid "This consumer did not place an order."
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:30
-#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:30
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:34
+#: wellsfargo/templates/wfrs/dashboard/sdk_application_list.html:34
 msgid "Export Results"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:97
+#: wellsfargo/templates/wfrs/dashboard/prequal_list.html:101
 msgid "No pre-qualification requests found."
 msgstr ""
 
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:7
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:18
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:23
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:20
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:27
 msgid "Transfer Details"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:30
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:34
 msgid "Details"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:34
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:38
 msgid "Merchant Reference"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:92
+#: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:96
 msgid "Legal Disclosure"
 msgstr ""
 
-#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:34
+#: wellsfargo/templates/wfrs/dashboard/transfer_list.html:38
 msgid "No transfers found."
 msgstr ""
 
