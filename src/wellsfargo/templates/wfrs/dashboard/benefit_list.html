@@ -9,19 +9,23 @@
 
 
 {% block breadcrumbs %}
-    <ul class="breadcrumb">
-        <li>
-            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
-        </li>
-        <li class="active">{% trans "Plan Groups" %}</li>
-    </ul>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {% trans "Plan Groups" %}
+            </li>
+        </ol>
+    </nav>
 {% endblock %}
 
 
 {% block header %}
     <div class="page-header">
-        <a href="{% url 'wfrs-benefit-create' %}" class="btn btn-primary btn-lg pull-right">
-            <i class="icon-plus"></i> {% trans "Create new plan group" %}
+        <a href="{% url 'wfrs-benefit-create' %}" class="btn btn-primary float-right">
+            <i class="fas fa-plus-circle"></i> {% trans "Create new plan group" %}
         </a>
         <h1>{% trans "Financing Plan Groups" %}</h1>
     </div>
@@ -30,7 +34,7 @@
 
 {% block dashboard_content %}
     <table class="table table-striped table-bordered">
-        <caption><i class="icon-reorder icon-large"></i> {% trans "Financing Plan Groups" %}</caption>
+        <caption><i class="fas fa-grip-vertical"></i> {% trans "Financing Plan Groups" %}</caption>
         {% if benefits %}
             <thead>
                 <tr>

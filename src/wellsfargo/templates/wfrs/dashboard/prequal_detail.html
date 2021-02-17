@@ -8,15 +8,19 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-    <ul class="breadcrumb">
-        <li>
-            <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
-        </li>
-        <li>
-            <a href="{% url 'wfrs-prequal-list' %}">{% trans "Pre-Qualification Inquiries" %}</a>
-        </li>
-        <li class="active">{% trans "Pre-Qualification Inquiry Details" %}</li>
-    </ul>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'wfrs-prequal-list' %}">{% trans "Pre-Qualification Inquiries" %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {% trans "Pre-Qualification Inquiry Details" %}
+            </li>
+        </ol>
+    </nav>
 {% endblock %}
 
 {% block headertext %}

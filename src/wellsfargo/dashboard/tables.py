@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from django_tables2 import Column, TemplateColumn, DateTimeColumn, LinkColumn, A
-from oscar.apps.dashboard.tables import DashboardTable
+from oscar.apps.dashboard.tables import DashboardTable as BaseDashboardTable
 import pytz
 
 
@@ -9,6 +9,12 @@ class TZAwareDateTimeColumn(DateTimeColumn):
         if value and not value.tzinfo:
             value = pytz.utc.localize(value)
         return super().render(record, table, value, bound_column, **kwargs)
+
+
+
+class DashboardTable(BaseDashboardTable):
+    class Meta(BaseDashboardTable.Meta):
+        template_name = 'wfrs/dashboard/responsive-table.html'
 
 
 

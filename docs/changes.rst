@@ -3,14 +3,6 @@
 Changelog
 =========
 
-3.0.2
-------------------
-- Call wfrs_app_approved signal after the AccountInquiryResult row is saved
-
-3.0.1
-------------------
-- Fix AttributeError
-
 3.0.0
 ------------------
 - Add support for Oscar >= 2.1
