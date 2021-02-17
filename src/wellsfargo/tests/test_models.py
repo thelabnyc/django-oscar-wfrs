@@ -306,7 +306,7 @@ class FinancingPlanBenefitTest(BaseTest):
             currency='USD',
             product=product,
             num_in_stock=10,
-            price_excl_tax=Decimal('10.00'))
+            price=Decimal('10.00'))
         factories.create_purchase_info(record)
         return product
 

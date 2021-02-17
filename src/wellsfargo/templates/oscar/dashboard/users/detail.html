@@ -5,11 +5,19 @@
 
 
 {% block tab_nav %}
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#user_orders" data-toggle="tab">{% trans "Orders" %}</a></li>
-        <li><a href="#user_addresses" data-toggle="tab">{% trans "Addresses" %}</a></li>
-        <li><a href="#user_reviews" data-toggle="tab">{% trans "Reviews" %}</a></li>
-        <li><a href="#user_credit_applications" data-toggle="tab">{% trans "Credit Applications" %}</a></li>
+    <ul class="nav nav-tabs mb-0">
+        <li class="nav-item">
+            <a class="nav-link active" href="#user_orders" data-toggle="tab">{% trans "Orders" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#user_addresses" data-toggle="tab">{% trans "Addresses" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#user_reviews" data-toggle="tab">{% trans "Reviews" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#user_credit_applications" data-toggle="tab">{% trans "Credit Applications" %}</a>
+        </li>
     </ul>
 {% endblock %}
 

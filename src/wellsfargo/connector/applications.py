@@ -103,6 +103,11 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
         if resp_data['application_status'] not in (CREDIT_APP_APPROVED, CREDIT_APP_PENDING):
             raise CreditApplicationDenied(_('Credit Application was denied by Wells Fargo.'))
 
+        # If the app status is approved, call signal handler
+        if resp_data['application_status'] == CREDIT_APP_APPROVED:
+            # Fire wfrs app approved signal
+            wfrs_app_approved.send(sender=credit_app.__class__, app=credit_app)
+
         # Save the suffix of the account number
         credit_app.account_number = resp_data['credit_card_number']
         credit_app.save()
@@ -126,11 +131,6 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
             joint_applicant_address=credit_app.joint_applicant.address if credit_app.joint_applicant else None,
             credit_limit=as_decimal(resp_data['credit_line']),
             available_credit=as_decimal(resp_data['credit_line']))
-
-        # If the app status is approved, call signal handler
-        if resp_data['application_status'] == CREDIT_APP_APPROVED:
-            # Fire wfrs app approved signal
-            wfrs_app_approved.send(sender=credit_app.__class__, app=credit_app)
 
         # Check if application approval is pending
         if resp_data['application_status'] == CREDIT_APP_PENDING:
