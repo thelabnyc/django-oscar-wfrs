@@ -22,11 +22,11 @@ class CreditApplicationTable(DashboardTable):
     main_applicant_name = TemplateColumn(
         verbose_name=_('Main Applicant Name'),
         template_name='wfrs/dashboard/_application_row_main_applicant_name.html',
-        order_by=('main_last_name', 'main_first_name'))
+        order_by=('main_applicant__last_name', 'main_applicant__first_name'))
     secondary_applicant_name = TemplateColumn(
         verbose_name=_('Secondary Applicant Name'),
         template_name='wfrs/dashboard/_application_row_secondary_applicant_name.html',
-        order_by=('joint_last_name', 'joint_first_name'))
+        order_by=('joint_applicant__last_name', 'joint_applicant__first_name'))
     application_type = TemplateColumn(
         verbose_name=_('Application Type'),
         template_name='wfrs/dashboard/_application_row_type.html',
@@ -40,18 +40,18 @@ class CreditApplicationTable(DashboardTable):
     user = TemplateColumn(
         verbose_name=_('Owner'),
         template_name='wfrs/dashboard/_application_row_user.html',
-        order_by=('user_full_name', 'user_username'))
+        order_by=('user__last_name', 'user__first_name', 'user__username'))
     submitting_user = TemplateColumn(
         verbose_name=_('Submitted By'),
         template_name='wfrs/dashboard/_application_row_submitting_user.html',
-        order_by=('submitting_user_full_name', 'submitting_user_username'))
+        order_by=('submitting_user__first_name', 'submitting_user__last_name', 'submitting_user__username'))
     status = Column(
         verbose_name=_('Application Status'),
         orderable=False)
     account_number = TemplateColumn(
         verbose_name=_('Resulting Account Number'),
         template_name='wfrs/dashboard/_application_row_account_number.html',
-        order_by='account_number')
+        order_by='last4_account_number')
     purchase_price = TemplateColumn(
         verbose_name=_('Requested Value'),
         template_name='wfrs/dashboard/_application_row_purchase_price.html',
@@ -109,21 +109,31 @@ class CreditApplicationTable(DashboardTable):
 
 
 class TransferMetadataTable(DashboardTable):
-    merchant_reference = LinkColumn('wfrs-transfer-detail', args=[A('merchant_reference')])
-    masked_account_number = Column(verbose_name=_('Account Number'))
+    merchant_reference = LinkColumn('wfrs-transfer-detail',
+        args=[A('merchant_reference')])
+    masked_account_number = Column(
+        verbose_name=_('Account Number'),
+        order_by=('last4_account_number'))
     order = TemplateColumn(
         verbose_name=_('Order'),
         template_name='wfrs/dashboard/_transfer_row_order.html',
-        order_by='order_number')
+        orderable=False)
     user = TemplateColumn(
         verbose_name=_('User'),
         template_name='wfrs/dashboard/_transfer_row_user.html',
-        order_by=('user_full_name', 'user_username'))
-    amount = Column(verbose_name=_('Amount'))
-    type_name = Column(verbose_name=_('Type'))
-    ticket_number = Column(verbose_name=_('Ticket Number'))
-    financing_plan_number = Column(verbose_name=_('Plan Number'))
-    auth_number = Column(verbose_name=_('Authorization Number'))
+        order_by=('user__last_name', 'user__first_name', 'user__username'))
+    amount = Column(
+        verbose_name=_('Amount'))
+    type_name = Column(
+        verbose_name=_('Type'),
+        order_by=('type_code', ))
+    ticket_number = Column(
+        verbose_name=_('Ticket Number'))
+    financing_plan_number = Column(
+        verbose_name=_('Plan Number'),
+        order_by=('financing_plan__plan_number', ))
+    auth_number = Column(
+        verbose_name=_('Authorization Number'))
     created_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Created On'),
         order_by='created_datetime',
@@ -200,7 +210,7 @@ class PreQualificationTable(DashboardTable):
         format='D, N j Y, P')
     response_reported_datetime = TZAwareDateTimeColumn(
         verbose_name=_('Reported On'),
-        order_by='response_reported_datetime',
+        order_by='response__reported_datetime',
         format='D, N j Y, P')
 
     class Meta(DashboardTable.Meta):
