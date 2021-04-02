@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-17 19:05+0000\n"
+"POT-Creation-Date: 2021-04-02 16:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -269,7 +269,7 @@ msgid "Offer Presented By PLCCA SDK"
 msgstr ""
 
 #: wellsfargo/dashboard/forms.py:33 wellsfargo/dashboard/forms.py:55
-#: wellsfargo/dashboard/tables.py:168 wellsfargo/dashboard/tables.py:239
+#: wellsfargo/dashboard/tables.py:178 wellsfargo/dashboard/tables.py:249
 #: wellsfargo/models/transfers.py:36
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:62
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:133
@@ -328,8 +328,8 @@ msgstr ""
 msgid "Customer Initiated?"
 msgstr ""
 
-#: wellsfargo/dashboard/forms.py:53 wellsfargo/dashboard/tables.py:158
-#: wellsfargo/dashboard/tables.py:233 wellsfargo/models/apps.py:49
+#: wellsfargo/dashboard/forms.py:53 wellsfargo/dashboard/tables.py:168
+#: wellsfargo/dashboard/tables.py:243 wellsfargo/models/apps.py:49
 #: wellsfargo/models/prequal.py:35 wellsfargo/models/prequal.py:243
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:10
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:88
@@ -337,8 +337,8 @@ msgstr ""
 msgid "First Name"
 msgstr ""
 
-#: wellsfargo/dashboard/forms.py:54 wellsfargo/dashboard/tables.py:161
-#: wellsfargo/dashboard/tables.py:236 wellsfargo/models/apps.py:51
+#: wellsfargo/dashboard/forms.py:54 wellsfargo/dashboard/tables.py:171
+#: wellsfargo/dashboard/tables.py:246 wellsfargo/models/apps.py:51
 #: wellsfargo/models/prequal.py:37 wellsfargo/models/prequal.py:244
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:14
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:96
@@ -358,7 +358,7 @@ msgstr ""
 msgid "Application Type"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:35 wellsfargo/dashboard/tables.py:154
+#: wellsfargo/dashboard/tables.py:35 wellsfargo/dashboard/tables.py:164
 #: wellsfargo/models/apps.py:131 wellsfargo/models/merchants.py:10
 #: wellsfargo/models/prequal.py:45 wellsfargo/models/transfers.py:25
 msgid "Merchant Name"
@@ -393,28 +393,28 @@ msgstr ""
 msgid "Credit Limit"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:64 wellsfargo/dashboard/tables.py:187
+#: wellsfargo/dashboard/tables.py:64 wellsfargo/dashboard/tables.py:197
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:229
 msgid "Order Total"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:68 wellsfargo/dashboard/tables.py:191
+#: wellsfargo/dashboard/tables.py:68 wellsfargo/dashboard/tables.py:201
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:235
 msgid "Time until Order Placement (Minutes)"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:72 wellsfargo/dashboard/tables.py:195
+#: wellsfargo/dashboard/tables.py:72 wellsfargo/dashboard/tables.py:205
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:241
 msgid "Order Merchant Name"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:76 wellsfargo/dashboard/tables.py:128
-#: wellsfargo/dashboard/tables.py:198 wellsfargo/dashboard/tables.py:246
+#: wellsfargo/dashboard/tables.py:76 wellsfargo/dashboard/tables.py:138
+#: wellsfargo/dashboard/tables.py:208 wellsfargo/dashboard/tables.py:256
 #: wellsfargo/models/fraud.py:25
 msgid "Created On"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:80 wellsfargo/dashboard/tables.py:250
+#: wellsfargo/dashboard/tables.py:80 wellsfargo/dashboard/tables.py:260
 msgid "Last Modified On"
 msgstr ""
 
@@ -422,92 +422,92 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:113
+#: wellsfargo/dashboard/tables.py:115
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:42
 msgid "Account Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:115 wellsfargo/models/fraud.py:14
+#: wellsfargo/dashboard/tables.py:118 wellsfargo/models/fraud.py:14
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:46
 msgid "Order"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:119
+#: wellsfargo/dashboard/tables.py:122
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:58
 msgid "User"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:122
+#: wellsfargo/dashboard/tables.py:126
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:68
 msgid "Amount"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:123
+#: wellsfargo/dashboard/tables.py:128
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:72
 msgid "Type"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:124 wellsfargo/models/transfers.py:30
+#: wellsfargo/dashboard/tables.py:131 wellsfargo/models/transfers.py:30
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:76
 msgid "Ticket Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:125 wellsfargo/models/plans.py:17
+#: wellsfargo/dashboard/tables.py:133 wellsfargo/models/plans.py:17
 #: wellsfargo/models/transfers.py:32
 #: wellsfargo/templates/wfrs/dashboard/plan_delete.html:36
 #: wellsfargo/templates/wfrs/dashboard/plan_list.html:41
 msgid "Plan Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:126 wellsfargo/models/transfers.py:35
+#: wellsfargo/dashboard/tables.py:136 wellsfargo/models/transfers.py:35
 #: wellsfargo/templates/wfrs/dashboard/transfer_detail.html:84
 msgid "Authorization Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:151
+#: wellsfargo/dashboard/tables.py:161
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:38
 msgid "UUID"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:164 wellsfargo/models/apps.py:77
+#: wellsfargo/dashboard/tables.py:174 wellsfargo/models/apps.py:77
 #: wellsfargo/templates/wfrs/dashboard/_application_detail_applicant.html:29
 msgid "Address"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:171
+#: wellsfargo/dashboard/tables.py:181
 msgid "Pre-Qual Credit Limit"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:175 wellsfargo/models/prequal.py:180
+#: wellsfargo/dashboard/tables.py:185 wellsfargo/models/prequal.py:180
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:153
 msgid "Customer Response"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:178
+#: wellsfargo/dashboard/tables.py:188
 msgid "SDK Application Result"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:181 wellsfargo/models/apps.py:133
+#: wellsfargo/dashboard/tables.py:191 wellsfargo/models/apps.py:133
 #: wellsfargo/models/merchants.py:11 wellsfargo/models/prequal.py:46
 #: wellsfargo/models/transfers.py:26
 msgid "Merchant Number"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:184
+#: wellsfargo/dashboard/tables.py:194
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:48
 msgid "Customer Initiated"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:202
+#: wellsfargo/dashboard/tables.py:212
 msgid "Reported On"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:230
+#: wellsfargo/dashboard/tables.py:240
 #: wellsfargo/templates/wfrs/dashboard/prequal_detail.html:183
 msgid "Application ID"
 msgstr ""
 
-#: wellsfargo/dashboard/tables.py:242
+#: wellsfargo/dashboard/tables.py:252
 msgid "Pre-Qualification Details"
 msgstr ""
 
