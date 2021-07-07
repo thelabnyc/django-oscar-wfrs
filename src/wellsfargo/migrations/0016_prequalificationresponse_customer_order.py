@@ -9,14 +9,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('order', '0001_initial'),
-        ('wellsfargo', '0015_prequalificationresponse_reported_datetime'),
+        ("order", "0001_initial"),
+        ("wellsfargo", "0015_prequalificationresponse_reported_datetime"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='prequalificationresponse',
-            name='customer_order',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='prequalification_responses', to='order.Order'),
+            model_name="prequalificationresponse",
+            name="customer_order",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="prequalification_responses",
+                to="order.Order",
+            ),
         ),
     ]

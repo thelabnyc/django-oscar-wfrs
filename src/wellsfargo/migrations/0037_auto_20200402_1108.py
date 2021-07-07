@@ -5,102 +5,110 @@ import oscar.models.fields
 
 
 def update_merchant_fields(apps, schema_editor):
-    APICredentials = apps.get_model('wellsfargo', 'APICredentials')
+    APICredentials = apps.get_model("wellsfargo", "APICredentials")
 
-    CreditApplication = apps.get_model('wellsfargo', 'CreditApplication')
-    TransferMetadata = apps.get_model('wellsfargo', 'TransferMetadata')
-    PreQualificationRequest = apps.get_model('wellsfargo', 'PreQualificationRequest')
+    CreditApplication = apps.get_model("wellsfargo", "CreditApplication")
+    TransferMetadata = apps.get_model("wellsfargo", "TransferMetadata")
+    PreQualificationRequest = apps.get_model("wellsfargo", "PreQualificationRequest")
 
     for Model in [CreditApplication, TransferMetadata, PreQualificationRequest]:
-        Model.objects\
-            .filter(credentials__isnull=False)\
-            .all()\
-            .update(
-                merchant_name=Subquery(
-                    APICredentials.objects\
-                       .filter(id=OuterRef('credentials')) \
-                       .values('name')[:1]
-                ),
-                merchant_num=Subquery(
-                    APICredentials.objects\
-                       .filter(id=OuterRef('credentials')) \
-                       .values('merchant_num')[:1]
-                ),
-            )
+        Model.objects.filter(credentials__isnull=False).all().update(
+            merchant_name=Subquery(
+                APICredentials.objects.filter(id=OuterRef("credentials")).values(
+                    "name"
+                )[:1]
+            ),
+            merchant_num=Subquery(
+                APICredentials.objects.filter(id=OuterRef("credentials")).values(
+                    "merchant_num"
+                )[:1]
+            ),
+        )
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0036_auto_20200326_1430'),
+        ("wellsfargo", "0036_auto_20200326_1430"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='creditapplication',
-            name='merchant_name',
-            field=oscar.models.fields.NullCharField(max_length=200, verbose_name='Merchant Name'),
+            model_name="creditapplication",
+            name="merchant_name",
+            field=oscar.models.fields.NullCharField(
+                max_length=200, verbose_name="Merchant Name"
+            ),
         ),
         migrations.AddField(
-            model_name='creditapplication',
-            name='merchant_num',
-            field=oscar.models.fields.NullCharField(max_length=200, verbose_name='Merchant Number'),
+            model_name="creditapplication",
+            name="merchant_num",
+            field=oscar.models.fields.NullCharField(
+                max_length=200, verbose_name="Merchant Number"
+            ),
         ),
         migrations.AddField(
-            model_name='transfermetadata',
-            name='merchant_name',
-            field=oscar.models.fields.NullCharField(max_length=200, verbose_name='Merchant Name'),
+            model_name="transfermetadata",
+            name="merchant_name",
+            field=oscar.models.fields.NullCharField(
+                max_length=200, verbose_name="Merchant Name"
+            ),
         ),
         migrations.AddField(
-            model_name='transfermetadata',
-            name='merchant_num',
-            field=oscar.models.fields.NullCharField(max_length=200, verbose_name='Merchant Number'),
+            model_name="transfermetadata",
+            name="merchant_num",
+            field=oscar.models.fields.NullCharField(
+                max_length=200, verbose_name="Merchant Number"
+            ),
         ),
-
         migrations.RunPython(update_merchant_fields),
-
         migrations.RemoveField(
-            model_name='creditapplication',
-            name='credentials',
+            model_name="creditapplication",
+            name="credentials",
         ),
         migrations.RemoveField(
-            model_name='prequalificationrequest',
-            name='credentials',
+            model_name="prequalificationrequest",
+            name="credentials",
         ),
         migrations.RemoveField(
-            model_name='transfermetadata',
-            name='credentials',
+            model_name="transfermetadata",
+            name="credentials",
         ),
-
         migrations.RenameModel(
-            old_name='APICredentials',
-            new_name='APIMerchantNum',
+            old_name="APICredentials",
+            new_name="APIMerchantNum",
         ),
         migrations.RemoveField(
-            model_name='apimerchantnum',
-            name='username',
+            model_name="apimerchantnum",
+            name="username",
         ),
         migrations.RemoveField(
-            model_name='apimerchantnum',
-            name='password',
+            model_name="apimerchantnum",
+            name="password",
         ),
         migrations.AlterModelOptions(
-            name='apimerchantnum',
-            options={'ordering': ('-priority', '-id'), 'verbose_name': 'API Merchant Number', 'verbose_name_plural': 'API Merchant Numbers'},
+            name="apimerchantnum",
+            options={
+                "ordering": ("-priority", "-id"),
+                "verbose_name": "API Merchant Number",
+                "verbose_name_plural": "API Merchant Numbers",
+            },
         ),
         migrations.AlterField(
-            model_name='apimerchantnum',
-            name='merchant_num',
-            field=models.CharField(max_length=200, verbose_name='Merchant Number'),
+            model_name="apimerchantnum",
+            name="merchant_num",
+            field=models.CharField(max_length=200, verbose_name="Merchant Number"),
         ),
         migrations.AlterField(
-            model_name='sdkmerchantnum',
-            name='merchant_num',
-            field=models.CharField(max_length=200, verbose_name='Merchant Number'),
+            model_name="sdkmerchantnum",
+            name="merchant_num",
+            field=models.CharField(max_length=200, verbose_name="Merchant Number"),
         ),
         migrations.AlterField(
-            model_name='sdkmerchantnum',
-            name='name',
-            field=models.CharField(default='Default', max_length=200, verbose_name='Merchant Name'),
+            model_name="sdkmerchantnum",
+            name="name",
+            field=models.CharField(
+                default="Default", max_length=200, verbose_name="Merchant Name"
+            ),
         ),
     ]

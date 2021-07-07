@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0023_auto_20190125_1153'),
+        ("wellsfargo", "0023_auto_20190125_1153"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='transfermetadata',
-            name='last4_account_number',
-            field=models.CharField(db_index=True, max_length=4, verbose_name='Last 4 digits of account number'),
+            model_name="transfermetadata",
+            name="last4_account_number",
+            field=models.CharField(
+                db_index=True,
+                max_length=4,
+                verbose_name="Last 4 digits of account number",
+            ),
         ),
     ]

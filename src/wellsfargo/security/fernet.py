@@ -21,6 +21,7 @@ class FernetEncryption(object):
     The given key should be a URL-safe base64-encoded 32-byte encryption key and should obviously
     not be hard-coded in the application.
     """
+
     def __init__(self, key):
         self.fernet = Fernet(key=key)
 
@@ -35,6 +36,6 @@ class FernetEncryption(object):
         try:
             value = self.fernet.decrypt(blob)
         except InvalidToken:
-            logger.warning('Unable to decrypt account number blob.')
+            logger.warning("Unable to decrypt account number blob.")
             return None
         return force_text(value)

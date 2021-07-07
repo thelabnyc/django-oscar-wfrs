@@ -6,24 +6,24 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0026_auto_20190208_1629'),
+        ("wellsfargo", "0026_auto_20190208_1629"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='cacreditapp',
-            name='inquiries',
+            model_name="cacreditapp",
+            name="inquiries",
         ),
         migrations.RemoveField(
-            model_name='cajointcreditapp',
-            name='inquiries',
+            model_name="cajointcreditapp",
+            name="inquiries",
         ),
         migrations.RemoveField(
-            model_name='uscreditapp',
-            name='inquiries',
+            model_name="uscreditapp",
+            name="inquiries",
         ),
         migrations.RemoveField(
-            model_name='usjointcreditapp',
-            name='inquiries',
+            model_name="usjointcreditapp",
+            name="inquiries",
         ),
     ]

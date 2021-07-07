@@ -23,12 +23,9 @@ from .client import WFRSGatewayAPIClient
 import uuid
 
 
-
 class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
-
     def __init__(self, current_user=None):
         self.current_user = current_user
-
 
     def submit_credit_application(self, credit_app):
         creds = APIMerchantNum.get_for_user(self.current_user)
@@ -89,52 +86,65 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
         # Filter out null keys
         request_data = remove_null_dict_keys(request_data)
         # Submit application
-        resp = self.api_post('/credit-cards/private-label/new-accounts/v2/applications',
+        resp = self.api_post(
+            "/credit-cards/private-label/new-accounts/v2/applications",
             client_request_id=uuid.uuid4(),
-            json=request_data)
+            json=request_data,
+        )
         resp.raise_for_status()
         resp_data = resp.json()
         credit_app.merchant_name = creds.name
         credit_app.merchant_num = creds.merchant_num
-        credit_app.status = resp_data['application_status']
+        credit_app.status = resp_data["application_status"]
         credit_app.save()
 
         # If the status is not either Approved or Pending, it must be denied
-        if resp_data['application_status'] not in (CREDIT_APP_APPROVED, CREDIT_APP_PENDING):
-            raise CreditApplicationDenied(_('Credit Application was denied by Wells Fargo.'))
+        if resp_data["application_status"] not in (
+            CREDIT_APP_APPROVED,
+            CREDIT_APP_PENDING,
+        ):
+            raise CreditApplicationDenied(
+                _("Credit Application was denied by Wells Fargo.")
+            )
 
         # If the app status is approved, call signal handler
-        if resp_data['application_status'] == CREDIT_APP_APPROVED:
+        if resp_data["application_status"] == CREDIT_APP_APPROVED:
             # Fire wfrs app approved signal
             wfrs_app_approved.send(sender=credit_app.__class__, app=credit_app)
 
         # Save the suffix of the account number
-        credit_app.account_number = resp_data['credit_card_number']
+        credit_app.account_number = resp_data["credit_card_number"]
         credit_app.save()
 
         # Record an account inquiry
         main_applicant_full_name = "{}, {}".format(
-            credit_app.main_applicant.last_name,
-            credit_app.main_applicant.first_name)
+            credit_app.main_applicant.last_name, credit_app.main_applicant.first_name
+        )
         joint_applicant_full_name = None
         if credit_app.joint_applicant:
             joint_applicant_full_name = "{}, {}".format(
                 credit_app.joint_applicant.last_name,
-                credit_app.joint_applicant.first_name)
+                credit_app.joint_applicant.first_name,
+            )
         result = AccountInquiryResult.objects.create(
             credit_app_source=credit_app,
             prequal_response_source=None,
-            account_number=resp_data['credit_card_number'],
+            account_number=resp_data["credit_card_number"],
             main_applicant_full_name=main_applicant_full_name,
             joint_applicant_full_name=joint_applicant_full_name,
             main_applicant_address=credit_app.main_applicant.address,
-            joint_applicant_address=credit_app.joint_applicant.address if credit_app.joint_applicant else None,
-            credit_limit=as_decimal(resp_data['credit_line']),
-            available_credit=as_decimal(resp_data['credit_line']))
+            joint_applicant_address=credit_app.joint_applicant.address
+            if credit_app.joint_applicant
+            else None,
+            credit_limit=as_decimal(resp_data["credit_line"]),
+            available_credit=as_decimal(resp_data["credit_line"]),
+        )
 
         # Check if application approval is pending
-        if resp_data['application_status'] == CREDIT_APP_PENDING:
-            pending = CreditApplicationPending(_('Credit Application is approval is pending.'))
+        if resp_data["application_status"] == CREDIT_APP_PENDING:
+            pending = CreditApplicationPending(
+                _("Credit Application is approval is pending.")
+            )
             pending.inquiry = result
             raise pending
 

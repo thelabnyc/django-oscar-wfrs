@@ -1,1 +1,1 @@
-default_app_config = 'wellsfargo.dashboard.apps.WFRSDashboardConfig'
+default_app_config = "wellsfargo.dashboard.apps.WFRSDashboardConfig"

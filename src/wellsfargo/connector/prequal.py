@@ -13,10 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 class PrequalAPIClient(WFRSGatewayAPIClient):
-
     def __init__(self, current_user=None):
         self.current_user = current_user
-
 
     def check_prescreen_status(self, prequal_request):
         creds = APIMerchantNum.get_for_user(self.current_user)
@@ -48,20 +46,22 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
         prequal_request.merchant_num = creds.merchant_num
         prequal_request.save()
         # Send the request to WF
-        resp = self.api_post('/credit-cards/private-label/new-accounts/v2/prequalifications',
+        resp = self.api_post(
+            "/credit-cards/private-label/new-accounts/v2/prequalifications",
             client_request_id=prequal_request.uuid,
-            json=request_data)
+            json=request_data,
+        )
         resp.raise_for_status()
         resp_data = resp.json()
         # Save the pre-qualification response data
         response = PreQualificationResponse()
         response.request = prequal_request
-        response.status = resp_data.get('decision_status', PREQUAL_TRANS_STATUS_ERROR)
-        response.message = resp_data.get('decision_message', '')
-        response.offer_indicator = resp_data.get('offer_indicator', '')
-        response.credit_limit = as_decimal(resp_data.get('max_credit_limit', '0.00'))
-        response.response_id = resp_data.get('application_id', '')
-        response.application_url = urllib.parse.unquote(resp_data.get('URL', ''))
+        response.status = resp_data.get("decision_status", PREQUAL_TRANS_STATUS_ERROR)
+        response.message = resp_data.get("decision_message", "")
+        response.offer_indicator = resp_data.get("offer_indicator", "")
+        response.credit_limit = as_decimal(resp_data.get("max_credit_limit", "0.00"))
+        response.response_id = resp_data.get("application_id", "")
+        response.application_url = urllib.parse.unquote(resp_data.get("URL", ""))
         response.customer_response = PREQUAL_CUSTOMER_RESP_NONE
         response.save()
         return response

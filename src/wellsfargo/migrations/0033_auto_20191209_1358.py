@@ -2,10 +2,11 @@
 
 from django.db import migrations
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0032_auto_20191209_1348'),
+        ("wellsfargo", "0032_auto_20191209_1348"),
     ]
 
     operations = [
@@ -21,6 +22,6 @@ class Migration(migrations.Migration):
             UPDATE wellsfargo_prequalificationrequest
                SET merchant_num = NULL,
                    merchant_name = NULL;
-            """
+            """,
         ),
     ]

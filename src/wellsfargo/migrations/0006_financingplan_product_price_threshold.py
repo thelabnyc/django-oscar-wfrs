@@ -10,13 +10,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0005_financingplan_fine_print_superscript'),
+        ("wellsfargo", "0005_financingplan_fine_print_superscript"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='financingplan',
-            name='product_price_threshold',
-            field=models.DecimalField(decimal_places=2, default='0.00', max_digits=12, validators=[django.core.validators.MinValueValidator(Decimal('0.00'))], verbose_name='Minimum Product Price for Plan Availability Advertising'),
+            model_name="financingplan",
+            name="product_price_threshold",
+            field=models.DecimalField(
+                decimal_places=2,
+                default="0.00",
+                max_digits=12,
+                validators=[django.core.validators.MinValueValidator(Decimal("0.00"))],
+                verbose_name="Minimum Product Price for Plan Availability Advertising",
+            ),
         ),
     ]

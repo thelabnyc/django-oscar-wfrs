@@ -8,13 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0004_auto_20170510_1712'),
+        ("wellsfargo", "0004_auto_20170510_1712"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='financingplan',
-            name='fine_print_superscript',
-            field=models.CharField(blank=True, default='', max_length=10, verbose_name='Fine Print Superscript'),
+            model_name="financingplan",
+            name="fine_print_superscript",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=10,
+                verbose_name="Fine Print Superscript",
+            ),
         ),
     ]

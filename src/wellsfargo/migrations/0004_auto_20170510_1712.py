@@ -8,13 +8,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0003_auto_20170510_1633'),
+        ("wellsfargo", "0003_auto_20170510_1633"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='accountinquiryresult',
-            name='middle_initial',
-            field=models.CharField(blank=True, max_length=1, null=True, verbose_name='Middle Initial'),
+            model_name="accountinquiryresult",
+            name="middle_initial",
+            field=models.CharField(
+                blank=True, max_length=1, null=True, verbose_name="Middle Initial"
+            ),
         ),
     ]

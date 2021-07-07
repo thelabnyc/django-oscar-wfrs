@@ -4,8 +4,8 @@ import importlib
 
 
 def screen_transaction(request, order):
-    klass = WFRS_FRAUD_PROTECTION['fraud_protection']
-    kwargs = WFRS_FRAUD_PROTECTION.get('fraud_protection_kwargs', {})
+    klass = WFRS_FRAUD_PROTECTION["fraud_protection"]
+    kwargs = WFRS_FRAUD_PROTECTION.get("fraud_protection_kwargs", {})
     return _get_fraud_screener(klass, kwargs).screen_transaction(request, order)
 
 
@@ -16,9 +16,9 @@ def _get_fraud_screener(klass, kwargs):
 
 
 def _load_cls_from_abs_path(path):
-    pkgname, fnname = path.rsplit('.', 1)
+    pkgname, fnname = path.rsplit(".", 1)
     try:
         pkg = importlib.import_module(pkgname)
         return getattr(pkg, fnname)
     except (ImportError, AttributeError):
-        raise ImproperlyConfigured('Could not import class at path {}'.format(path))
+        raise ImproperlyConfigured("Could not import class at path {}".format(path))

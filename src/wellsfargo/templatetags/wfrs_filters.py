@@ -6,25 +6,25 @@ import pytz
 register = template.Library()
 
 
-@register.filter(name='timeat')
+@register.filter(name="timeat")
 def timeat(value):
     try:
-        return _('%(years)s years, %(months)s months') % dict(
-            years=int(value[2:]),
-            months=int(value[:2]))
+        return _("%(years)s years, %(months)s months") % dict(
+            years=int(value[2:]), months=int(value[:2])
+        )
     except Exception:
         return ""
 
 
-@register.filter(name='timesinceminutes')
+@register.filter(name="timesinceminutes")
 def timesinceminutes(dt_to, dt_from):
     if not dt_to or not dt_from:
-        return ''
+        return ""
     return round((dt_to - dt_from).total_seconds() / 60)
 
 
-@register.filter(name='localizedatetime')
+@register.filter(name="localizedatetime")
 def localizedatetime(value):
     if not value:
-        return ''
+        return ""
     return pytz.utc.localize(value)

@@ -9,13 +9,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0001_squash_060'),
+        ("wellsfargo", "0001_squash_060"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transfermetadata',
-            name='credentials',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='transfers', to='wellsfargo.APICredentials', verbose_name='API Credentials'),
+            model_name="transfermetadata",
+            name="credentials",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="transfers",
+                to="wellsfargo.APICredentials",
+                verbose_name="API Credentials",
+            ),
         ),
     ]

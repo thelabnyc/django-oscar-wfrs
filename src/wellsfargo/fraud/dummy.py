@@ -15,13 +15,12 @@ class DummyFraudProtection(object):
         'fraud_protection': 'wellsfargo.fraud.dummy.DummyFraudProtection',
     }
     """
-    SCREEN_TYPE_NAME = 'Dummy'
 
+    SCREEN_TYPE_NAME = "Dummy"
 
     def __init__(self, decision=None, message=None):
         self.decision = decision or FraudScreenResult.DECISION_ACCEPT
         self.message = message or "Transaction accepted."
-
 
     def screen_transaction(self, request, order):
         result = FraudScreenResult()
