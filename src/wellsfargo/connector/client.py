@@ -20,15 +20,13 @@ import uuid
 logger = logging.getLogger(__name__)
 
 
-
 class BearerTokenAuth(requests.auth.AuthBase):
     def __init__(self, api_key):
         self.api_key = api_key
 
     def __call__(self, request):
-        request.headers['Authorization'] = ('Bearer %s' % self.api_key)
+        request.headers["Authorization"] = "Bearer %s" % self.api_key
         return request
-
 
 
 class WFRSAPIKey:
@@ -48,8 +46,7 @@ class WFRSAPIKey:
         return int((self.expires_on - timezone.now()).total_seconds())
 
     def __str__(self):
-        return '<WFRSAPIKey expires_on=[%s]>' % self.expires_on
-
+        return "<WFRSAPIKey expires_on=[%s]>" % self.expires_on
 
 
 class WFRSGatewayAPIClient:
@@ -61,38 +58,34 @@ class WFRSGatewayAPIClient:
     client_cert_path = WFRS_GATEWAY_CLIENT_CERT_PATH
     priv_key_path = WFRS_GATEWAY_PRIV_KEY_PATH
     scopes = [
-        'PLCCA-Prequalifications',
-        'PLCCA-Applications',
-        'PLCCA-Payment-Calculations',
-        'PLCCA-Transactions-Authorization',
-        'PLCCA-Transactions-Charge',
-        'PLCCA-Transactions-Authorization-Charge',
-        'PLCCA-Transactions-Return',
-        'PLCCA-Transactions-Cancel-Authorization',
-        'PLCCA-Transactions-Void-Return',
-        'PLCCA-Transactions-Void-Sale',
-        'PLCCA-Transactions-Timeout-Authorization-Charge',
-        'PLCCA-Transactions-Timeout-Return',
-        'PLCCA-Account-Details',
+        "PLCCA-Prequalifications",
+        "PLCCA-Applications",
+        "PLCCA-Payment-Calculations",
+        "PLCCA-Transactions-Authorization",
+        "PLCCA-Transactions-Charge",
+        "PLCCA-Transactions-Authorization-Charge",
+        "PLCCA-Transactions-Return",
+        "PLCCA-Transactions-Cancel-Authorization",
+        "PLCCA-Transactions-Void-Return",
+        "PLCCA-Transactions-Void-Sale",
+        "PLCCA-Transactions-Timeout-Authorization-Charge",
+        "PLCCA-Transactions-Timeout-Return",
+        "PLCCA-Account-Details",
     ]
 
     cache_version = 1
 
-
     @property
     def cache_key(self):
-        return 'wfrs-gateway-api-key-{api_host}-{consumer_key}'.format(
-            api_host=self.api_host,
-            consumer_key=self.consumer_key)
-
+        return "wfrs-gateway-api-key-{api_host}-{consumer_key}".format(
+            api_host=self.api_host, consumer_key=self.consumer_key
+        )
 
     def api_get(self, path, **kwargs):
-        return self.make_api_request('get', path, **kwargs)
-
+        return self.make_api_request("get", path, **kwargs)
 
     def api_post(self, path, **kwargs):
-        return self.make_api_request('post', path, **kwargs)
-
+        return self.make_api_request("post", path, **kwargs)
 
     def make_api_request(self, method, path, client_request_id=None, **kwargs):
         url = "https://{host}{path}".format(host=self.api_host, path=path)
@@ -102,34 +95,40 @@ class WFRSGatewayAPIClient:
         if self.client_cert_path and self.priv_key_path:
             cert = (self.client_cert_path, self.priv_key_path)
         # Build headers
-        request_id = str(uuid.uuid4()) if client_request_id is None else str(client_request_id)
+        request_id = (
+            str(uuid.uuid4()) if client_request_id is None else str(client_request_id)
+        )
         headers = {
-            'request-id': request_id,
-            'gateway-company-id': self.company_id,
-            'gateway-entity-id': self.entity_id,
+            "request-id": request_id,
+            "gateway-company-id": self.company_id,
+            "gateway-entity-id": self.entity_id,
         }
         if client_request_id is not None:
-            headers['client-request-id'] = str(client_request_id)
+            headers["client-request-id"] = str(client_request_id)
         # Send request
-        logger.info("Sending WFRS Gateway API request. URL=[%s], RequestID=[%s]", url, request_id)
+        logger.info(
+            "Sending WFRS Gateway API request. URL=[%s], RequestID=[%s]",
+            url,
+            request_id,
+        )
         request_fn = getattr(requests, method)
-        resp = request_fn(url,
-            auth=auth,
-            cert=cert,
-            headers=headers,
-            **kwargs)
-        logger.info("WFRS Gateway API request returned. URL=[%s], RequestID=[%s], Status=[%s]", url, request_id, resp.status_code)
+        resp = request_fn(url, auth=auth, cert=cert, headers=headers, **kwargs)
+        logger.info(
+            "WFRS Gateway API request returned. URL=[%s], RequestID=[%s], Status=[%s]",
+            url,
+            request_id,
+            resp.status_code,
+        )
         # Check response for errors
         if resp.status_code == 400:
             resp_data = resp.json()
             errors = []
-            for err in resp_data.get('errors', []):
-                exc = ValidationError(err['description'], code=err['error_code'])
+            for err in resp_data.get("errors", []):
+                exc = ValidationError(err["description"], code=err["error_code"])
                 errors.append(exc)
             raise ValidationError(errors)
         # Return response
         return resp
-
 
     def get_api_key(self):
         # Check for a cached key
@@ -138,7 +137,6 @@ class WFRSGatewayAPIClient:
             key_obj = self.generate_api_key()
             self.store_cached_api_key(key_obj)
         return key_obj
-
 
     def get_cached_api_key(self):
         # Try to get an API key from cache
@@ -157,31 +155,26 @@ class WFRSGatewayAPIClient:
         # Return the key
         return key_obj
 
-
     def store_cached_api_key(self, key_obj):
         # Pickle and encrypt the key object
         encrypted_obj = encrypt_pickle(key_obj)
         # Store it in Django's cache for later
-        cache.set(self.cache_key, encrypted_obj, key_obj.ttl, version=self.cache_version)
-
+        cache.set(
+            self.cache_key, encrypted_obj, key_obj.ttl, version=self.cache_version
+        )
 
     def generate_api_key(self):
         url = "https://{host}/token".format(host=self.api_host)
         auth = HTTPBasicAuth(self.consumer_key, self.consumer_secret)
         cert = (self.client_cert_path, self.priv_key_path)
         req_data = {
-            'grant_type': 'client_credentials',
-            'scope': ' '.join(self.scopes),
+            "grant_type": "client_credentials",
+            "scope": " ".join(self.scopes),
         }
-        resp = requests.post(url,
-            auth=auth,
-            cert=cert,
-            data=req_data)
+        resp = requests.post(url, auth=auth, cert=cert, data=req_data)
         resp.raise_for_status()
         resp_data = resp.json()
-        expires_on = timezone.now() + timedelta(seconds=resp_data['expires_in'])
+        expires_on = timezone.now() + timedelta(seconds=resp_data["expires_in"])
         logger.info("Generated new WFRS API Key. ExpiresIn=[%s]", expires_on)
-        key_obj = WFRSAPIKey(
-            api_key=resp_data['access_token'],
-            expires_on=expires_on)
+        key_obj = WFRSAPIKey(api_key=resp_data["access_token"], expires_on=expires_on)
         return key_obj

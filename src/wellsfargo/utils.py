@@ -6,11 +6,11 @@ import re
 def list_plans_for_basket(basket):
     plans = []
     for application in basket.offer_applications.post_order_actions:
-        benefit = application['offer'].benefit.proxy()
+        benefit = application["offer"].benefit.proxy()
         if isinstance(benefit, FinancingPlanBenefit):
             plans += benefit.plans.all()
-    plans = { p.pk: p for p in plans }.values()
-    plans = sorted(plans, key=lambda plan: '%s-%s' % (plan.apr, plan.term_months))
+    plans = {p.pk: p for p in plans}.values()
+    plans = sorted(plans, key=lambda plan: "%s-%s" % (plan.apr, plan.term_months))
     return plans
 
 
@@ -24,23 +24,27 @@ def calculate_monthly_payments(principal, term_months, apr):
         return principal / term_months
 
     # Convert the APR into a per-month interest rate decimal
-    interest = (apr / 100 / 12)
+    interest = apr / 100 / 12
 
     # Calculate the amortized monthly payment for the loan
-    payment = principal * (interest * (1 + interest) ** term_months) / ((1 + interest) ** term_months - 1)
+    payment = (
+        principal
+        * (interest * (1 + interest) ** term_months)
+        / ((1 + interest) ** term_months - 1)
+    )
 
     return payment.quantize(principal, rounding=ROUND_UP)
 
 
 def as_decimal(string):
     try:
-        return Decimal(string).quantize(Decimal('.01'))
+        return Decimal(string).quantize(Decimal(".01"))
     except (TypeError, InvalidOperation):
-        return Decimal('0.00')
+        return Decimal("0.00")
 
 
 def format_date(date):
-    return date.strftime('%Y-%m-%d') if date else None
+    return date.strftime("%Y-%m-%d") if date else None
 
 
 def format_phone(number):
@@ -50,7 +54,7 @@ def format_phone(number):
 
 
 def format_ssn(number):
-    return re.sub(r'[^0-9]+', '', number) if number else None
+    return re.sub(r"[^0-9]+", "", number) if number else None
 
 
 def remove_null_dict_keys(value):

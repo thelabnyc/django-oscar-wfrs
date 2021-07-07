@@ -6,193 +6,235 @@ import django.db.models.deletion
 
 
 def update_credit_app_statuses(apps, schema_editor):
-    CreditApplication = apps.get_model('wellsfargo', 'CreditApplication')
+    CreditApplication = apps.get_model("wellsfargo", "CreditApplication")
 
-    OLD_STATUS_APPROVED = 'E0'
-    OLD_STATUS_DECISION_DELAYED = 'E1'
-    OLD_STATUS_FORMAT_ERROR = 'E2'
-    OLD_STATUS_WFF_ERROR = 'E3'
-    OLD_STATUS_DENIED = 'E4'
+    OLD_STATUS_APPROVED = "E0"
+    OLD_STATUS_DECISION_DELAYED = "E1"
+    OLD_STATUS_FORMAT_ERROR = "E2"
+    OLD_STATUS_WFF_ERROR = "E3"
+    OLD_STATUS_DENIED = "E4"
 
-    NEW_STATUS_APPROVED = 'APPROVED'
-    NEW_STATUS_PENDING = 'PENDING'
-    NEW_STATUS_DENIED = 'DENIED'
+    NEW_STATUS_APPROVED = "APPROVED"
+    NEW_STATUS_PENDING = "PENDING"
+    NEW_STATUS_DENIED = "DENIED"
 
     mapping = [
         (OLD_STATUS_APPROVED, NEW_STATUS_APPROVED),
         (OLD_STATUS_DECISION_DELAYED, NEW_STATUS_PENDING),
-        (OLD_STATUS_FORMAT_ERROR, ''),
-        (OLD_STATUS_WFF_ERROR, ''),
+        (OLD_STATUS_FORMAT_ERROR, ""),
+        (OLD_STATUS_WFF_ERROR, ""),
         (OLD_STATUS_DENIED, NEW_STATUS_DENIED),
     ]
 
     for old_status, new_status in mapping:
-        CreditApplication.objects\
-            .filter(status=old_status)\
-            .update(status=new_status)
+        CreditApplication.objects.filter(status=old_status).update(status=new_status)
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('wellsfargo', '0035_auto_20200326_1412'),
+        ("wellsfargo", "0035_auto_20200326_1412"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='cacreditapp',
-            name='credentials',
+            model_name="cacreditapp",
+            name="credentials",
         ),
         migrations.RemoveField(
-            model_name='cacreditapp',
-            name='submitting_user',
+            model_name="cacreditapp",
+            name="submitting_user",
         ),
         migrations.RemoveField(
-            model_name='cacreditapp',
-            name='user',
+            model_name="cacreditapp",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='cajointcreditapp',
-            name='credentials',
+            model_name="cajointcreditapp",
+            name="credentials",
         ),
         migrations.RemoveField(
-            model_name='cajointcreditapp',
-            name='submitting_user',
+            model_name="cajointcreditapp",
+            name="submitting_user",
         ),
         migrations.RemoveField(
-            model_name='cajointcreditapp',
-            name='user',
+            model_name="cajointcreditapp",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='uscreditapp',
-            name='credentials',
+            model_name="uscreditapp",
+            name="credentials",
         ),
         migrations.RemoveField(
-            model_name='uscreditapp',
-            name='submitting_user',
+            model_name="uscreditapp",
+            name="submitting_user",
         ),
         migrations.RemoveField(
-            model_name='uscreditapp',
-            name='user',
+            model_name="uscreditapp",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='usjointcreditapp',
-            name='credentials',
+            model_name="usjointcreditapp",
+            name="credentials",
         ),
         migrations.RemoveField(
-            model_name='usjointcreditapp',
-            name='submitting_user',
+            model_name="usjointcreditapp",
+            name="submitting_user",
         ),
         migrations.RemoveField(
-            model_name='usjointcreditapp',
-            name='user',
+            model_name="usjointcreditapp",
+            name="user",
         ),
         migrations.DeleteModel(
-            name='CreditAppIndex',
+            name="CreditAppIndex",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='credit_app_id',
+            model_name="accountinquiryresult",
+            name="credit_app_id",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='credit_app_type',
+            model_name="accountinquiryresult",
+            name="credit_app_type",
         ),
         migrations.RemoveField(
-            model_name='prequalificationrequest',
-            name='locale',
+            model_name="prequalificationrequest",
+            name="locale",
         ),
         migrations.AlterField(
-            model_name='prequalificationrequest',
-            name='entry_point',
-            field=models.CharField(choices=[('WEB', 'Web'), ('POS', 'Point of Sale')], default='WEB', max_length=3, verbose_name='Entry Point'),
+            model_name="prequalificationrequest",
+            name="entry_point",
+            field=models.CharField(
+                choices=[("WEB", "Web"), ("POS", "Point of Sale")],
+                default="WEB",
+                max_length=3,
+                verbose_name="Entry Point",
+            ),
         ),
         migrations.AlterField(
-            model_name='transfermetadata',
-            name='type_code',
-            field=models.CharField(choices=[('5', 'Authorization for Future Charge'), ('7', 'Cancel Existing Authorization'), ('3', 'Charge for Previous Authorization'), ('1', 'Authorize and Charge'), ('2', 'Time-out Reversal for Previous "Authorization and Charge"'), ('4', 'Return or Credit'), ('9', 'Time-out Reversal for Return or Credit'), ('VS', 'Void Sale'), ('VR', 'Void Return')], max_length=2, verbose_name='Transaction Type'),
+            model_name="transfermetadata",
+            name="type_code",
+            field=models.CharField(
+                choices=[
+                    ("5", "Authorization for Future Charge"),
+                    ("7", "Cancel Existing Authorization"),
+                    ("3", "Charge for Previous Authorization"),
+                    ("1", "Authorize and Charge"),
+                    ("2", 'Time-out Reversal for Previous "Authorization and Charge"'),
+                    ("4", "Return or Credit"),
+                    ("9", "Time-out Reversal for Return or Credit"),
+                    ("VS", "Void Sale"),
+                    ("VR", "Void Return"),
+                ],
+                max_length=2,
+                verbose_name="Transaction Type",
+            ),
         ),
         migrations.DeleteModel(
-            name='CACreditApp',
+            name="CACreditApp",
         ),
         migrations.DeleteModel(
-            name='CAJointCreditApp',
+            name="CAJointCreditApp",
         ),
         migrations.DeleteModel(
-            name='USCreditApp',
+            name="USCreditApp",
         ),
         migrations.DeleteModel(
-            name='USJointCreditApp',
+            name="USJointCreditApp",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='balance',
+            model_name="accountinquiryresult",
+            name="balance",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='last_payment_amount',
+            model_name="accountinquiryresult",
+            name="last_payment_amount",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='last_payment_date',
+            model_name="accountinquiryresult",
+            name="last_payment_date",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='payment_due_amount',
+            model_name="accountinquiryresult",
+            name="payment_due_amount",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='payment_due_date',
+            model_name="accountinquiryresult",
+            name="payment_due_date",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='status',
+            model_name="accountinquiryresult",
+            name="status",
         ),
         migrations.AlterField(
-            model_name='creditapplication',
-            name='status',
-            field=models.CharField(choices=[('', 'Unknown'), ('APPROVED', 'Approved'), ('PENDING', 'Pending'), ('DENIED', 'Denied')], default='', help_text='Application Status', max_length=8, verbose_name='Application Status'),
+            model_name="creditapplication",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("", "Unknown"),
+                    ("APPROVED", "Approved"),
+                    ("PENDING", "Pending"),
+                    ("DENIED", "Denied"),
+                ],
+                default="",
+                help_text="Application Status",
+                max_length=8,
+                verbose_name="Application Status",
+            ),
         ),
         migrations.RenameField(
-            model_name='accountinquiryresult',
-            old_name='open_to_buy',
-            new_name='available_credit',
+            model_name="accountinquiryresult",
+            old_name="open_to_buy",
+            new_name="available_credit",
         ),
         migrations.RenameField(
-            model_name='accountinquiryresult',
-            old_name='new_credit_app',
-            new_name='credit_app_source',
+            model_name="accountinquiryresult",
+            old_name="new_credit_app",
+            new_name="credit_app_source",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='address',
+            model_name="accountinquiryresult",
+            name="address",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='first_name',
+            model_name="accountinquiryresult",
+            name="first_name",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='last_name',
+            model_name="accountinquiryresult",
+            name="last_name",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='middle_initial',
+            model_name="accountinquiryresult",
+            name="middle_initial",
         ),
         migrations.RemoveField(
-            model_name='accountinquiryresult',
-            name='phone_number',
+            model_name="accountinquiryresult",
+            name="phone_number",
         ),
         migrations.AlterField(
-            model_name='accountinquiryresult',
-            name='credit_app_source',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='inquiries', to='wellsfargo.CreditApplication', verbose_name='Credit Application Source'),
+            model_name="accountinquiryresult",
+            name="credit_app_source",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="inquiries",
+                to="wellsfargo.CreditApplication",
+                verbose_name="Credit Application Source",
+            ),
         ),
         migrations.AlterField(
-            model_name='accountinquiryresult',
-            name='prequal_response_source',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='inquiries', to='wellsfargo.PreQualificationResponse', verbose_name='Pre-Qualification Source'),
+            model_name="accountinquiryresult",
+            name="prequal_response_source",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="inquiries",
+                to="wellsfargo.PreQualificationResponse",
+                verbose_name="Pre-Qualification Source",
+            ),
         ),
         migrations.RunPython(update_credit_app_statuses),
     ]

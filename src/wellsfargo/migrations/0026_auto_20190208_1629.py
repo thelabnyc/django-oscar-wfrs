@@ -4,11 +4,11 @@ from django.db import migrations
 
 
 def migrate_inquiries_forward(apps, schema_editor):
-    ContentType = apps.get_model('contenttypes', 'ContentType')
-    USCreditApp = apps.get_model('wellsfargo', 'USCreditApp')
-    USJointCreditApp = apps.get_model('wellsfargo', 'USJointCreditApp')
-    CACreditApp = apps.get_model('wellsfargo', 'CACreditApp')
-    CAJointCreditApp = apps.get_model('wellsfargo', 'CAJointCreditApp')
+    ContentType = apps.get_model("contenttypes", "ContentType")
+    USCreditApp = apps.get_model("wellsfargo", "USCreditApp")
+    USJointCreditApp = apps.get_model("wellsfargo", "USJointCreditApp")
+    CACreditApp = apps.get_model("wellsfargo", "CACreditApp")
+    CAJointCreditApp = apps.get_model("wellsfargo", "CAJointCreditApp")
     for CreditApp in (USCreditApp, USJointCreditApp, CACreditApp, CAJointCreditApp):
         for credit_app in CreditApp.objects.all():
             for inquiry in credit_app.inquiries.all():
@@ -20,7 +20,7 @@ def migrate_inquiries_forward(apps, schema_editor):
 
 
 def migrate_inquiries_reverse(apps, schema_editor):
-    AccountInquiryResult = apps.get_model('wellsfargo', 'AccountInquiryResult')
+    AccountInquiryResult = apps.get_model("wellsfargo", "AccountInquiryResult")
     for inquiry in AccountInquiryResult.objects.all():
         credit_app = inquiry.credit_app_source
         credit_app.inquiries.add(inquiry)
@@ -29,7 +29,7 @@ def migrate_inquiries_reverse(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0025_auto_20190208_1431'),
+        ("wellsfargo", "0025_auto_20190208_1431"),
     ]
 
     operations = [

@@ -4,14 +4,13 @@ from oscar.models.fields import NullCharField
 from ..security import encrypt_account_number, decrypt_account_number
 
 
-
 class AccountNumberMethodsMixin(models.Model):
     class Meta:
         abstract = True
 
     @property
     def masked_account_number(self):
-        return 'xxxxxxxxxxxx{}'.format(self.last4_account_number or 'xxxx')
+        return "xxxxxxxxxxxx{}".format(self.last4_account_number or "xxxx")
 
     @property
     def account_number(self):
@@ -25,7 +24,7 @@ class AccountNumberMethodsMixin(models.Model):
     @account_number.setter
     def account_number(self, value):
         if len(value) != 16:
-            raise ValueError(_('Account number must be 16 digits long'))
+            raise ValueError(_("Account number must be 16 digits long"))
         self.last4_account_number = value[-4:]
         self.encrypted_account_number = encrypt_account_number(value)
 
@@ -34,18 +33,20 @@ class AccountNumberMethodsMixin(models.Model):
         self.save()
 
 
-
 class AccountNumberMixin(AccountNumberMethodsMixin, models.Model):
-    last4_account_number = models.CharField(_("Last 4 digits of account number"), max_length=4)
+    last4_account_number = models.CharField(
+        _("Last 4 digits of account number"), max_length=4
+    )
     encrypted_account_number = models.BinaryField(null=True)
 
     class Meta:
         abstract = True
 
 
-
 class MaybeAccountNumberMixin(AccountNumberMethodsMixin, models.Model):
-    last4_account_number = NullCharField(_("Last 4 digits of account number"), max_length=4)
+    last4_account_number = NullCharField(
+        _("Last 4 digits of account number"), max_length=4
+    )
     encrypted_account_number = models.BinaryField(null=True)
 
     class Meta:

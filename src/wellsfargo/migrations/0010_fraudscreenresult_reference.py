@@ -8,14 +8,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0009_auto_20171005_1541'),
+        ("wellsfargo", "0009_auto_20171005_1541"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='fraudscreenresult',
-            name='reference',
-            field=models.CharField(default='', max_length=128, verbose_name='Reference'),
+            model_name="fraudscreenresult",
+            name="reference",
+            field=models.CharField(
+                default="", max_length=128, verbose_name="Reference"
+            ),
             preserve_default=False,
         ),
     ]

@@ -8,13 +8,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0014_auto_20180222_1432'),
+        ("wellsfargo", "0014_auto_20180222_1432"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='prequalificationresponse',
-            name='reported_datetime',
-            field=models.DateTimeField(blank=True, help_text='Date customer response was reported to Wells Fargo.', null=True),
+            model_name="prequalificationresponse",
+            name="reported_datetime",
+            field=models.DateTimeField(
+                blank=True,
+                help_text="Date customer response was reported to Wells Fargo.",
+                null=True,
+            ),
         ),
     ]

@@ -37,20 +37,21 @@ class MultiEncryption(object):
     will be attempted (in-order) until one successfully decrypts the data or until the
     list is exhausted.
     """
+
     def __init__(self, encryptors):
         self.encryptors = encryptors
 
     def encrypt(self, value):
         """Accept a string and return binary data"""
-        klass = self.encryptors[0]['encryptor']
-        kwargs = self.encryptors[0].get('encryptor_kwargs', {})
+        klass = self.encryptors[0]["encryptor"]
+        kwargs = self.encryptors[0].get("encryptor_kwargs", {})
         return _get_encryptor(klass, kwargs).encrypt(value)
 
     def decrypt(self, blob):
         """Accept binary data and return a string"""
         for encryptor in self.encryptors:
-            klass = encryptor['encryptor']
-            kwargs = encryptor.get('encryptor_kwargs', {})
+            klass = encryptor["encryptor"]
+            kwargs = encryptor.get("encryptor_kwargs", {})
             value = _get_encryptor(klass, kwargs).decrypt(blob)
             if value is not None:
                 return value

@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0018_auto_20181019_1924'),
+        ("wellsfargo", "0018_auto_20181019_1924"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='prequalificationrequest',
-            name='customer_initiated',
-            field=models.BooleanField(default=False, verbose_name='Check was deliberately initiated by customer action'),
+            model_name="prequalificationrequest",
+            name="customer_initiated",
+            field=models.BooleanField(
+                default=False,
+                verbose_name="Check was deliberately initiated by customer action",
+            ),
         ),
     ]

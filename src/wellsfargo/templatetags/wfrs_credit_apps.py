@@ -15,9 +15,7 @@ def get_credit_apps_owned_by_user(user):
 @register.simple_tag(takes_context=True)
 def get_table_for_applications(context, prefix, applications):
     table = CreditApplicationTable(applications, prefix=prefix)
-    table.caption = _('Credit Applications')
-    paginate = {
-        'per_page': 25
-    }
+    table.caption = _("Credit Applications")
+    paginate = {"per_page": 25}
     RequestConfig(context.request, paginate=paginate).configure(table)
     return table

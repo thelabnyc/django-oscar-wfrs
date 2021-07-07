@@ -8,13 +8,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wellsfargo', '0006_financingplan_product_price_threshold'),
+        ("wellsfargo", "0006_financingplan_product_price_threshold"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='financingplan',
-            name='advertising_enabled',
-            field=models.BooleanField(default=False, verbose_name='Is Advertising Enabled for Plan?'),
+            model_name="financingplan",
+            name="advertising_enabled",
+            field=models.BooleanField(
+                default=False, verbose_name="Is Advertising Enabled for Plan?"
+            ),
         ),
     ]

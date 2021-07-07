@@ -7,11 +7,13 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractMerchantNumModel(models.Model):
-    name = models.CharField(_('Merchant Name'), max_length=200, default='Default')
-    merchant_num = models.CharField(_('Merchant Number'), max_length=200)
+    name = models.CharField(_("Merchant Name"), max_length=200, default="Default")
+    merchant_num = models.CharField(_("Merchant Number"), max_length=200)
 
-    user_group = models.ForeignKey(Group, null=True, blank=True, on_delete=models.CASCADE)
-    priority = models.IntegerField(_('Priority Order'), default=1)
+    user_group = models.ForeignKey(
+        Group, null=True, blank=True, on_delete=models.CASCADE
+    )
+    priority = models.IntegerField(_("Priority Order"), default=1)
 
     class Meta:
         abstract = True
@@ -25,24 +27,26 @@ class AbstractMerchantNumModel(models.Model):
         creds = cls.objects.filter(user_group=None).first()
         if creds:
             return creds
-        logger.error('Application requested WFRS API Credentials for use by user {}, but none exist in the database for them.'.format(user))
+        logger.error(
+            "Application requested WFRS API Credentials for use by user {}, but none exist in the database for them.".format(
+                user
+            )
+        )
         return cls()
 
     def __str__(self):
         return str(self.merchant_num)
 
 
-
 class APIMerchantNum(AbstractMerchantNumModel):
     class Meta:
-        ordering = ('-priority', '-id')
-        verbose_name = _('API Merchant Number')
-        verbose_name_plural = _('API Merchant Numbers')
-
+        ordering = ("-priority", "-id")
+        verbose_name = _("API Merchant Number")
+        verbose_name_plural = _("API Merchant Numbers")
 
 
 class SDKMerchantNum(AbstractMerchantNumModel):
     class Meta:
-        ordering = ('-priority', '-id')
-        verbose_name = _('SDK Merchant Number')
-        verbose_name_plural = _('SDK Merchant Numbers')
+        ordering = ("-priority", "-id")
+        verbose_name = _("SDK Merchant Number")
+        verbose_name_plural = _("SDK Merchant Numbers")

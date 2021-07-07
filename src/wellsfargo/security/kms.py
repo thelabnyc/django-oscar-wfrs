@@ -32,11 +32,11 @@ class KMSEncryption(object):
 
     For details, see `the boto3 docs <https://boto3.readthedocs.io/en/latest/reference/services/kms.html#KMS.Client.encrypt>`_.
     """
+
     def __init__(self, key_id, **kwargs):
         self.key_id = key_id
-        self.encryption_context = kwargs.pop('encryption_context', {})
-        self.client = boto3.client('kms', **kwargs)
-
+        self.encryption_context = kwargs.pop("encryption_context", {})
+        self.client = boto3.client("kms", **kwargs)
 
     def encrypt(self, value):
         """Accept a string and return binary data"""
@@ -45,12 +45,12 @@ class KMSEncryption(object):
         response = self.client.encrypt(
             KeyId=self.key_id,
             Plaintext=value,
-            EncryptionContext=self.encryption_context)
+            EncryptionContext=self.encryption_context,
+        )
 
-        blob = response['CiphertextBlob']
+        blob = response["CiphertextBlob"]
         blob = base64.b64encode(blob)
         return blob
-
 
     def decrypt(self, blob):
         """Accept binary data and return a string"""
@@ -62,17 +62,17 @@ class KMSEncryption(object):
 
         try:
             response = self.client.decrypt(
-                CiphertextBlob=blob,
-                EncryptionContext=self.encryption_context)
+                CiphertextBlob=blob, EncryptionContext=self.encryption_context
+            )
         except ClientError as e:
-            if e.response['Error']['Code'] == 'InvalidCiphertextException':
+            if e.response["Error"]["Code"] == "InvalidCiphertextException":
                 return None
             raise e
 
         plain_text = None
-        if 'Plaintext' in response:
+        if "Plaintext" in response:
             try:
-                plain_text = force_text(response['Plaintext'])
+                plain_text = force_text(response["Plaintext"])
             except DjangoUnicodeDecodeError:
                 pass
         return plain_text

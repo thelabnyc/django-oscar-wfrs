@@ -30,8 +30,8 @@ def decrypt_pickle(encrypted):
 
 
 def _get_configured_encryptor():
-    klass = WFRS_SECURITY['encryptor']
-    kwargs = WFRS_SECURITY.get('encryptor_kwargs', {})
+    klass = WFRS_SECURITY["encryptor"]
+    kwargs = WFRS_SECURITY.get("encryptor_kwargs", {})
     return _get_encryptor(klass, kwargs)
 
 
@@ -42,9 +42,9 @@ def _get_encryptor(klass, kwargs):
 
 
 def _load_cls_from_abs_path(path):
-    pkgname, fnname = path.rsplit('.', 1)
+    pkgname, fnname = path.rsplit(".", 1)
     try:
         pkg = importlib.import_module(pkgname)
         return getattr(pkg, fnname)
     except (ImportError, AttributeError):
-        raise ImproperlyConfigured('Could not import class at path {}'.format(path))
+        raise ImproperlyConfigured("Could not import class at path {}".format(path))
