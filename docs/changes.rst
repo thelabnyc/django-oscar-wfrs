@@ -3,6 +3,10 @@
 Changelog
 =========
 
+5.0.0
+------------------
+- Oscar 3.1 Compatibility
+
 4.0.0
 ------------------
 - Oscar 3.0 Compatibility
