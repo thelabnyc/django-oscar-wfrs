@@ -1,4 +1,4 @@
-from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from django.utils.encoding import force_bytes, force_str, DjangoUnicodeDecodeError
 from botocore.exceptions import ClientError
 import boto3
 import base64
@@ -72,7 +72,7 @@ class KMSEncryption(object):
         plain_text = None
         if "Plaintext" in response:
             try:
-                plain_text = force_text(response["Plaintext"])
+                plain_text = force_str(response["Plaintext"])
             except DjangoUnicodeDecodeError:
                 pass
         return plain_text
