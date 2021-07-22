@@ -1,5 +1,5 @@
 from cryptography.fernet import Fernet, InvalidToken
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 import logging
 
 logger = logging.getLogger(__name__)
@@ -38,4 +38,4 @@ class FernetEncryption(object):
         except InvalidToken:
             logger.warning("Unable to decrypt account number blob.")
             return None
-        return force_text(value)
+        return force_str(value)
