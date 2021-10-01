@@ -29,7 +29,7 @@ extras_require = {
         "boto3>=1.5.7",
     ],
     "cybersource": [
-        "instrumented-soap>=1.2.0",
+        "instrumented-soap>=2.1.1",
     ],
     "development": [
         "coverage>=4.4.2",
