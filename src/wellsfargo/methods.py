@@ -73,6 +73,8 @@ class WellsFargo(PaymentMethod):
             .order_by("-created_datetime")
             .first()
         )
+        if not transfer_meta:
+            return
         cancel_trans_request = self._build_trans_request(
             order=order,
             account_number=transfer_meta.account_number,

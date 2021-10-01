@@ -3,6 +3,10 @@
 Changelog
 =========
 
+5.0.1
+------------------
+- Fix bug when attempting to void a previous non-WFRS payment source.
+
 5.0.0
 ------------------
 - Oscar 3.1 Compatibility
