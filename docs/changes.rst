@@ -3,6 +3,10 @@
 Changelog
 =========
 
+5.0.2
+------------------
+- Fix bug where transactions amounts were sometimes sent to WF with more than two decimal places.
+
 5.0.1
 ------------------
 - Fix bug when attempting to void a previous non-WFRS payment source.
