@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from oscar.core.loading import get_model
@@ -230,7 +231,7 @@ class WellsFargo(PaymentMethod):
         trans_request.user = order.user
         trans_request.account_number = account_number
         trans_request.plan_number = plan_number
-        trans_request.amount = amount
+        trans_request.amount = Decimal(amount).quantize(Decimal("0.00"))
         trans_request.ticket_number = self._generate_ticket_number()
         return trans_request
 
