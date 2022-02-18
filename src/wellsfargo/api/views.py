@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 from rest_framework import views, generics, status, serializers
 from oscarapi.basket import operations
+from ..core.signals import wfrs_sdk_app_approved
 from ..models import (
     APIMerchantNum,
     SDKMerchantNum,
@@ -292,6 +293,8 @@ class PreQualificationSDKApplicationResultView(generics.GenericAPIView):
             pass
         # Update the ID in the session
         request.session[SDK_APP_RESULT_SESSION_KEY] = sdk_application_result.pk
+        if sdk_application_result.application_status == "APPROVED":
+            wfrs_sdk_app_approved.send(sender=sdk_application_result.__class__, app=sdk_application_result)
         # Return the SDK app result data
         response_ser = self.get_serializer_class()(
             instance=sdk_application_result, context={"request": request}
