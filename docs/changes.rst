@@ -3,6 +3,10 @@
 Changelog
 =========
 
+5.1.0
+------------------
+- Added new signal for approved credit applications from the WF SDK.
+
 5.0.2
 ------------------
 - Fix bug where transactions amounts were sometimes sent to WF with more than two decimal places.
