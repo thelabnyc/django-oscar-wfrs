@@ -294,7 +294,9 @@ class PreQualificationSDKApplicationResultView(generics.GenericAPIView):
         # Update the ID in the session
         request.session[SDK_APP_RESULT_SESSION_KEY] = sdk_application_result.pk
         if sdk_application_result.application_status == "APPROVED":
-            wfrs_sdk_app_approved.send(sender=sdk_application_result.__class__, app=sdk_application_result)
+            wfrs_sdk_app_approved.send(
+                sender=sdk_application_result.__class__, app=sdk_application_result
+            )
         # Return the SDK app result data
         response_ser = self.get_serializer_class()(
             instance=sdk_application_result, context={"request": request}
