@@ -56,9 +56,9 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"django-oscar-wfrs"
-copyright = u"2017, Craig Weber <craig@crgwbr.com>"
-author = u"Craig Weber <craig@crgwbr.com>"
+project = "django-oscar-wfrs"
+copyright = "2017, Craig Weber <craig@crgwbr.com>"
+author = "Craig Weber <craig@crgwbr.com>"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -139,8 +139,8 @@ latex_documents = [
     (
         master_doc,
         "django-oscar-wfrs.tex",
-        u"django-oscar-wfrs Documentation",
-        u"Craig Weber",
+        "django-oscar-wfrs Documentation",
+        "Craig Weber",
         "manual",
     ),
 ]
@@ -151,7 +151,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, "django-oscar-wfrs", u"django-oscar-wfrs Documentation", [author], 1)
+    (master_doc, "django-oscar-wfrs", "django-oscar-wfrs Documentation", [author], 1)
 ]
 
 
@@ -164,7 +164,7 @@ texinfo_documents = [
     (
         master_doc,
         "django-oscar-wfrs",
-        u"django-oscar-wfrs Documentation",
+        "django-oscar-wfrs Documentation",
         author,
         "django-oscar-wfrs",
         "One line description of project.",
