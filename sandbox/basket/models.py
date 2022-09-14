@@ -1,5 +1,9 @@
-from oscar.apps.basket.abstract_models import AbstractLine
-from oscarbluelight.mixins import BluelightBasketLineMixin
+from oscar.apps.basket.abstract_models import AbstractBasket, AbstractLine
+from oscarbluelight.mixins import BluelightBasketMixin, BluelightBasketLineMixin
+
+
+class Basket(BluelightBasketMixin, AbstractBasket):
+    pass
 
 
 class Line(BluelightBasketLineMixin, AbstractLine):

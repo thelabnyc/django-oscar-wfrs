@@ -34,6 +34,7 @@ extras_require = {
     "development": [
         "coverage>=4.4.2",
         "flake8>=3.5.0",
+        "instrumented-soap>=2.1.1",
         "psycopg2-binary>=2.8.4",
         "PyYAML>=3.12",
         "requests-mock>=1.7.0",
