@@ -6,6 +6,7 @@ class WFRSDashboardConfig(OscarDashboardConfig):
     name = "wellsfargo.dashboard"
     label = "wellsfargo_dashboard"
     namespace = "wellsfargo_dashboard"
+    default = True
 
     default_permissions = [
         "is_staff",

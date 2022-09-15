@@ -6,6 +6,7 @@ class WFRSAPIConfig(OscarConfig):
     name = "wellsfargo.api"
     label = "wellsfargo_api"
     namespace = "wellsfargo_api"
+    default = True
 
     def get_urls(self):
         from .views import (
