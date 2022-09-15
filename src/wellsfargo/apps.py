@@ -8,6 +8,7 @@ class WFRSConfig(OscarConfig):
     # Translators: Backend Library Name
     verbose_name = _("Wells Fargo Retail Services")
     namespace = "wellsfargo"
+    default = True
 
     def ready(self):
         from . import handlers  # NOQA

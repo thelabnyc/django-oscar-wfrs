@@ -13,14 +13,14 @@ packages = find_packages("src")
 
 install_requires = [
     "cryptography>=2.1.4",
-    "django>=2.2",
+    "Django>=3.2",
     "django-oscar>=3.1b0",
     "django-oscar-api>=2.0.0",
     "django-oscar-api-checkout>=3.0.0",
     "django-oscar-bluelight>=5.0.0b1",
     "django-ipware>=2.1.0",
     "django-localflavor>=2.0",
-    "djangorestframework>=3.10.0",
+    "djangorestframework>=3.11",
     "requests>=2.23.0",
 ]
 
