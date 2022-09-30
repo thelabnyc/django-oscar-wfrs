@@ -40,7 +40,7 @@ class BaseTest(APITestCase):
 
     def mock_get_api_token_request(self, rmock):
         rmock.post(
-            "https://api-sandbox.wellsfargo.com/token",
+            "https://api-sandbox.wellsfargo.com/oauth2/v1/token",
             json={
                 "access_token": "16a05f65dd41569af67dbdca7ea4da4d",
                 "scope": "",

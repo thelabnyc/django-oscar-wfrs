@@ -164,7 +164,7 @@ class CheckoutTest(BaseTest):
         self.assertEqual(
             called_urls,
             [
-                "https://api-sandbox.wellsfargo.com/token",
+                "https://api-sandbox.wellsfargo.com/oauth2/v1/token",
                 "https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization",
                 "https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/timeout-authorization-charge",
                 "https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/payment/transactions/authorization",

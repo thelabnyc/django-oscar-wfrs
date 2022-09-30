@@ -55,7 +55,7 @@ class WFRSGatewayAPIClientTest(TestCase):
 
         # Register request mock
         rmock.post(
-            "https://api-sandbox.wellsfargo.com/token",
+            "https://api-sandbox.wellsfargo.com/oauth2/v1/token",
             additional_matcher=match_request,
             json={
                 "access_token": "16a05f65dd41569af67dbdca7ea4da4d",

@@ -164,7 +164,7 @@ class WFRSGatewayAPIClient:
         )
 
     def generate_api_key(self):
-        url = "https://{host}/token".format(host=self.api_host)
+        url = "https://{host}/oauth2/v1/token".format(host=self.api_host)
         auth = HTTPBasicAuth(self.consumer_key, self.consumer_secret)
         cert = (self.client_cert_path, self.priv_key_path)
         req_data = {
