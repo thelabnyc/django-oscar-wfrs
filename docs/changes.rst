@@ -3,6 +3,10 @@
 Changelog
 =========
 
+5.1.1
+------------------
+- Update Token API endpoint before October 31, 2022 deadline.
+
 5.1.0
 ------------------
 - Added new signal for approved credit applications from the WF SDK.
