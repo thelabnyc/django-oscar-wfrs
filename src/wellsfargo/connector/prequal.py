@@ -1,5 +1,5 @@
 from ..core.constants import (
-    PREQUAL_TRANS_CODE_MERCHANT_HOSTED_ONLINE,
+    PREQUAL_TRANS_CODE_MERCHANT_INITIATED_PRESCREEN,
     PREQUAL_TRANS_STATUS_ERROR,
     PREQUAL_CUSTOMER_RESP_NONE,
 )
@@ -21,7 +21,7 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
         # Build request data
         request_data = {
             "merchant_number": creds.merchant_num,
-            "transaction_code": PREQUAL_TRANS_CODE_MERCHANT_HOSTED_ONLINE,
+            "transaction_code": PREQUAL_TRANS_CODE_MERCHANT_INITIATED_PRESCREEN,
             "main_applicant": {
                 "first_name": prequal_request.first_name,
                 "middle_initial": prequal_request.middle_initial,

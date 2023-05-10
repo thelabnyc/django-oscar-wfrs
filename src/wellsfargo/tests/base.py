@@ -213,7 +213,7 @@ class BaseTest(APITestCase):
             json={
                 "client-request-id": "f98ee81c-5bf3-4366-9388-f3759a54b4be",
                 "merchant_number": "1111111111111111",
-                "transaction_code": "MAH",
+                "transaction_code": "P1",
                 "decision_status": "A",
                 "application_id": "000005EP",
                 "max_credit_limit": "8500",
@@ -228,7 +228,7 @@ class BaseTest(APITestCase):
             "https://api-sandbox.wellsfargo.com/credit-cards/private-label/new-accounts/v2/prequalifications",
             json={
                 "client-request-id": "f98ee81c-5bf3-4366-9388-f3759a54b4be",
-                "transaction_code": "MAH",
+                "transaction_code": "P1",
                 "decision_status": "D",
                 "decision_message": "DENIED",
             },

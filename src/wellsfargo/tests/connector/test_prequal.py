@@ -21,7 +21,7 @@ class PrequalAPIClientTest(BaseTest):
                 data,
                 {
                     "merchant_number": "1111111111111111",
-                    "transaction_code": "MAH",
+                    "transaction_code": "P1",
                     "main_applicant": {
                         "first_name": "Demo",
                         "last_name": "Tester",
