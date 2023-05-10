@@ -3,6 +3,10 @@
 Changelog
 =========
 
+5.1.2
+------------------
+- Corrected transaction code used for silent prescreen calls.
+
 5.1.1
 ------------------
 - Update Token API endpoint before October 31, 2022 deadline.
