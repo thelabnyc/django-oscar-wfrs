@@ -3,6 +3,10 @@
 Changelog
 =========
 
+5.1.3
+------------------
+- Due to WF request, stop sending email with silent prescreen calls.
+
 5.1.2
 ------------------
 - Corrected transaction code used for silent prescreen calls.
