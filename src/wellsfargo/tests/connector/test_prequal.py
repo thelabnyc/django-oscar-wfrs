@@ -26,7 +26,7 @@ class PrequalAPIClientTest(BaseTest):
                         "first_name": "Demo",
                         "last_name": "Tester",
                         "phone_number": "2122091333",
-                        "email": "demo@wellsfargo.com",
+                        # "email": "demo@wellsfargo.com",
                         "address": {
                             "address_line_1": "800 Walnut St",
                             "city": "Des Moines",
