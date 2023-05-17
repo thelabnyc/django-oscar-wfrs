@@ -27,7 +27,8 @@ class PrequalAPIClient(WFRSGatewayAPIClient):
                 "middle_initial": prequal_request.middle_initial,
                 "last_name": prequal_request.last_name,
                 "phone_number": format_phone(prequal_request.phone),
-                "email": prequal_request.email,
+                # Email is no longer allowed to be sent for the P1 transaction type.
+                # "email": prequal_request.email,
                 "last_four_ssn": None,
                 "address": {
                     "address_line_1": prequal_request.line1,
