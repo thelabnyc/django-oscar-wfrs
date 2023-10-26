@@ -60,7 +60,7 @@ def format_ssn(number):
 def remove_null_dict_keys(value):
     keys = list(value.keys())
     for key in keys:
-        if type(value[key]) == dict:
+        if isinstance(value[key], dict):
             value[key] = remove_null_dict_keys(value[key])
         elif value[key] is None or value[key] == "":
             value.pop(key, None)
