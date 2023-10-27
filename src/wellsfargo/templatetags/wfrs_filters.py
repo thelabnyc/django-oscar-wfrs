@@ -1,6 +1,6 @@
+from zoneinfo import ZoneInfo
 from django.utils.translation import gettext as _
 from django import template
-import pytz
 
 
 register = template.Library()
@@ -27,4 +27,4 @@ def timesinceminutes(dt_to, dt_from):
 def localizedatetime(value):
     if not value:
         return ""
-    return pytz.utc.localize(value)
+    return value.astimezone(ZoneInfo("UTC"))

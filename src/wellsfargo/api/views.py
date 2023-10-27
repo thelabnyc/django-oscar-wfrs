@@ -2,7 +2,7 @@ from django.core import signing, exceptions
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 from rest_framework import views, generics, status, serializers
@@ -199,7 +199,7 @@ class PreQualificationResumeView(generics.GenericAPIView):
 
         # Get and validate redirect URL
         redirect_url = self.request.GET.get("next", "/")
-        redirect_url_is_safe = is_safe_url(
+        redirect_url_is_safe = url_has_allowed_host_and_scheme(
             url=redirect_url,
             allowed_hosts=set((request.get_host(),)),
             require_https=request.is_secure(),
