@@ -3,6 +3,11 @@
 Changelog
 =========
 
+5.2.0
+------------------
+- Add support for django-oscar 3.2.2
+- Add support for django 4.2
+
 5.1.3
 ------------------
 - Due to WF request, stop sending email with silent prescreen calls.
