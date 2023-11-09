@@ -16,7 +16,7 @@ class HealthCheckAPIClientTest(BaseTest):
         )
         # Hit the health check endpoint
         resp = HealthCheckAPIClient().check_credentials()
-        self.assertEquals(
+        self.assertEqual(
             resp,
             "Congratulations! Your environment is set up correctly. Thank you for your business.",
         )

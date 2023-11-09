@@ -1,0 +1,49 @@
+[build-system]
+requires = [ "poetry-core>=1.0.0",]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "django-oscar-wfrs"
+version = "5.2.0.post2"
+description = "An extension on-top of django-oscar-api-checkout to allow interfacing with Wells Fargo Retail Services."
+authors = [ "thelabnyc <thelabdev@thelabnyc.com>",]
+readme = "README.rst"
+homepage = "https://gitlab.com/thelabnyc/django-oscar-wfrs"
+repository = "https://gitlab.com/thelabnyc/django-oscar-wfrs"
+license = "ISC"
+
+[[tool.poetry.packages]]
+include = "wellsfargo"
+from = "src"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+cryptography = ">=2.1.4"
+Django = ">=3.2"
+django-oscar = ">=3.2.2"
+django-oscar-api = ">=3.0.0"
+django-oscar-api-checkout = ">=3.0.0"
+django-oscar-bluelight = ">=5.0.0b1"
+django-ipware = ">=2.1.0"
+django-localflavor = ">=2.0"
+djangorestframework = ">=3.11"
+requests = ">=2.23.0"
+
+[tool.poetry.group.kms.dependencies]
+boto3 = ">=1.5.7"
+
+[tool.poetry.group.cybersource.dependencies]
+instrumented-soap = ">=2.1.1"
+
+[tool.poetry.group.dev.dependencies]
+coverage = ">=4.4.2"
+flake8 = ">=3.5.0"
+instrumented-soap = ">=2.1.1"
+psycopg2-binary = ">=2.8.4"
+PyYAML = ">=3.12"
+requests-mock = ">=1.7.0"
+sorl-thumbnail = ">=11.04"
+sphinx-rtd-theme = ">=0.4.3"
+sphinx = ">=1.6.5"
+tox = ">=2.9.1"
+unittest-xml-reporting = ">=3.0.4"
