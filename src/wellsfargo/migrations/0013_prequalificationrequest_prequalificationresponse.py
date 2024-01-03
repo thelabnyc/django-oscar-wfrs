@@ -10,7 +10,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0012_auto_20180102_1147"),
     ]

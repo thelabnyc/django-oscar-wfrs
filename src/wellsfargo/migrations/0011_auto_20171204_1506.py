@@ -9,7 +9,6 @@ import oscar.models.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0010_fraudscreenresult_reference"),
     ]

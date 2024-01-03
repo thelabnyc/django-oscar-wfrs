@@ -292,7 +292,6 @@ def migrate_account_inquiries(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0034_auto_20200326_1411"),
     ]

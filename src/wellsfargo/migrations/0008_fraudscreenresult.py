@@ -7,7 +7,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("order", "0004_auto_20160111_1108"),
         ("wellsfargo", "0007_financingplan_advertising_enabled"),

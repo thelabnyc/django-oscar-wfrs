@@ -31,7 +31,6 @@ def update_credit_app_statuses(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("wellsfargo", "0035_auto_20200326_1412"),

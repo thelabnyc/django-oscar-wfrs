@@ -11,7 +11,6 @@ import wellsfargo.core.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("wellsfargo", "0033_auto_20191209_1358"),

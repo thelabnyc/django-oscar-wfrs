@@ -10,7 +10,6 @@ import wellsfargo.core.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0037_auto_20200402_1108"),
     ]

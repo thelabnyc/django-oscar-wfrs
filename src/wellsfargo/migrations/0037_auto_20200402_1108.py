@@ -27,7 +27,6 @@ def update_merchant_fields(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0036_auto_20200326_1430"),
     ]

@@ -7,7 +7,6 @@ import oscar.models.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0011_auto_20171204_1506"),
     ]
