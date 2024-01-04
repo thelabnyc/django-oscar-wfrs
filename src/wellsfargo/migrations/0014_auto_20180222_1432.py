@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0013_prequalificationrequest_prequalificationresponse"),
     ]

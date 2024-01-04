@@ -27,7 +27,6 @@ def migrate_inquiries_reverse(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0025_auto_20190208_1431"),
     ]

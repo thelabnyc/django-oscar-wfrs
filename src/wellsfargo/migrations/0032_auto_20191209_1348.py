@@ -6,7 +6,6 @@ import oscar.models.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("auth", "0011_update_proxy_permissions"),
         ("wellsfargo", "0031_creditappindex"),

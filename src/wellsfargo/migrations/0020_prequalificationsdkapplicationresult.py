@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wellsfargo", "0019_prequalificationrequest_customer_initiated"),
     ]
