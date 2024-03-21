@@ -60,9 +60,9 @@ class CSVDownloadableTableMixin(object):
 
     def download_applications(self, request, table):
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = "attachment; filename=%s" % self.get_download_filename(request)
+        response["Content-Disposition"] = (
+            "attachment; filename=%s" % self.get_download_filename(request)
+        )
         writer = UnicodeCSVWriter(open_file=response)
 
         def format_csv_cell(str_in):

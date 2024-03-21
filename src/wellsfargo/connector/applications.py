@@ -133,9 +133,11 @@ class CreditApplicationsAPIClient(WFRSGatewayAPIClient):
             main_applicant_full_name=main_applicant_full_name,
             joint_applicant_full_name=joint_applicant_full_name,
             main_applicant_address=credit_app.main_applicant.address,
-            joint_applicant_address=credit_app.joint_applicant.address
-            if credit_app.joint_applicant
-            else None,
+            joint_applicant_address=(
+                credit_app.joint_applicant.address
+                if credit_app.joint_applicant
+                else None
+            ),
             credit_limit=as_decimal(resp_data["credit_line"]),
             available_credit=as_decimal(resp_data["credit_line"]),
         )

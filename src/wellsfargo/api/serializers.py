@@ -155,28 +155,28 @@ class CreditApplicationSerializer(serializers.ModelSerializer):
             request_user = request.user
 
         # Build the main applicant object
-        self.validated_data["main_applicant"][
-            "address"
-        ] = CreditApplicationAddress.objects.create(
-            **self.validated_data["main_applicant"]["address"],
+        self.validated_data["main_applicant"]["address"] = (
+            CreditApplicationAddress.objects.create(
+                **self.validated_data["main_applicant"]["address"],
+            )
         )
-        self.validated_data[
-            "main_applicant"
-        ] = CreditApplicationApplicant.objects.create(
-            **self.validated_data["main_applicant"],
+        self.validated_data["main_applicant"] = (
+            CreditApplicationApplicant.objects.create(
+                **self.validated_data["main_applicant"],
+            )
         )
 
         # Build the joint applicant object
         if self.validated_data.get("joint_applicant"):
-            self.validated_data["joint_applicant"][
-                "address"
-            ] = CreditApplicationAddress.objects.create(
-                **self.validated_data["joint_applicant"]["address"],
+            self.validated_data["joint_applicant"]["address"] = (
+                CreditApplicationAddress.objects.create(
+                    **self.validated_data["joint_applicant"]["address"],
+                )
             )
-            self.validated_data[
-                "joint_applicant"
-            ] = CreditApplicationApplicant.objects.create(
-                **self.validated_data["joint_applicant"],
+            self.validated_data["joint_applicant"] = (
+                CreditApplicationApplicant.objects.create(
+                    **self.validated_data["joint_applicant"],
+                )
             )
 
         # Build the application object
