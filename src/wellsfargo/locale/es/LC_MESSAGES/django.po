@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-23 20:05+0000\n"
+"POT-Creation-Date: 2024-03-21 19:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "Credit Application was denied by Wells Fargo."
 msgstr ""
 
-#: wellsfargo/connector/applications.py:146
+#: wellsfargo/connector/applications.py:148
 msgid "Credit Application is approval is pending."
 msgstr ""
 
